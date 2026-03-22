@@ -123,14 +123,111 @@ def convert_layout_xml(source_path: str, module_name: str) -> dict:
 def generate_hyva_default_xml(brand_config: dict) -> str:
     """
     Generate the default.xml for the Hyvä child theme.
-    This is the main layout that sets up the page structure.
+
+    Supports two modes based on brand_config['preserve_header']:
+
+    1. preserve_header=True (default):
+       The original header/footer templates are preserved as-is.
+       The layout simply includes the custom header template within the existing
+       Luma page structure. The original jQuery/LESS stack handles everything.
+       This avoids creating duplicate wrapper elements or conflicting containers.
+
+    2. preserve_header=False:
+       Full Hyvä rewrite mode — replaces header.container entirely with
+       a custom Alpine.js-powered header container.
+
+    The critical insight: when preserving templates, do NOT remove header.container
+    or create new wrapper divs — the original templates expect the Luma DOM structure.
+    Instead, override only the template reference so the original template renders
+    within Luma's layout containers.
     """
-    return """<?xml version="1.0"?>
+    preserve = brand_config.get("preserve_header", True)
+
+    if preserve:
+        # Preserve mode: keep Luma's header structure, just override the template
+        # The original ftcheader.phtml creates its own header markup including
+        # .msg banner, .ftc-logo, .header-ftc-flex, .navigation, .right-nav-section,
+        # .region-chooser - all styled by the original LESS files.
+        return """<?xml version="1.0"?>
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+        <css src="css/styles.css"/>
+        <css src="css/fonts.css"/>
+    </head>
     <body>
+        <!-- Override header with custom FTC header template -->
+        <referenceBlock name="header.container" display="false"/>
+        <referenceBlock name="logo" remove="true"/>
+
+        <referenceContainer name="page.wrapper">
+            <block class="Magento\\Framework\\View\\Element\\Template"
+                   name="ftc.header"
+                   template="Magento_Theme::html/ftcheader.phtml"
+                   before="-"/>
+        </referenceContainer>
+
+        <!-- Move standard blocks into areas the header template expects -->
+        <move element="minicart" destination="page.wrapper" after="ftc.header"/>
+        <move element="top.search" destination="page.wrapper" after="ftc.header"/>
+
+        <!-- Remove blocks not needed (handled by custom header) -->
+        <referenceBlock name="catalog.compare.link" remove="true"/>
+
+        <!-- Custom footer -->
+        <referenceContainer name="footer-container">
+            <block class="Magento\\Framework\\View\\Element\\Template"
+                   name="ftc.footer"
+                   template="Magento_Theme::html/footer.phtml"
+                   before="-"/>
+        </referenceContainer>
+    </body>
+</page>
+"""
+    else:
+        # Full Hyvä rewrite mode — create custom containers
+        return """<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+        <css src="css/styles.css"/>
+        <css src="css/fonts.css"/>
+    </head>
+    <body>
+        <!-- FTC custom header replaces default Magento header -->
+        <referenceContainer name="header.container" remove="true"/>
+
+        <referenceContainer name="page.wrapper">
+            <container name="custom_header" htmlTag="div" htmlClass="ftc-header"
+                       before="-">
+                <container name="custom_header_inner" htmlTag="div" htmlClass="ftc-header-inner">
+                    <block class="Magento\\Framework\\View\\Element\\Template"
+                           name="ftc.header"
+                           template="Magento_Theme::html/ftcheader.phtml">
+                        <arguments>
+                            <argument name="store_manager" xsi:type="object">Magento\\Store\\Model\\StoreManagerInterface</argument>
+                            <argument name="locale_resolver" xsi:type="object">Magento\\Framework\\Locale\\Resolver</argument>
+                            <argument name="switcher_url_provider" xsi:type="object">Magento\\Store\\ViewModel\\SwitcherUrlProvider</argument>
+                        </arguments>
+                    </block>
+                </container>
+            </container>
+        </referenceContainer>
+
+        <!-- Move minicart into custom header area -->
+        <move element="minicart" destination="custom_header_inner" after="ftc.header"/>
+
         <!-- Remove blocks not compatible with Hyvä -->
         <referenceBlock name="catalog.compare.link" remove="true"/>
+
+        <!-- Custom footer -->
+        <referenceContainer name="footer-container" remove="true"/>
+        <referenceContainer name="page.wrapper">
+            <block class="Magento\\Framework\\View\\Element\\Template"
+                   name="ftc.footer"
+                   template="Magento_Theme::html/footer.phtml"
+                   after="-"/>
+        </referenceContainer>
     </body>
 </page>
 """
@@ -157,14 +254,18 @@ def generate_hyva_catalog_product_view_xml() -> str:
 def generate_hyva_catalog_category_view_xml() -> str:
     """
     Generate catalog_category_view.xml for the Hyvä child theme.
-    Minimal: Hyvä provides a complete category page by default.
+    FTC-specific: 1-column layout, hide default page title (FTC uses
+    category image overlay title instead).
     """
     return """<?xml version="1.0"?>
 <page layout="1column"
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <body>
-        <!-- Category page uses Hyvä defaults -->
+        <!-- FTC hides default page title — uses category-image overlay instead -->
+        <referenceBlock name="page.main.title" remove="true"/>
+        <!-- Remove compare if not needed -->
+        <referenceBlock name="view.addto.compare" remove="true"/>
     </body>
 </page>
 """

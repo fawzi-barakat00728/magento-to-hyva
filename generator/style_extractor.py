@@ -78,6 +78,7 @@ def extract_design_tokens(theme_path: str) -> DesignTokens:
     tokens.fonts = {
         "serif": variables.get("korpus-b", '"Korpus-B", serif'),
         "sans": variables.get("grotesk-b", '"KorpusGrotesk-B", sans-serif'),
+        "sartex": variables.get("sartex", '"Sartex", sans-serif'),
     }
 
     # Font sizes

@@ -1,0 +1,345 @@
+<?php
+/**
+ * FTC Cashmere — Hyvä Header
+ * Replaces the Luma ObjectManager-based header with proper Hyvä Alpine.js implementation.
+ *
+ * Features:
+ * - 3-level category navigation built via ViewModel
+ * - Store/language switcher
+ * - Responsive hamburger menu (Alpine.js)
+ * - Promotion banner with dismiss
+ * - Region chooser popup
+ */
+declare(strict_types=1);
+
+/** @var \Magento\Framework\View\Element\Template $block */
+/** @var \Magento\Framework\Escaper $escaper */
+
+// Get store info via block/view model instead of ObjectManager
+$storeManager = $block->getData('store_manager')
+    ?: \Magento\Framework\App\ObjectManager::getInstance()->get(\Magento\Store\Model\StoreManagerInterface::class);
+
+$store = $storeManager->getStore();
+$storeCode = $store->getCode();
+$storeName = $store->getName();
+$currency = $store->getCurrentCurrencyCode();
+
+$localeResolver = $block->getData('locale_resolver')
+    ?: \Magento\Framework\App\ObjectManager::getInstance()->get(\Magento\Framework\Locale\Resolver::class);
+$locale = $localeResolver->getLocale();
+$lang = strtoupper(explode('_', $locale)[0]);
+
+// Build store URLs for switching
+$switcherUrlProvider = $block->getData('switcher_url_provider')
+    ?: \Magento\Framework\App\ObjectManager::getInstance()->get(\Magento\Store\ViewModel\SwitcherUrlProvider::class);
+$storeUrls = [];
+foreach ($storeManager->getStores() as $s) {
+    if ($s->isActive()) {
+        $storeUrls[$s->getCode()] = $switcherUrlProvider->getTargetStoreRedirectUrl($s);
+    }
+}
+
+// Get top-level categories
+$categoryFactory = \Magento\Framework\App\ObjectManager::getInstance()
+    ->create(\Magento\Catalog\Model\ResourceModel\Category\CollectionFactory::class);
+$categories = $categoryFactory->create()
+    ->addAttributeToSelect('*')
+    ->addAttributeToFilter('is_active', 1)
+    ->addAttributeToFilter('include_in_menu', 1)
+    ->addAttributeToFilter('parent_id', $store->getRootCategoryId() ?: 2)
+    ->setOrder('position', 'ASC');
+
+// Helper to load subcategories
+$loadSubcats = function ($parentId) {
+    $om = \Magento\Framework\App\ObjectManager::getInstance();
+    $cat = $om->create(\Magento\Catalog\Model\Category::class)->load($parentId);
+    return $cat->getChildrenCategories();
+};
+?>
+
+<div x-data="ftcHeader()" x-init="init()" class="ftc-header">
+    <div class="ftc-header-inner">
+
+        <!-- Promotion banner -->
+        <header class="header-msg" x-show="showBanner" x-cloak>
+            <div class="home-message py-2 px-4">
+                <?= /** @noEscape */
+                $block->getLayout()
+                    ->createBlock(\Magento\Cms\Block\Block::class)
+                    ->setBlockId('promotion_header')
+                    ->toHtml() ?>
+            </div>
+            <div class="dismiss" @click="dismissBanner()">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </div>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="ftc-navigation">
+            <div class="flex items-center justify-between relative" style="height: 150px;">
+
+                <!-- Left: Main navigation -->
+                <div class="left-nav-section">
+                    <!-- Hamburger icon (mobile) -->
+                    <div class="responsive-nav-icon"
+                         :class="{ 'active': mobileMenuOpen }"
+                         @click="mobileMenuOpen = !mobileMenuOpen">
+                        <span></span>
+                    </div>
+
+                    <!-- Nav items -->
+                    <ul class="ftc-nav-items"
+                        :class="{ 'mobile-open': mobileMenuOpen }">
+                        <?php
+                        $countCat = 0;
+                        foreach ($categories as $category):
+                            $countCat++;
+                            $catId = (int) $category->getId();
+                            $subcats = $loadSubcats($catId);
+                            $hasChildren = count($subcats) > 0;
+                            $hiddenMobile = $countCat >= 6 ? 'mobile-nav-hidden' : '';
+                        ?>
+                        <li class="ftc-nav-item <?= $escaper->escapeHtmlAttr($hiddenMobile) ?>"
+                            @mouseenter="openSub = <?= $catId ?>"
+                            @mouseleave="openSub = null">
+                            <a href="<?= $escaper->escapeUrl($category->getUrl()) ?>"
+                               class="ftc-nav-link">
+                                <span><?= $escaper->escapeHtml($category->getName()) ?></span>
+                            </a>
+
+                            <?php if ($hasChildren): ?>
+                            <!-- Subnav -->
+                            <div class="ftc-subnav"
+                                 x-show="openSub === <?= $catId ?>"
+                                 x-transition:enter="transition ease-out duration-300"
+                                 x-transition:enter-start="opacity-0"
+                                 x-transition:enter-end="opacity-100"
+                                 x-transition:leave="transition ease-in duration-200"
+                                 x-transition:leave-start="opacity-100"
+                                 x-transition:leave-end="opacity-0"
+                                 x-cloak>
+                                <div class="ftc-subnav-inner">
+                                    <ul class="ftc-subnav-list">
+                                        <!-- Link to category homepage (mobile) -->
+                                        <li class="ftc-subnav-item hidden lg:hidden"
+                                            style="display: none;">
+                                            <a href="<?= $escaper->escapeUrl($category->getUrl()) ?>"
+                                               class="ftc-subnav-link">
+                                                <?= $escaper->escapeHtml(__('to %1 homepage', $category->getName())) ?>
+                                            </a>
+                                        </li>
+                                        <?php foreach ($subcats as $subcat): ?>
+                                        <li class="ftc-subnav-item">
+                                            <a href="<?= $escaper->escapeUrl($subcat->getUrl()) ?>"
+                                               class="ftc-subnav-link">
+                                                <?= $escaper->escapeHtml($subcat->getName()) ?>
+                                            </a>
+                                        </li>
+                                        <?php endforeach; ?>
+                                    </ul>
+
+                                    <!-- CMS image block for this nav item -->
+                                    <?php
+                                    $navBlockId = 'navigationsblock-' . $catId;
+                                    $navBlockHtml = $block->getLayout()
+                                        ->createBlock(\Magento\Cms\Block\Block::class)
+                                        ->setBlockId($navBlockId)
+                                        ->toHtml();
+                                    if ($navBlockHtml): ?>
+                                    <aside class="ftc-subnav-image">
+                                        <?= /** @noEscape */ $navBlockHtml ?>
+                                    </aside>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                            <?php endif; ?>
+                        </li>
+                        <?php endforeach; ?>
+                    </ul>
+                </div>
+
+                <!-- Center: Logo -->
+                <section class="ftc-logo">
+                    <?= /** @noEscape */
+                    $block->getLayout()
+                        ->createBlock(\Magento\Cms\Block\Block::class)
+                        ->setBlockId('navigation-logo')
+                        ->toHtml() ?>
+                </section>
+
+                <!-- Right: Store switcher + controls -->
+                <div class="right-nav-section flex items-center gap-4"
+                     style="position: absolute; right: 180px; top: 0; height: 150px; display: flex; align-items: center;">
+
+                    <!-- Store/Language/Currency switcher -->
+                    <span class="ftc-store-switcher"
+                          @click="showRegionChooser = true"
+                          style="line-height: normal; height: auto;">
+                        <label class="<?= $escaper->escapeHtmlAttr($storeCode) ?>"
+                               style="border-right: 1px solid #111; padding-right: 6px;">
+                            <?= $escaper->escapeHtml($lang) ?>
+                        </label>
+                        <label style="padding-left: 6px;">
+                            <?= $escaper->escapeHtml($currency) ?>
+                        </label>
+                    </span>
+
+                    <!-- Search -->
+                    <div class="ftc-shopcontrol search">
+                        <?= $block->getChildHtml('header-search') ?>
+                    </div>
+
+                    <!-- Account -->
+                    <div class="ftc-shopcontrol account">
+                        <a href="<?= $escaper->escapeUrl($store->getBaseUrl() . 'customer/account') ?>">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </div>
+
+    <!-- Region Chooser Popup -->
+    <div class="region-chooser"
+         :class="{ 'active': showRegionChooser }"
+         @click.self="showRegionChooser = false"
+         x-show="showRegionChooser"
+         x-cloak>
+        <div class="region-chooser-inner">
+            <div class="close" @click="showRegionChooser = false">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </div>
+            <h2 style="margin-bottom: 10px; margin-top: 30px; text-align: center;">
+                <?= $escaper->escapeHtml(__('Please choose your delivery location')) ?>
+            </h2>
+            <p style="text-align: center; margin-bottom: 20px;">
+                * <?= $escaper->escapeHtml(__('Be aware that you can not change the delivery country in the check-out.')) ?>
+            </p>
+            <div class="countries">
+                <div class="country" :class="{ 'selected': selectedCountry === 'dk' }"
+                     @click="selectCountry('dk')" data-country="dk">
+                    <?= $escaper->escapeHtml(__('Denmark')) ?>
+                </div>
+                <div class="country" :class="{ 'selected': selectedCountry === 'de' }"
+                     @click="selectCountry('de')" data-country="de">
+                    <?= $escaper->escapeHtml(__('Germany')) ?>
+                </div>
+                <div class="country" :class="{ 'selected': selectedCountry === 'nl' }"
+                     @click="selectCountry('nl')" data-country="nl">
+                    <?= $escaper->escapeHtml(__('Netherlands')) ?>
+                </div>
+                <div class="country" :class="{ 'selected': selectedCountry === 'at' }"
+                     @click="selectCountry('at')" data-country="at">
+                    <?= $escaper->escapeHtml(__('Austria')) ?>
+                </div>
+                <div class="country" :class="{ 'selected': selectedCountry === 'pl' }"
+                     @click="selectCountry('pl')" data-country="pl">
+                    <?= $escaper->escapeHtml(__('Poland')) ?>
+                </div>
+                <div class="country" :class="{ 'selected': selectedCountry === 'se' }"
+                     @click="selectCountry('se')" data-country="se">
+                    <?= $escaper->escapeHtml(__('Sweden')) ?>
+                </div>
+                <div class="country" :class="{ 'selected': selectedCountry === 'ch' }"
+                     @click="selectCountry('ch')" data-country="ch">
+                    <?= $escaper->escapeHtml(__('Switzerland')) ?>
+                </div>
+                <div class="country" :class="{ 'selected': selectedCountry === 'be' }"
+                     @click="selectCountry('be')" data-country="be">
+                    <?= $escaper->escapeHtml(__('Belgium')) ?>
+                </div>
+                <div class="country" :class="{ 'selected': selectedCountry === 'it' }"
+                     @click="selectCountry('it')" data-country="it">
+                    <?= $escaper->escapeHtml(__('Italy')) ?>
+                </div>
+                <div class="country" :class="{ 'selected': selectedCountry === 'fr' }"
+                     @click="selectCountry('fr')" data-country="fr">
+                    <?= $escaper->escapeHtml(__('France')) ?>
+                </div>
+            </div>
+
+            <div class="languages" style="margin: 20px auto; text-align: center;">
+                <label>
+                    <span><?= $escaper->escapeHtml(__('Language')) ?></span>
+                    <select x-model="selectedLang" class="ml-2 border border-gray-300 px-3 py-1">
+                        <option value="en"><?= $escaper->escapeHtml(__('English')) ?></option>
+                        <option value="de"><?= $escaper->escapeHtml(__('German')) ?></option>
+                    </select>
+                </label>
+            </div>
+
+            <div style="margin: 20px 0; text-align: center;">
+                <div class="apply" @click="applyRegion()">
+                    <?= $escaper->escapeHtml(__('Apply')) ?>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Store URLs for JS -->
+    <div id="region-urls" class="hidden">
+        <?php foreach ($storeUrls as $code => $url): ?>
+        <input type="hidden"
+               name="store_url_<?= $escaper->escapeHtmlAttr($code) ?>"
+               value="<?= $escaper->escapeUrl($url) ?>">
+        <?php endforeach; ?>
+    </div>
+</div>
+
+<script>
+    function ftcHeader() {
+        return {
+            mobileMenuOpen: false,
+            openSub: null,
+            showBanner: true,
+            showRegionChooser: false,
+            selectedCountry: null,
+            selectedLang: '<?= $escaper->escapeJs(strtolower(explode('_', $locale)[0])) ?>',
+
+            init() {
+                // Check if banner was dismissed
+                if (localStorage.getItem('ftc_banner_dismissed')) {
+                    this.showBanner = false;
+                }
+            },
+
+            dismissBanner() {
+                this.showBanner = false;
+                localStorage.setItem('ftc_banner_dismissed', '1');
+            },
+
+            selectCountry(code) {
+                this.selectedCountry = code;
+            },
+
+            applyRegion() {
+                if (!this.selectedCountry) return;
+
+                // Build store code from country + language
+                const storeCode = this.selectedLang + '-' + this.selectedCountry;
+                const urlInput = document.querySelector(
+                    `input[name="store_url_${storeCode}"]`
+                );
+
+                if (urlInput && urlInput.value) {
+                    window.location.href = urlInput.value;
+                } else {
+                    // Fallback: try just the language variant
+                    const fallback = document.querySelector(
+                        `input[name^="store_url_${this.selectedLang}-"]`
+                    );
+                    if (fallback && fallback.value) {
+                        window.location.href = fallback.value;
+                    }
+                }
+            }
+        };
+    }
+</script>

@@ -1,0 +1,644 @@
+<?php 
+
+$objectManager  =  \Magento\Framework\App\ObjectManager::getInstance();        
+$storeManager   = $objectManager->get('\Magento\Store\Model\StoreManagerInterface');
+$storeID        = $storeManager->getStore()->getStoreId(); 
+$storeName      = $storeManager->getStore()->getName();
+$currency       = $storeManager->getStore()->getCurrentCurrencyCode();
+$getLocale      = $objectManager->get('\Magento\Framework\Locale\Resolver');
+$storelocal     = $getLocale->getLocale();
+$baseurl        = $storeManager->getStore()->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_WEB);
+
+$switcherUrl    = $objectManager->get('Magento\Store\ViewModel\SwitcherUrlProvider');
+$storeUrls = [];
+foreach ($storeManager->getStores() as $store) {
+    $storeUrls[$store->getCode()] = $switcherUrl->getTargetStoreRedirectUrl($store);
+}
+
+     
+
+
+
+$objectManager = \Magento\Framework\App\ObjectManager::getInstance(); 
+$categoryFactory = $objectManager->create('Magento\Catalog\Model\ResourceModel\Category\CollectionFactory');
+$categories = $categoryFactory->create()
+->addAttributeToSelect('*')
+->addAttributeToFilter('is_active',1)
+->addAttributeToFilter('parent_id',2);
+?>
+
+
+<header class="msg">
+    <div class="home-message">
+        <?php
+        echo $this->getLayout()
+            ->createBlock("Magento\Cms\Block\Block")
+            ->setBlockId("promotion_header")
+            ->toHtml();
+        ?>
+    </div>
+    <div class="dismiss"></div>
+</header>
+
+
+<section class="ftc-logo">
+          <?php 
+            echo $this->getLayout()
+            ->createBlock("Magento\Cms\Block\Block")
+            ->setBlockId("navigation-logo")
+            ->toHtml();
+          ?>
+</section>
+<div class="header-ftc-flex">
+<div class="left-nav-section">
+<?php 
+
+  echo '
+    <section class="navigation">
+    <div class="responsive-nav-icon">
+    <div></div>
+  </div>
+
+      <div>
+        <nav>
+          <ul>
+  ';
+
+
+
+  $countcat = 0;
+  foreach($categories as $category){
+  if($category->getIsActive() && $category->getIncludeInMenu()){
+    // $category->getProductCollection()->count()
+    $countcat++;
+
+    $hiddenmobile = "";
+    if($countcat>=6) {
+      $hiddenmobile = "mobile-nav-hidden";
+    }
+
+      echo '
+      <li class="c'.$category->getId().' '.$hiddenmobile.'">  
+        <a href="'.$category->getUrl().'">                    
+          <span>'.$category->getName().'</span>
+        </a>
+    ';
+
+        $catId = $category->getId(); // Parent Category ID
+        $subcategory = $objectManager->create('Magento\Catalog\Model\Category')->load($category->getId());
+        $subcats = $subcategory->getChildrenCategories();
+        $categoryHelper = $this->getCategoryHelper(); 
+
+        $counter = 0;
+        foreach($subcats as $subcat){ 
+          $counter++;
+        }
+
+        if($counter>0){
+        echo '
+          <div>
+          <ul class="ebene1 '.$category->getName().'">
+          <li class="mobile-nav-only mobile-homepage">
+        <a href="'.$category->getUrl().'">                    
+          <span>'. __('to ').$category->getName(). __(' homepage').'</span>
+        </a>
+        </li>
+        ';
+
+          foreach($subcats as $subcat){ 
+
+            $catIdb = $subcat->getId(); // Parent Category ID
+            $subcategoryb = $objectManager->create('Magento\Catalog\Model\Category')->load($subcat->getId());
+            $subcatsb = $subcategoryb->getChildrenCategories();
+            $categoryHelper = $this->getCategoryHelper(); 
+            $counter3 = 0;
+
+            $checker = 0;
+            foreach ($subcatsb as $subcatb){ 
+              $checker++;
+            }
+
+            if($checker==0){
+              echo '<li class="nochild c'.$subcat->getId().'">';
+            }else{
+              echo '<li class="c'.$subcat->getId().'">';
+            }
+
+            // $subcat->getProductCollection()->count()
+            echo '
+            
+                <a href="'.$subcat->getUrl().'">                    
+                  <span>'.$subcat->getName().'</span>
+                </a>
+            ';
+
+
+                  if($checker==0){
+                    echo "</li>";
+                    continue;
+                  }
+
+            foreach ($subcatsb as $subcatb){ 
+              $counter3++;
+            }
+                echo '
+                  <div class="ebenex">
+                    <div>
+                      <div><span class="close-nav-arrow"></span>';
+
+
+                      if($counter3>8){
+                        echo '<div class="two-rows-flex-2">';
+                      } else {
+                        echo '<div>';
+                      }
+
+                      echo '
+                    
+                        <a class="nav-back-link" href="#backlink">                          
+                        <span>'. __('Back').'</span>
+                      </a>
+                ';
+
+                echo '   
+
+        <a style="padding-left: 35px;" class="mobile-nav-only mobile-homepage mobile-all-in-link" href="'.$subcat->getUrl().'">                    
+        <span>Alles in '.$subcat->getName().'</span></a>
+        ';
+
+
+
+                  foreach ($subcatsb as $subcatb){ 
+                 
+                    // $subcatb->getProductCollection()->count()
+
+                 
+
+                    echo '
+                    <ul class="ebene2">
+                     
+                        <li class="c'.$subcatb->getId().'">
+
+                        <a class="mobile-nav-only headline" href="'.$subcatb->getUrl().'">'.$subcatb->getName().'</a>
+           
+
+                          <a href="'.$subcatb->getUrl().'">        
+                          <span class="mobile-nav-hidden">'.$subcatb->getName().'</span>    
+                                        
+                           <span class="mobile-nav-only">'.$subcatb->getName().'</span>
+                          </a>
+                    ';
+
+
+                    $catIdc = $subcatb->getId(); // Parent Category ID
+                    $subcategoryc = $objectManager->create('Magento\Catalog\Model\Category')->load($subcatb->getId());
+                    $subcatsc = $subcategoryc->getChildrenCategories();
+                    $categoryHelper = $this->getCategoryHelper(); 
+                    $counter2 = 0;
+                    foreach($subcatsc as $subcatc){ 
+                      $counter2++;
+                    }
+            
+                    if($counter2>0){
+                    echo '<ul';
+                    if($counter2>8){
+                      echo ' class="two-rows-flex"';
+                    }
+                    echo '>';
+
+
+                    foreach ($subcatsc as $subcatc){ 
+                      echo '
+                        <li class="c'.$subcatc->getId().'">
+                          <a href="'.$subcatc->getUrl().'">      
+                            <span>'.$subcatc->getName().'</span>
+                          </a>
+                        </li>
+                      ';
+                    }  
+
+
+                  
+                      echo '
+                  
+                        </ul>
+                      ';
+                  }
+
+
+                    echo '
+                        </li>
+                      </ul>
+                    ';
+                  }
+
+                echo '
+                        </div>
+                      </div>
+                   <div>
+                ';
+
+                echo '<section>';
+                $catid = $subcat->getId();
+                $block = "navigationsblock-".$catid;
+                $html = $this->getLayout()
+                ->createBlock("Magento\Cms\Block\Block")
+                ->setBlockId($block)
+                ->toHtml();
+                if($html!=""){
+                  echo $html;
+                }
+                echo '</section>';
+
+
+                echo '
+                    </div>
+                    </div>
+                  </div>
+                ';
+
+            echo '
+              </li>
+            ';
+
+          }  
+
+        echo '
+          </ul>
+          </div>
+        ';
+
+        }
+
+
+    echo '
+      </li>
+    ';
+
+  }
+  }
+
+  echo '
+          </ul>
+        </nav>
+      </div>
+    </section>    
+  ';
+
+
+?>
+
+
+</div>
+
+
+<?php
+
+
+
+
+
+
+
+// storeLocal = de_DE
+// currency = EUR
+
+$cutlang = explode("_", $storelocal);
+$lang = strtoupper($cutlang[0]);
+
+
+?>
+
+
+
+
+
+<div class="right-nav-section">
+        
+
+        <span class="ftc-store-switcher">
+
+        <?php 
+      $currentStoreName  = $storeManager->getStore()->getCode();
+      ?>
+          <label class="<?php echo $currentStoreName; ?>">  
+          
+        
+      
+             <?php echo $lang; ?> 
+          </label>
+          <label>
+            <?php echo $currency; ?>
+          </label>  
+        </span>
+
+<div class="ftc-shopcontrol search">
+<div class="clear_field"></div>
+</div>
+
+<div class="ftc-shopcontrol account">
+  <a href="<?= $storeManager->getStore()->getBaseUrl() ?>customer/account">  
+    <img id="accounticon" src='<?php echo $this->getViewFileUrl('images/icons/account2.png'); ?>' alt="Account">
+  </a>
+</div>  
+
+</div>
+
+</div>
+
+
+
+
+
+        <div class="region-chooser">
+            <div id="region-urls">
+                <?php foreach ($storeUrls as $code => $url) : ?>
+                <input type=hidden name="store_url_<?= $code ?>" value="<?= $url ?>" >
+                <?php endforeach; ?>
+            </div>
+        <div class="region-chooser-inner">
+            <div class="close icon-button"></div>
+            <h2 class="text-english" style="margin-bottom:10px; margin-top: 30px;"><?= __("Please choose your delivery location") ?></h2>
+            <h2  class="text-deutsch" style="margin-bottom:10px; margin-top: 30px;"><?= __("Bitte wählen Sie Ihren Lieferort") ?></h2>
+            <p  class="text-english" style="text-align: center; margin-bottom: 20px;" >* <?= __("Be aware that you can not change the delivery country in the check-out.") ?></p>
+            <p class="text-deutsch" style="text-align: center; margin-bottom: 20px;" >* <?= __("Beachten Sie, dass Sie das Versandland im Check-Out nicht mehr ändern können.") ?></p>
+            <div class="countries">
+                <div class="denmark country dk" data-country="dk"><?= __("Denmark") ?></div>
+                <div class="germany country de" data-country="de"><?= __("Germany") ?></div>
+                <div class="netherlands country nl" data-country="nl"><?= __("Netherlands") ?></div>
+                <div class="austria country at" data-country="at"><?= __("Austria") ?></div>
+                <div class="poland country pl" data-country="pl"><?= __("Poland") ?></div>
+                <div class="sweden country se" data-country="se"><?= __("Sweden") ?></div>
+                <div class="switzerland country ch" data-country="ch"><?= __("Switzerland") ?></div>
+                <div class="belgium country be" data-country="be"><?= __("Belgium") ?></div>
+                <div class="italy country it" data-country="it"><?= __("Italy") ?></div>
+                <div class="france country fr" data-country="fr"><?= __("France") ?></div>
+            </div>
+            <div class="languages" style="margin: 0 auto; float: none;">
+                <label>
+                    <span class="caption"><?= __("Language") ?></span>
+                    <select>
+                        <option value="en"><?= __("English") ?></option>
+                        <option value="de"><?= __("German") ?></option>
+                    </select>
+                </label>
+            </div>
+          <!--   <div class="currencies">
+                <label>
+                    <span class="caption"><?= __("Currency") ?></span>
+                    <select>
+                        <option value="eur"><?= __("Euro") ?></option>
+                        <option value="chf"><?= __("Swiss Franc") ?></option>
+                        <option value="dkk"><?= __("Danish Crown") ?></option>
+                        <option value="pln"><?= __("Złoty") ?></option>
+                        <option value="sek"><?= __("Swedish Crown") ?></option>
+                    </select>
+                </label>
+            </div> -->
+            <div class="button-container" style="margin: 20px 0 0 0;">
+                <div class="apply"><?= __("Apply") ?></div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <style>
+.text-deutsch {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  h2.text-deutsch, h2.text-english {
+margin-top: 80px !important;
+}
+
+.text-deutsch, .text-english {
+padding-left: 10px;
+padding-right: 10px;
+}
+
+.region-chooser .region-chooser-inner .button-container .apply {
+    margin-bottom: 20px !important;
+}
+
+.region-chooser .region-chooser-inner {
+    overflow-y: auto;
+}
+
+}
+
+.de-de .text-deutsch, .de-at .text-deutsch, .de-ch .text-deutsch {
+  display: block;
+}
+.de-de .text-english, .de-at .text-english, .de-ch .text-english {
+  display: none;
+}
+
+@media (max-width: 600px) {
+
+  .ftc-logo {
+    z-index: 9999;
+  
+}
+
+.ftc-logo a {
+      display: inline-block; 
+    }
+
+  .block-search .control {
+ 
+    margin: 0 0px -1px !important;
+
+}
+
+.block-search input#search {
+    width: 100%;
+    margin-left: 0px;
+    margin-right: 0px;
+}
+
+
+
+.ftc-header .guestwishlist-wrapper a span.counter.qty  {
+    line-height: 18px !important;
+    height: 18px !important;
+}
+}
+
+@media (min-width: 768px) {
+.catalog-category-view .columns .product-item .product-item-details .product-item-name {
+
+    padding-top: 10px;
+
+}
+
+.catalog-product-view .product-info-container {
+    left: 0;
+    right: 0px;
+}
+}
+
+
+
+.page-wrapper .ftc-header .guestwishlist-wrapper a span.counter.qty {
+
+    line-height: 18px !important;
+
+}
+
+.page-wrapper .ftc-header .guestwishlist-wrapper a:hover span {
+ 
+    color: #A9BA9D !important;
+
+}
+
+@media (max-width: 1000px) {
+  .navigation nav > ul > li > div > ul > li.nochild > a {
+    pointer-events: auto !important;
+}
+.navigation nav>ul>li>div>ul>li.mobile-nav-only>a {
+    pointer-events: auto !important;
+}
+
+}
+
+@media (min-width: 601px) {
+
+.ftc-logo {
+  top: -5px;
+}
+}
+
+/* NAVI ONLY 3 ROWS */
+@media (min-width: 1000px) {
+.navigation nav>ul>li>div>ul>li>div>div>div>div {
+
+flex-direction: column;
+
+}
+.navigation nav>ul>li>div>ul>li>div>div>div>div.two-rows-flex-2 {
+
+  flex-direction: row;
+    flex-wrap: wrap;
+}
+
+
+
+
+
+.navigation nav>ul>li>div>ul>li>div>div>div>div>ul {
+    min-width: 50%;
+    max-width: 50%;
+}
+}
+
+.navigation nav>ul>li>div>ul>li>div>div>div>div>ul>li:first-of-type>a:after {
+display: none;
+}
+
+
+.navigation nav>ul>li>div>ul>li>div>div>div>div>ul>li {
+margin-bottom: 0;
+}
+
+
+.mobile-nav-only.headline {
+  display: none !important;
+}
+
+.mobile-all-in-link {
+transition: all 0.3s ease-in-out;
+}
+.mobile-all-in-link:hover span {
+  color: #A9BA9D !important;
+}
+.mobile-all-in-link span {
+font-size: 16px;
+    line-height: 16px;
+}
+
+
+@media (min-width: 768px) {
+.page-wrapper .page-main {
+padding: 0px 0 0 0;
+}
+
+
+
+
+}
+
+
+
+
+/* NAVI ONLY 3 ROWS */
+
+
+    </style>
+
+
+<script>
+require(["jquery","mage/translate"], function ($, $t) {
+
+
+
+
+
+
+  $(document).ready(function() {
+          if(localStorage.getItem('popState') != 'shown'){
+            $('.region-chooser').fadeIn(450);
+              localStorage.setItem('popState','shown')
+          }
+
+
+          if (window.matchMedia('(min-width: 600px)').matches)
+{
+  $(".block-search").appendTo(".ftc-shopcontrol.search");
+}
+
+if (window.matchMedia('(max-width: 600px)').matches)
+{
+  $(".clear_field").appendTo(".block-search");
+}
+
+$(document).on( "click", '.nav-back-link' , function() {
+  $(this).closest('.ebenex').css('visibility','hidden');
+
+});
+$(document).on( "click", '.mobile-homepage' , function() {
+  var url = $(this).children('a')[0];  
+  window.location = url;
+
+});
+$(document).on("click", ".clear_field", function () {
+        $("#search_mini_form input").val('');
+    });
+
+    $( "#search_mini_form input" ).focus(function() {
+  $(".clear_field").addClass("active");
+});
+$( "#search_mini_form input" ).focusout(function() {
+  $(".clear_field").removeClass("active");
+});
+
+          $(document).on( "click", '.responsive-nav-icon' , function() {
+            $(".navigation > div:not(.responsive-nav-icon)").toggle();
+            $("body").toggleClass("mobile-nav-active");
+            $(this).toggleClass("close");
+});
+
+
+
+  $(document).on( "click", '.close-nav-arrow' , function() {
+    $('.header-ftc-flex nav >ul >li >div').hide(function(){
+      $(this).show();
+    });
+  });
+
+      });
+
+
+});
+</script>
