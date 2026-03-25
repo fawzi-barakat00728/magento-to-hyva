@@ -92,13 +92,12 @@ TEMPLATE_STRATEGY = {
     "Magento_Customer/layout": "customize",
     "Magento_Sales/layout": "customize",
 
-    # Complex header/footer: PRESERVE original structure
-    # Header rewriting loses: multi-level navigation, CMS block placement inside nav,
-    # mobile nav elements, search relocation script, region chooser, jQuery scripts
-    # Footer rewriting loses: CMS block layout, social links, legal structure
+    # Complex header/footer: REWRITE with Hyvä Alpine.js versions
+    # Header: centered logo layout with Hyvä Alpine.js components
+    # Footer: renders footer CMS block with Alpine.js newsletter
     "Magento_Theme/templates/html/ftcheader.phtml": "preserve",
-    "Magento_Theme/templates/html/footer.phtml": "preserve",
-    "Magento_Theme/templates/html/header.phtml": "preserve",
+    "Magento_Theme/templates/html/footer.phtml": "rewrite",
+    "Magento_Theme/templates/html/header.phtml": "rewrite",
 
     # Product list: Hyvä provides its own — custom overrides break product display
     "Magento_Catalog/templates/product/list.phtml": "skip",

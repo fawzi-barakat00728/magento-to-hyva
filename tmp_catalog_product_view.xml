@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <!-- Remove default additional attributes table -->
+        <referenceBlock name="product.attributes" remove="true" />
+        <!-- Remove default description section (we render our own) -->
+        <referenceBlock name="description" remove="true" />
+
+        <!-- Override product-sections with FTC custom template -->
+        <referenceBlock name="product.info.details"
+                        template="Magento_Catalog::product/view/sections/ftc-product-sections.phtml" />
+    </body>
+</page>

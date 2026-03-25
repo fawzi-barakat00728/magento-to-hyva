@@ -1,0 +1,35 @@
+<?php
+/**
+ * Hyvä Theme — FTC Cashmere Product Detail Page
+ * Override: 60/40 grid (media 60%, info 40%) matching production
+ */
+
+declare(strict_types=1);
+
+use Magento\Catalog\Block\Product\View;
+use Magento\Framework\Escaper;
+
+/** @var View $block */
+/** @var Escaper $escaper */
+?>
+
+<section
+    class="product-detail-page pb-6 md:py-6 grid grid-cols-1 gap-4 md:items-start md:grid-cols-[60%_minmax(0px,1fr)] lg:grid-cols-[60%_minmax(0px,1fr)] lg:gap-x-10"
+    aria-label="<?= $escaper->escapeHtmlAttr(__('Product Info')) ?>"
+>
+    <?= $block->getChildHtml('product.media') ?>
+    <?= $block->getChildHtml('product.info') ?>
+</section>
+
+<?= $block->getChildHtml('product_options_wrapper_bottom') ?>
+
+<?= $block->getChildHtml('product.info.details'); ?>
+
+<?= $block->getChildHtml('related') ?>
+
+<?= $block->getChildHtml('upsell') ?>
+
+<section aria-label="<?= $escaper->escapeHtmlAttr(__('Product Reviews')) ?>">
+    <?= $block->getChildHtml('review_list') ?>
+    <?= $block->getChildHtml('review_form') ?>
+</section>

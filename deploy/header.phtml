@@ -1,0 +1,315 @@
+<?php
+/**
+ * Hyvä Theme — FTC Cashmere Header
+ * Layout: Centered logo, navigation overlapping below, icons right
+ * Matches production: shop.ftc-cashmere.com
+ */
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\HyvaCsp;
+use Hyva\Theme\ViewModel\StoreConfig;
+use Magento\Checkout\Block\Cart\Sidebar as SidebarCart;
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+
+/** @var Escaper $escaper */
+/** @var Template $block */
+/** @var ViewModelRegistry $viewModels */
+/** @var HyvaCsp $hyvaCsp */
+
+$storeConfig = $viewModels->require(StoreConfig::class);
+$showMiniCart = $storeConfig->getStoreConfig(SidebarCart::XML_PATH_CHECKOUT_SIDEBAR_DISPLAY);
+
+$storeName = 'DE';
+$currencyCode = 'EUR';
+$storeCode = 'de-de';
+try {
+    $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+    $storeManagerObj = $objectManager->get(\Magento\Store\Model\StoreManagerInterface::class);
+    $currentStore = $storeManagerObj->getStore();
+    $storeName = strtoupper(substr((string)$currentStore->getCode(), 0, 2));
+    $currencyCode = (string)$currentStore->getCurrentCurrencyCode();
+    $storeCode = (string)$currentStore->getCode();
+} catch (\Exception $e) {}
+
+// Build store redirect URLs for region chooser
+$storeRedirectUrls = [];
+try {
+    $currentUrl = $storeManagerObj->getStore()->getCurrentUrl(false);
+    $stores = $storeManagerObj->getStores();
+    foreach ($stores as $store) {
+        if (!$store->getIsActive()) {
+            continue;
+        }
+        $sc = (string)$store->getCode();
+        $targetUrl = $store->getBaseUrl() . 'stores/store/redirect/___store/'
+            . $sc . '/___from_store/' . $storeCode . '/uenc/'
+            . strtr(base64_encode($currentUrl), '+/=', '-_,') . '/';
+        $storeRedirectUrls[$sc] = $targetUrl;
+    }
+} catch (\Exception $e) {}
+
+$gwlItemCount = 0;
+try {
+    $gwlHelper = $this->helper(\Magestall\GuestWishlist\Helper\Data::class);
+    $gwlItemCount = (int)$gwlHelper->getItemCount();
+} catch (\Exception $e) {}
+
+$iconUrl = $block->getViewFileUrl('images/icons');
+
+// Announcement bar CMS block
+$promotionHtml = '';
+try {
+    $promotionBlock = $block->getLayout()
+        ->createBlock(\Magento\Cms\Block\Block::class)
+        ->setBlockId('promotion_header');
+    $promotionHtml = trim((string)$promotionBlock->toHtml());
+} catch (\Exception $e) {}
+
+// Country configuration for region chooser
+$countries = [
+    ['code' => 'dk', 'name' => 'Denmark'],
+    ['code' => 'de', 'name' => 'Germany (DE)'],
+    ['code' => 'nl', 'name' => 'Netherlands'],
+    ['code' => 'at', 'name' => 'Austria'],
+    ['code' => 'pl', 'name' => 'Poland'],
+    ['code' => 'se', 'name' => 'Sweden'],
+    ['code' => 'ch', 'name' => 'Switzerland'],
+    ['code' => 'be', 'name' => 'Belgium'],
+    ['code' => 'it', 'name' => 'Italy'],
+    ['code' => 'fr', 'name' => 'France'],
+];
+?>
+<script>
+    function initHeader() {
+        return {
+            searchOpen: false,
+            cart: {},
+            isCartOpen: false,
+            mobileMenuOpen: false,
+            announcementDismissed: false,
+            regionChooserOpen: false,
+            selectedCountry: '<?= $escaper->escapeJs(substr($storeCode, 3, 2)) ?>',
+            selectedLanguage: '<?= $escaper->escapeJs(substr($storeCode, 0, 2)) ?>',
+            storeUrls: <?= /** @noEscape */ json_encode($storeRedirectUrls) ?>,
+            getData(data) { this.cart = data.cart ?? {}; },
+            summaryCount() { return this.cart.summary_count || 0; },
+            cartAriaLabel() {
+                return '<?= $escaper->escapeJs($showMiniCart ? __('Toggle minicart') : __('View cart')) ?>, ' +
+                    (this.isCartEmpty() ? '<?= $escaper->escapeJs(__('Cart is empty')) ?>' : (
+                        Math.abs(this.summaryCount()) > 1
+                            ? hyva.str('<?= $escaper->escapeJs(__('%1 items')) ?>', this.summaryCount())
+                            : hyva.str('<?= $escaper->escapeJs(__('%1 item')) ?>', this.summaryCount())
+                    ))
+            },
+            isCartEmpty() { return !this.cart.summary_count; },
+            toggleCart() {
+                this.isCartOpen = this.$event.detail?.isOpen ?? true;
+                this.$dispatch('toggle-cart', { isOpen: this.isCartOpen })
+            },
+            toggleSearch() {
+                this.searchOpen = !this.searchOpen;
+                if (this.searchOpen) this.$dispatch('search-open');
+            },
+            searchClose() { this.searchOpen = false; },
+            searchShortcut(e) {
+                const mod = /Mac|iPod|iPhone|iPad/.test(navigator.platform) ? e.metaKey : e.ctrlKey;
+                if (mod && e.key === 'k') { e.preventDefault(); this.searchOpen = true; this.$dispatch('search-open'); }
+            },
+            dismissAnnouncement() {
+                this.announcementDismissed = true;
+            },
+            openRegionChooser() {
+                this.regionChooserOpen = true;
+            },
+            closeRegionChooser() {
+                this.regionChooserOpen = false;
+            },
+            selectCountry(code) {
+                this.selectedCountry = code;
+                const availableLangs = this.getAvailableLanguages();
+                if (!availableLangs.includes(this.selectedLanguage)) {
+                    this.selectedLanguage = availableLangs[0] || 'en';
+                }
+            },
+            getAvailableLanguages() {
+                const langs = [];
+                const urls = this.storeUrls;
+                for (const key in urls) {
+                    if (key.endsWith('-' + this.selectedCountry)) {
+                        langs.push(key.substring(0, 2));
+                    }
+                }
+                return langs;
+            },
+            applyRegion() {
+                const storeCode = this.selectedLanguage + '-' + this.selectedCountry;
+                const url = this.storeUrls[storeCode];
+                if (url) {
+                    window.location.href = url;
+                }
+            }
+        }
+    }
+    window.addEventListener('alpine:init', () => { Alpine.data('initHeader', initHeader); }, { once: true })
+</script>
+<?php $hyvaCsp->registerInlineScript() ?>
+
+<div id="header"
+     class="ftc-header"
+     x-data="initHeader()"
+     @private-content-loaded.window="getData(event.detail.data)"
+>
+    <div class="ftc-header-inner">
+        <?php if ($promotionHtml): ?>
+        <!-- Announcement Bar -->
+        <header class="msg"
+                x-show="!announcementDismissed"
+                x-transition:leave="transition ease-in duration-300"
+                x-transition:leave-start="opacity-100 max-h-10"
+                x-transition:leave-end="opacity-0 max-h-0">
+            <div class="home-message">
+                <?= /** @noEscape */ $promotionHtml ?>
+            </div>
+            <div class="dismiss" @click="dismissAnnouncement()" role="button" aria-label="<?= $escaper->escapeHtmlAttr(__('Close')) ?>"></div>
+        </header>
+        <?php endif; ?>
+
+        <!-- Centered Logo -->
+        <div class="ftc-logo">
+            <?= $block->getChildHtml('logo'); ?>
+        </div>
+
+        <!-- Navigation + Icons row (overlaps logo via negative margin) -->
+        <div class="header-ftc-flex">
+            <!-- Left: Main Navigation -->
+            <div class="left-nav-section navigation-no-arrows">
+                <?= $block->getChildHtml('topmenu') ?>
+            </div>
+
+            <!-- Right: Store switcher + Icons -->
+            <div class="right-nav-section">
+                <span class="ftc-store-switcher" @click="openRegionChooser()" role="button" style="cursor:pointer;">
+                    <label class="<?= $escaper->escapeHtmlAttr($storeCode) ?>" style="cursor:pointer;"><?= $escaper->escapeHtml($storeName) ?></label>
+                    <label style="cursor:pointer;"><?= $escaper->escapeHtml($currencyCode) ?></label>
+                </span>
+
+                <!-- Inline search field (like original) -->
+                <div class="ftc-inline-search">
+                    <form class="form minisearch" action="<?= $escaper->escapeUrl($block->getUrl('catalogsearch/result')) ?>" method="get">
+                        <input type="text"
+                               name="q"
+                               placeholder="<?= $escaper->escapeHtmlAttr(__('Suchbegriff')) ?>"
+                               maxlength="128"
+                               autocomplete="off" />
+                        <button type="submit" aria-label="<?= $escaper->escapeHtmlAttr(__('Search')) ?>">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg>
+                        </button>
+                    </form>
+                </div>
+
+                <div class="ftc-shopcontrol account">
+                    <a href="<?= $escaper->escapeUrl($block->getUrl('customer/account')) ?>"
+                       aria-label="<?= $escaper->escapeHtmlAttr(__('Account')) ?>">
+                        <img id="accounticon"
+                             src="<?= $escaper->escapeUrl($iconUrl . '/account2.png') ?>"
+                             alt="" class="ftc-icon">
+                    </a>
+                </div>
+
+                <div class="ftc-shopcontrol wishlist">
+                    <a href="<?= $escaper->escapeUrl($block->getUrl('guestwishlist')) ?>"
+                       aria-label="<?= $escaper->escapeHtmlAttr(__('Wishlist')) ?>"
+                       class="relative inline-block">
+                        <img id="wishlisticon"
+                             src="<?= $escaper->escapeUrl($iconUrl . '/wishlist3.png') ?>"
+                             alt="" class="ftc-icon">
+                        <?php if ($gwlItemCount > 0) : ?>
+                        <span class="ftc-icon-counter"><?= (int)$gwlItemCount ?></span>
+                        <?php endif; ?>
+                    </a>
+                </div>
+
+                <div class="ftc-shopcontrol cart">
+                    <?php if ($showMiniCart): ?>
+                    <button @click="toggleCart" :aria-label="cartAriaLabel"
+                            :aria-expanded="isCartOpen" aria-haspopup="dialog"
+                            class="relative inline-block">
+                    <?php else: ?>
+                    <a href="<?= $escaper->escapeUrl($block->getUrl('checkout/cart/index')) ?>"
+                       aria-label="<?= $escaper->escapeHtmlAttr(__('View cart')) ?>"
+                       class="relative inline-block">
+                    <?php endif ?>
+                        <img id="carticon"
+                             src="<?= $escaper->escapeUrl($iconUrl . '/cart4.png') ?>"
+                             alt="" class="ftc-icon">
+                        <span class="ftc-icon-counter"
+                              x-text="summaryCount"
+                              x-show="summaryCount"
+                              x-cloak></span>
+                    <?php if ($showMiniCart): ?>
+                    </button>
+                    <?php else: ?>
+                    </a>
+                    <?php endif ?>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Region Chooser Overlay -->
+    <div class="region-chooser"
+         x-cloak
+         x-show="regionChooserOpen"
+         x-transition:enter="transition ease-out duration-200"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-150"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0">
+        <div class="region-chooser-inner" @click.outside="closeRegionChooser()">
+            <div class="close icon-button" @click="closeRegionChooser()" role="button" aria-label="<?= $escaper->escapeHtmlAttr(__('Close')) ?>"></div>
+            <h2 class="text-english" style="margin-bottom:10px; margin-top: 30px;">Please choose your delivery location</h2>
+            <h2 class="text-deutsch" style="margin-bottom:10px; margin-top: 30px;">Bitte wählen Sie Ihren Lieferort</h2>
+            <p class="text-english" style="text-align: center; margin-bottom: 20px;">* Be aware that you can not change the delivery country in the check-out.</p>
+            <p class="text-deutsch" style="text-align: center; margin-bottom: 20px;">* Beachten Sie, dass Sie das Versandland im Check-Out nicht mehr ändern können.</p>
+            <div class="countries">
+                <?php foreach ($countries as $country): ?>
+                <div class="<?= $escaper->escapeHtmlAttr($country['code']) ?> country"
+                     :class="{ 'active': selectedCountry === '<?= $escaper->escapeJs($country['code']) ?>' }"
+                     data-country="<?= $escaper->escapeHtmlAttr($country['code']) ?>"
+                     @click="selectCountry('<?= $escaper->escapeJs($country['code']) ?>')">
+                    <?= $escaper->escapeHtml($country['name']) ?>
+                </div>
+                <?php endforeach; ?>
+            </div>
+            <div class="languages" style="margin: 0 auto; float: none;">
+                <label>
+                    <span class="caption"><?= $escaper->escapeHtml(__('Language')) ?></span>
+                    <select x-model="selectedLanguage">
+                        <template x-for="lang in getAvailableLanguages()" :key="lang">
+                            <option :value="lang" x-text="lang === 'en' ? 'English' : lang === 'de' ? 'German' : lang === 'nl' ? 'Dutch' : lang.toUpperCase()"></option>
+                        </template>
+                    </select>
+                </label>
+            </div>
+            <div class="button-container" style="margin: 20px 0 0 0;">
+                <div class="apply" @click="applyRegion()" role="button"><?= $escaper->escapeHtml(__('Apply')) ?></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search overlay -->
+    <div class="ftc-search-overlay"
+         x-cloak x-show="searchOpen"
+         @click.outside="searchClose"
+         @keydown.escape="searchClose">
+        <?= $block->getChildHtml('header-search'); ?>
+    </div>
+
+    <!-- Cart Drawer -->
+    <?= $block->getChildHtml('cart-drawer'); ?>
+    <!-- Auth Popup -->
+    <?= $block->getChildHtml('authentication-popup'); ?>
+</div>

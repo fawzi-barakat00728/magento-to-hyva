@@ -1,0 +1,62 @@
+<?php
+/**
+ * Hyvä Child Theme — Footer with Original CMS Block Content
+ * Renders the footer_areas CMS block (same as Luma original)
+ * Adds newsletter subscription form matching original design
+ */
+declare(strict_types=1);
+
+use Magento\Framework\View\Element\Template;
+use Magento\Framework\Escaper;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+
+$formAction = $escaper->escapeUrl(
+    $block->getUrl('newsletter/subscriber/new', ['_secure' => true])
+);
+?>
+<?= $block->getLayout()
+    ->createBlock(\Magento\Cms\Block\Block::class)
+    ->setBlockId('footer_areas')
+    ->toHtml(); ?>
+<div class="footer-copyright-row">
+    <div class="area bottom">
+        <?= $block->getChildHtml('copyright') ?>
+    </div>
+</div>
+<div id="footer-newsletter-src" style="display:none">
+    <div class="block newsletter">
+        <div class="content">
+            <form class="form subscribe" novalidate
+                  action="<?= $formAction ?>" method="post"
+                  id="newsletter-validate-detail">
+                <?= $block->getBlockHtml('formkey') ?>
+                <div class="field newsletter">
+                    <div class="control">
+                        <input name="email" type="email" id="newsletter-footer"
+                               placeholder="<?= $escaper->escapeHtmlAttr(__('E-Mail-Adresse')) ?>"
+                               required />
+                    </div>
+                </div>
+                <div class="actions">
+                    <button class="action subscribe primary"
+                            title="<?= $escaper->escapeHtmlAttr(__('Abonnieren')) ?>"
+                            type="submit">
+                        <span><?= $escaper->escapeHtml(__('Abonnieren')) ?></span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    (function() {
+        var target = document.querySelector('.page-footer .newsletter.section');
+        var source = document.getElementById('footer-newsletter-src');
+        if (target && source) {
+            target.appendChild(source.firstElementChild);
+            source.remove();
+        }
+    })();
+</script>

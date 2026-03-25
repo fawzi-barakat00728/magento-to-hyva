@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+        <script src="js/require-shim.js"/>
+        <css src="css/fonts.css"/>
+        <css src="css/luma-compat.css"/>
+        <css src="css/design-fixes.css"/>
+        <!-- Remove legacy CSS not needed in Hyva -->
+        <remove src="Amasty_InstagramFeed::vendor/fancybox/jquery.fancyambox.min.css"/>
+        <remove src="Amasty_LibSwiperJs::vendor/swiper/swiper.min.css"/>
+        <remove src="Mageplaza_Core::css/owl.carousel.css"/>
+        <remove src="Mageplaza_Core::css/owl.theme.css"/>
+        <remove src="Magestall_GuestWishlist::css/guestwishlist.css"/>
+        <remove src="Mageplaza_Core::css/magnific-popup.css"/>
+    </head>
+</page>

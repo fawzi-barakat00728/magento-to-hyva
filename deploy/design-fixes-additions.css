@@ -1,0 +1,290 @@
+
+/* =====================================================
+   16. GLOBAL — Prevent horizontal scroll
+   ===================================================== */
+html,
+body {
+    overflow-x: hidden !important;
+}
+
+
+/* =====================================================
+   17. HEADER — Full-width navigation (match original)
+   Original .ftc-header-inner has NO max-width.
+   Navigation takes full viewport width with 100px padding.
+   (Ref: header.less:1179-1235, 1851-1870)
+   ===================================================== */
+.ftc-header-inner {
+    max-width: none !important;
+}
+
+/* Navigation inner div padding (header.less:1222-1235) */
+.left-nav-section .navigation > div {
+    padding-left: 100px !important;
+    padding-right: 100px !important;
+}
+
+@media (max-width: 1200px) {
+    .left-nav-section .navigation > div {
+        padding-left: 40px !important;
+        padding-right: 40px !important;
+    }
+}
+
+
+/* =====================================================
+   18. CATEGORY PAGE — 4-column product grid
+   Override Hyvä Tailwind classes (xl:grid-cols-3 → 4).
+   Original: product-item width: calc(25% - 3px), gap 4px.
+   (Ref: category.less:254-280)
+   ===================================================== */
+
+/* FIX: .products-grid wrapper applies 4-col grid from luma-compat,
+   squeezing the inner <ol> to 25% width. Override to block. */
+.catalog-category-view .products-grid,
+.catalogsearch-result-index .products-grid {
+    display: block !important;
+    grid-template-columns: none !important;
+}
+
+/* Force 4 columns on the <ol> inside .products-grid */
+.catalog-category-view .products-grid > ol,
+.catalogsearch-result-index .products-grid > ol {
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 4px !important;
+    padding-top: 0 !important;
+}
+
+@media (max-width: 1024px) {
+    .catalog-category-view .products-grid > ol,
+    .catalogsearch-result-index .products-grid > ol {
+        grid-template-columns: repeat(3, 1fr) !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .catalog-category-view .products-grid > ol,
+    .catalogsearch-result-index .products-grid > ol {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 6px !important;
+    }
+}
+
+/* Category page full-width columns */
+.catalog-category-view .columns,
+.catalogsearch-result-index .columns {
+    width: 100% !important;
+    max-width: 100% !important;
+    border-top: 1px solid #eee;
+}
+
+/* Center the product content within max-width */
+.catalog-category-view .column.main,
+.catalogsearch-result-index .column.main {
+    max-width: 1540px !important;
+    margin: 0 auto !important;
+    padding: 20px 20px 40px !important;
+}
+
+/* Product items — no extra padding on grid items */
+.catalog-category-view .products-grid > ol > li,
+.catalogsearch-result-index .products-grid > ol > li {
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+/* Category toolbar — centered, matching original */
+.catalog-category-view .toolbar,
+.catalogsearch-result-index .toolbar {
+    font-family: "KorpusGrotesk-B", sans-serif !important;
+    text-transform: uppercase !important;
+    font-size: 13px !important;
+    letter-spacing: 0.5px !important;
+}
+
+/* Wishlist heart button visible on hover */
+.catalog-category-view .product-item .absolute.top-2.right-2,
+.catalog-category-view .products-grid li .absolute.top-2.right-2 {
+    opacity: 0;
+    transition: opacity 300ms;
+}
+.catalog-category-view .product-item:hover .absolute.top-2.right-2,
+.catalog-category-view .products-grid li:hover .absolute.top-2.right-2 {
+    opacity: 1;
+}
+
+/* Category description / CMS block area */
+.catalog-category-view .category-description,
+.catalog-category-view .category-cms {
+    max-width: 1540px !important;
+    margin: 0 auto !important;
+    padding: 40px 20px !important;
+    text-align: center !important;
+}
+
+
+/* =====================================================
+   19. LOGIN PAGE — Two-column layout
+   Original: login + register side by side, 50/50
+   (Ref: account.less:58-190)
+   ===================================================== */
+
+/* Hide default page title */
+.customer-account-login .page-title {
+    display: none !important;
+}
+
+/* Two-column flex container */
+.customer-account-login .column.main {
+    max-width: 1540px !important;
+    margin: 0 auto !important;
+    display: flex !important;
+    flex-wrap: wrap !important;
+    padding: 80px 20px !important;
+}
+
+@media (max-width: 1540px) {
+    .customer-account-login .column.main {
+        max-width: 100% !important;
+    }
+}
+
+/* Both column children: 50% width */
+.customer-account-login .column.main > div {
+    width: 50% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+}
+
+/* Login container (left column) */
+.customer-account-login .login-container {
+    padding-right: 10px !important;
+}
+
+.customer-account-login .login-container .block-customer-login {
+    max-width: none !important;
+    margin: 0 !important;
+}
+
+/* Register form (right column) */
+.customer-account-login .column.main > div:not(.login-container) {
+    padding-left: 10px !important;
+    max-width: none !important;
+    margin: 0 !important;
+}
+
+/* Block headings — gray strip (account.less:83-92) */
+.customer-account-login .block-title {
+    margin-bottom: 13px !important;
+    border-bottom: none !important;
+}
+
+.customer-account-login .block-title h2,
+.customer-account-login .section-title,
+.customer-account-login legend {
+    display: block !important;
+    height: 60px !important;
+    line-height: 30px !important;
+    padding: 15px 20px !important;
+    border-bottom: none !important;
+    background-color: #f8f8f8 !important;
+    font-family: "KorpusGrotesk-B", sans-serif !important;
+    font-size: 24px !important;
+    text-transform: uppercase !important;
+    margin: 0 !important;
+}
+
+/* Form fields area padding */
+.customer-account-login fieldset {
+    padding: 0 20px !important;
+}
+
+.customer-account-login fieldset::after {
+    display: none !important;
+}
+
+/* Field labels (account.less:122-125) */
+.customer-account-login .field label {
+    margin: 0 0 5px 0 !important;
+    font-size: 14px !important;
+    font-weight: normal !important;
+}
+
+/* Input fields — 40px height, black border (account.less:127-132) */
+.customer-account-login input:not([type="checkbox"]):not([type="hidden"]):not([type="submit"]):not([type="button"]) {
+    width: 100% !important;
+    height: 40px !important;
+    margin: 0 0 10px 0 !important;
+    border: 1px solid #111 !important;
+    font-size: 20px !important;
+    border-radius: 0 !important;
+}
+
+/* Forgot password link (account.less:138-149) */
+.customer-account-login a[href*="forgotpassword"],
+.customer-account-login a[href*="Forgot"] {
+    opacity: 0.8;
+    display: block !important;
+    margin: 0 0 39px 0 !important;
+    text-align: right !important;
+    color: #111 !important;
+    transition: opacity 300ms !important;
+    font-size: 14px !important;
+}
+
+.customer-account-login a[href*="forgotpassword"]:hover {
+    opacity: 1;
+}
+
+/* Submit buttons — full width, 70px, black (account.less:151-163) */
+.customer-account-login button[type="submit"],
+.customer-account-login .btn-primary {
+    width: 100% !important;
+    height: 70px !important;
+    border: none !important;
+    border-radius: 0 !important;
+    background-color: #111 !important;
+    color: #fff !important;
+    text-transform: uppercase !important;
+    font-weight: normal !important;
+    font-size: 15px !important;
+    letter-spacing: 0.15em !important;
+    transition: opacity 300ms !important;
+    cursor: pointer !important;
+}
+
+.customer-account-login button[type="submit"]:hover,
+.customer-account-login .btn-primary:hover {
+    opacity: 0.9 !important;
+}
+
+/* Required fields note */
+.customer-account-login .required-fields {
+    margin: 15px 0 100px 0 !important;
+    text-align: right !important;
+}
+
+.customer-account-login .required-fields span {
+    color: #f3633c !important;
+}
+
+/* Mobile: stack columns */
+@media (max-width: 768px) {
+    .customer-account-login .column.main > div {
+        width: 100% !important;
+        padding: 0 !important;
+    }
+
+    .customer-account-login .column.main {
+        padding: 40px 15px !important;
+    }
+
+    .customer-account-login .login-container {
+        padding-right: 0 !important;
+        margin-bottom: 30px !important;
+    }
+
+    .customer-account-login .column.main > div:not(.login-container) {
+        padding-left: 0 !important;
+    }
+}

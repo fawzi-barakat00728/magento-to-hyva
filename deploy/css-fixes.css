@@ -1,0 +1,23 @@
+
+
+/* === Additional fixes === */
+
+/* Hide 'So niedrig wie:' / 'As low as:' price label */
+.catalog-product-view .price-label {
+    display: none;
+}
+
+/* Hide orphaned product-social-links outside product section */
+.catalog-product-view .column.main > .product-social-links {
+    display: none;
+}
+
+/* Hide default breadcrumbs on product page - they render above product section */
+.catalog-product-view nav.breadcrumbs {
+    display: none;
+}
+
+/* Hide short description if still visible */
+.catalog-product-view .product.attribute.overview {
+    display: none;
+}

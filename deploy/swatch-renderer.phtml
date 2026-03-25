@@ -1,0 +1,183 @@
+<?php
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes. All rights reserved.
+ * See COPYING.txt for license details.
+ *
+ * OVERRIDE: Auto-select first visual swatch option + getSwatchProductImage method
+ */
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\SwatchRenderer;
+use Magento\Framework\Escaper;
+use Magento\Swatches\Block\Product\Renderer\Configurable;
+use Magento\Swatches\ViewModel\Product\Renderer\Configurable as ConfigurableViewModel;
+
+// phpcs:disable Generic.Files.LineLength.TooLong
+
+/** @var Configurable $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var ConfigurableViewModel $configurableViewModel */
+$configurableViewModel = $viewModels->require(ConfigurableViewModel::class);
+
+/** @var SwatchRenderer $swatchRendererViewModel */
+$swatchRendererViewModel = $viewModels->require(SwatchRenderer::class);
+
+$product = $block->getProduct();
+$productId = $product->getId();
+
+$attributes = $block->decorateArray($block->getAllowAttributes());
+
+$layout = $block->getLayout();
+$swatchItemBlock = $layout->getBlock('product.swatch.item');
+$swatchItemBlock->setData('product_id', $productId);
+
+$tooltipBlockHtml = $block->getBlockHtml('product.swatch.tooltip');
+?>
+<?php if ($product->isSaleable() && count($attributes)): ?>
+    <script>
+        function initConfigurableSwatchOptions_<?= (int) $productId ?>() {
+            const configurableOptionsComponent = initConfigurableOptions(
+                '<?= (int) $productId ?>',
+                <?= /* @noEscape */ $block->getJsonConfig() ?>
+            );
+            const swatchOptionsComponent = initSwatchOptions(
+                <?= /* @noEscape */ $block->getJsonSwatchConfig() ?>
+            );
+
+            const merged = Object.assign(
+                configurableOptionsComponent,
+                swatchOptionsComponent
+            );
+
+            // Add method to get product image for a swatch option
+            // Uses the last gallery image (typically the flat/product group shot "pfg")
+            // to match the original site behavior
+            merged.getSwatchProductImage = function(attributeId, optionId) {
+                const attrs = this.optionConfig && this.optionConfig.attributes;
+                if (!attrs || !attrs[attributeId]) return '';
+                const option = attrs[attributeId].options.find(o => o.id === optionId);
+                if (!option || !option.products || !option.products.length) return '';
+                const productId = option.products[0];
+                const images = this.optionConfig.images && this.optionConfig.images[productId];
+                if (!images || !images.length) return '';
+                // Use the last image (highest position = flat/product group shot)
+                const lastImg = images[images.length - 1];
+                return lastImg.thumb || lastImg.img || '';
+            };
+
+            // Override init to auto-select first visual swatch option
+            const originalInit = merged.init;
+            merged.init = function() {
+                originalInit.call(this);
+                this.$nextTick(() => {
+                    // Auto-select first option for each visual swatch attribute
+                    const attrs = this.optionConfig && this.optionConfig.attributes;
+                    if (attrs) {
+                        const sortedAttrs = Object.values(attrs).sort((a, b) => a.position - b.position);
+                        for (const attr of sortedAttrs) {
+                            // Only auto-select visual swatches (color type), not dropdowns
+                            const swatchType = this.getSwatchType
+                                ? this.getSwatchType(attr.id, attr.options[0] && attr.options[0].id)
+                                : null;
+                            if (swatchType === 'color' || swatchType === 'image') {
+                                const allowed = this.getAllowedAttributeOptions(attr.id);
+                                if (allowed && allowed.length > 0 && !this.selectedValues[attr.id]) {
+                                    this.changeOption(attr.id, allowed[0].id);
+                                }
+                            }
+                        }
+                    }
+                });
+            };
+
+            return merged;
+        }
+    </script>
+
+    <div x-data="initConfigurableSwatchOptions_<?= (int) $productId ?>()"
+         @private-content-loaded.window="onGetCartData($event.detail.data)"
+         class="relative mb-6"
+         x-defer="intersect"
+    >
+        <h2 class="mb-4 text-xl font-medium text-gray-900 title-font">
+            <?= $escaper->escapeHtml(__('Product Options:')) ?>
+        </h2>
+        <div>
+            <?php foreach ($attributes as $attribute): ?>
+                <?php $attributeId = $attribute->getAttributeId(); ?>
+                <?php $productAttribute = $attribute->getProductAttribute();  ?>
+                <?php if ($swatchRendererViewModel->isSwatchAttribute($productAttribute)): ?>
+                    <div class="swatch-attribute border-t last:border-b border-gray-300 min-h-14
+                            <?= $escaper->escapeHtmlAttr($productAttribute->getAttributeCode()) ?>">
+                        <div class="flex flex-col sm:flex-row items-center py-4 sm:py-1 w-full border-gray-300">
+                            <label
+                                class="w-full sm:w-1/2 text-left text-gray-700 label product-option-label"
+                                id="attribute-label-<?= $escaper->escapeHtmlAttr($productId . '-' . $attributeId) ?>"
+                                aria-hidden="true"
+                            >
+                                <span><?= $escaper->escapeHtml($productAttribute->getStoreLabel()) ?></span>
+                                <span
+                                    class="text-gray-900 ml-2 font-bold"
+                                    x-text="getSwatchText(<?= (int) $attributeId ?>, selectedValues[<?= (int) $attributeId ?>])"
+                                ></span>
+                            </label>
+                            <div class="w-full sm:ml-2 sm:w-1/2 text-left text-gray-900 product-option-values">
+                                <div
+                                     class="flex items-center -mx-1 space-x-4 swatch-attribute-options"
+                                     role="radiogroup"
+                                     aria-label="<?= $escaper->escapeHtmlAttr($productAttribute->getStoreLabel()) ?>"
+                                >
+                                    <template
+                                        x-for="(item, index) in optionConfig.attributes[<?= (int) $attributeId ?>].options"
+                                        :key="item.id"
+                                    >
+                                        <?= /* @noEscape */ $swatchItemBlock->setData('attribute_id', $attributeId)->toHtml(); ?>
+                                    </template>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <?php else: ?>
+                    <div class="flex flex-col sm:flex-row items-center py-2 w-full border-t border-gray-300 last:border-b">
+                        <label class="w-full sm:w-1/2 text-left text-gray-700 label"
+                               for="attribute<?= $escaper->escapeHtmlAttr($attributeId) ?>"
+                        >
+                            <span>
+                                <?= $escaper->escapeHtml($attribute->getProductAttribute()->getStoreLabel()) ?>
+                            </span>
+                        </label>
+                        <div class="w-full sm:ml-2 sm:w-1/2 text-left text-gray-900">
+                            <select name="super_attribute[<?= $escaper->escapeHtmlAttr($attribute->getAttributeId()) ?>]"
+                                    id="attribute<?= $escaper->escapeHtmlAttr($attributeId) ?>"
+                                    class="form-select super-attribute-select max-w-full"
+                                    x-on:change="changeOption(<?= (int) $attributeId ?>, event.target.value)"
+                                    required>
+                                <option value="">
+                                    <?= $escaper->escapeHtml(__('Choose an Option...')) ?>
+                                </option>
+                                <template
+                                    x-for="(item, index) in getAllAttributeOptions(<?= (int) $attributeId ?>)"
+                                    :key="item.id"
+                                >
+                                    <template x-if="optionIsEnabled(<?= (int) $attributeId ?>, item.id)">
+                                        <option
+                                            :value="item.id"
+                                            x-html="item.label"
+                                            :disabled="!optionIsActive(<?= (int) $attributeId ?>, item.id)"
+                                            :selected="selectedValues[<?= $escaper->escapeHtmlAttr($attributeId) ?>] === item.id">
+                                        </option>
+                                    </template>
+                                </template>
+                            </select>
+                        </div>
+                    </div>
+                <?php endif; ?>
+            <?php endforeach; ?>
+        </div>
+        <?= /* @noEscape */ $tooltipBlockHtml ?>
+    </div>
+
+<?php endif;?>

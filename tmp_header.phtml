@@ -1,0 +1,178 @@
+<?php
+/**
+ * Hyvä Theme — FTC Cashmere Header
+ * Layout: Centered logo, navigation overlapping below, icons right
+ * Matches production: shop.ftc-cashmere.com
+ */
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\HyvaCsp;
+use Hyva\Theme\ViewModel\StoreConfig;
+use Magento\Checkout\Block\Cart\Sidebar as SidebarCart;
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+
+/** @var Escaper $escaper */
+/** @var Template $block */
+/** @var ViewModelRegistry $viewModels */
+/** @var HyvaCsp $hyvaCsp */
+
+$storeConfig = $viewModels->require(StoreConfig::class);
+$showMiniCart = $storeConfig->getStoreConfig(SidebarCart::XML_PATH_CHECKOUT_SIDEBAR_DISPLAY);
+
+$storeName = 'DE';
+$currencyCode = 'EUR';
+$storeCode = 'de-de';
+try {
+    $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+    $storeManagerObj = $objectManager->get(\Magento\Store\Model\StoreManagerInterface::class);
+    $currentStore = $storeManagerObj->getStore();
+    $storeName = strtoupper(substr((string)$currentStore->getCode(), 0, 2));
+    $currencyCode = (string)$currentStore->getCurrentCurrencyCode();
+    $storeCode = (string)$currentStore->getCode();
+} catch (\Exception $e) {}
+
+$gwlItemCount = 0;
+try {
+    $gwlHelper = $this->helper(\Magestall\GuestWishlist\Helper\Data::class);
+    $gwlItemCount = (int)$gwlHelper->getItemCount();
+} catch (\Exception $e) {}
+
+$iconUrl = $block->getViewFileUrl('images/icons');
+$flagUrl = $block->getViewFileUrl('images/flags');
+?>
+<script>
+    function initHeader() {
+        return {
+            searchOpen: false,
+            cart: {},
+            isCartOpen: false,
+            mobileMenuOpen: false,
+            getData(data) { this.cart = data.cart ?? {}; },
+            summaryCount() { return this.cart.summary_count || 0; },
+            cartAriaLabel() {
+                return '<?= $escaper->escapeJs($showMiniCart ? __('Toggle minicart') : __('View cart')) ?>, ' +
+                    (this.isCartEmpty() ? '<?= $escaper->escapeJs(__('Cart is empty')) ?>' : (
+                        Math.abs(this.summaryCount()) > 1
+                            ? hyva.str('<?= $escaper->escapeJs(__('%1 items')) ?>', this.summaryCount())
+                            : hyva.str('<?= $escaper->escapeJs(__('%1 item')) ?>', this.summaryCount())
+                    ))
+            },
+            isCartEmpty() { return !this.cart.summary_count; },
+            toggleCart() {
+                this.isCartOpen = this.$event.detail?.isOpen ?? true;
+                this.$dispatch('toggle-cart', { isOpen: this.isCartOpen })
+            },
+            toggleSearch() {
+                this.searchOpen = !this.searchOpen;
+                if (this.searchOpen) this.$dispatch('search-open');
+            },
+            searchClose() { this.searchOpen = false; },
+            searchShortcut(e) {
+                const mod = /Mac|iPod|iPhone|iPad/.test(navigator.platform) ? e.metaKey : e.ctrlKey;
+                if (mod && e.key === 'k') { e.preventDefault(); this.searchOpen = true; this.$dispatch('search-open'); }
+            }
+        }
+    }
+    window.addEventListener('alpine:init', () => { Alpine.data('initHeader', initHeader); }, { once: true })
+</script>
+<?php $hyvaCsp->registerInlineScript() ?>
+
+<div id="header"
+     class="ftc-header"
+     x-data="initHeader()"
+     @private-content-loaded.window="getData(event.detail.data)"
+>
+    <div class="ftc-header-inner">
+        <!-- Centered Logo -->
+        <div class="ftc-logo">
+            <?= $block->getChildHtml('logo'); ?>
+        </div>
+
+        <!-- Navigation + Icons row (overlaps logo via negative margin) -->
+        <div class="header-ftc-flex">
+            <!-- Left: Main Navigation -->
+            <div class="left-nav-section navigation-no-arrows">
+                <?= $block->getChildHtml('topmenu') ?>
+            </div>
+
+            <!-- Right: Store switcher + Icons -->
+            <div class="right-nav-section">
+                <span class="ftc-store-switcher">
+                    <label class="<?= $escaper->escapeHtmlAttr($storeCode) ?>"><?= $escaper->escapeHtml($storeName) ?></label>
+                    <label><?= $escaper->escapeHtml($currencyCode) ?></label>
+                </span>
+
+                <div class="ftc-shopcontrol search">
+                    <button @click.prevent="toggleSearch"
+                            @keydown.window="searchShortcut"
+                            aria-label="<?= $escaper->escapeHtmlAttr(__('Search')) ?>"
+                            :aria-expanded="searchOpen">
+                        <img src="<?= $escaper->escapeUrl($iconUrl . '/search.png') ?>"
+                             alt="" class="ftc-icon">
+                    </button>
+                </div>
+
+                <div class="ftc-shopcontrol account">
+                    <a href="<?= $escaper->escapeUrl($block->getUrl('customer/account')) ?>"
+                       aria-label="<?= $escaper->escapeHtmlAttr(__('Account')) ?>">
+                        <img id="accounticon"
+                             src="<?= $escaper->escapeUrl($iconUrl . '/account2.png') ?>"
+                             alt="" class="ftc-icon">
+                    </a>
+                </div>
+
+                <div class="ftc-shopcontrol wishlist">
+                    <a href="<?= $escaper->escapeUrl($block->getUrl('guestwishlist')) ?>"
+                       aria-label="<?= $escaper->escapeHtmlAttr(__('Wishlist')) ?>"
+                       class="relative inline-block">
+                        <img id="wishlisticon"
+                             src="<?= $escaper->escapeUrl($iconUrl . '/wishlist3.png') ?>"
+                             alt="" class="ftc-icon">
+                        <?php if ($gwlItemCount > 0) : ?>
+                        <span class="ftc-icon-counter"><?= (int)$gwlItemCount ?></span>
+                        <?php endif; ?>
+                    </a>
+                </div>
+
+                <div class="ftc-shopcontrol cart">
+                    <?php if ($showMiniCart): ?>
+                    <button @click="toggleCart" :aria-label="cartAriaLabel"
+                            :aria-expanded="isCartOpen" aria-haspopup="dialog"
+                            class="relative inline-block">
+                    <?php else: ?>
+                    <a href="<?= $escaper->escapeUrl($block->getUrl('checkout/cart/index')) ?>"
+                       aria-label="<?= $escaper->escapeHtmlAttr(__('View cart')) ?>"
+                       class="relative inline-block">
+                    <?php endif ?>
+                        <img id="carticon"
+                             src="<?= $escaper->escapeUrl($iconUrl . '/cart4.png') ?>"
+                             alt="" class="ftc-icon">
+                        <span class="ftc-icon-counter"
+                              x-text="summaryCount"
+                              x-show="summaryCount"
+                              x-cloak></span>
+                    <?php if ($showMiniCart): ?>
+                    </button>
+                    <?php else: ?>
+                    </a>
+                    <?php endif ?>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search overlay -->
+    <div class="ftc-search-overlay"
+         x-cloak x-show="searchOpen"
+         @click.outside="searchClose"
+         @keydown.escape="searchClose">
+        <?= $block->getChildHtml('header-search'); ?>
+    </div>
+
+    <!-- Cart Drawer -->
+    <?= $block->getChildHtml('cart-drawer'); ?>
+    <!-- Auth Popup -->
+    <?= $block->getChildHtml('authentication-popup'); ?>
+</div>

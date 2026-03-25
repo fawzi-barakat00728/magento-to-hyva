@@ -1,0 +1,75 @@
+
+/* ============================================================
+   ANNOUNCEMENT BAR (promotion_header CMS block)
+   ============================================================ */
+header.msg {
+    position: relative;
+    z-index: 3;
+    height: 30px;
+    overflow: hidden;
+    transition: height 450ms, opacity 300ms;
+    background: #f9f7f8;
+}
+header.msg .home-message {
+    padding: 6px 0 3px 0;
+    color: #ad8b70;
+    text-align: center;
+    text-transform: uppercase;
+    font-size: 12px;
+    font-family: "KorpusGrotesk-B", sans-serif;
+    letter-spacing: 0.05em;
+}
+header.msg .home-message p {
+    margin: 0;
+}
+header.msg .home-message a {
+    color: #ad8b70;
+    text-decoration: none;
+}
+header.msg .home-message a:hover {
+    text-decoration: underline;
+}
+header.msg .home-message .slide {
+    display: inline;
+}
+header.msg .dismiss {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    opacity: 0.5;
+}
+header.msg .dismiss:hover {
+    opacity: 1;
+}
+header.msg .dismiss::before,
+header.msg .dismiss::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 12px;
+    height: 1.5px;
+    background: #ad8b70;
+}
+header.msg .dismiss::before {
+    transform: translate(-50%, -50%) rotate(45deg);
+}
+header.msg .dismiss::after {
+    transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+@media (max-width: 768px) {
+    header.msg {
+        height: 40px;
+    }
+    header.msg .home-message {
+        padding: 9px 40px 0 15px;
+        text-align: left;
+        font-size: 11px;
+        line-height: 1.3;
+    }
+}

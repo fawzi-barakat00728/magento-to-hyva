@@ -1,0 +1,84 @@
+<?php
+/**
+ * Hyvä Theme — FTC Cashmere Product Detail Page
+ * Layout: 60% gallery (with vertical thumbs) | 40% info (breadcrumbs + product info + accordion)
+ */
+
+declare(strict_types=1);
+
+use Magento\Catalog\Block\Product\View;
+use Magento\Framework\Escaper;
+
+/** @var View $block */
+/** @var Escaper $escaper */
+
+$product = $block->getProduct();
+/** @var \Magento\Store\Model\StoreManagerInterface $storeManager */
+$storeManager = \Magento\Framework\App\ObjectManager::getInstance()->get(\Magento\Store\Model\StoreManagerInterface::class);
+$mediaUrl = $storeManager->getStore()->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA) . 'cms/About/';
+?>
+
+<section
+    class="product-detail-page"
+    aria-label="<?= $escaper->escapeHtmlAttr(__('Product Info')) ?>"
+>
+    <div class="product-media-column">
+        <?= $block->getChildHtml('product.media') ?>
+    </div>
+    <div class="product-info-column">
+        <div class="ftc-breadcrumbs">
+            <a href="<?= $escaper->escapeUrl($block->getUrl('')) ?>">Home</a>
+            <span class="sep">&rsaquo;</span>
+            <span><?= $escaper->escapeHtml($product->getName()) ?></span>
+        </div>
+        <?= $block->getChildHtml('product.info') ?>
+        <?= $block->getChildHtml('product.info.details') ?>
+    </div>
+</section>
+
+<section class="ftc-discover-section">
+    <h3 class="ftc-discover-title">
+        <a href="<?= $escaper->escapeUrl($block->getUrl('cashmerecare/kaschmir-pflege.html')) ?>">DISCOVER OUR ESSENCE COLLECTION</a>
+    </h3>
+    <div class="ftc-discover-grid">
+        <div class="ftc-discover-item">
+            <a href="<?= $escaper->escapeUrl($block->getUrl('cashmerecare/kaschmir-pflege.html')) ?>">
+                <img src="<?= $escaper->escapeUrl($mediaUrl . 'TheEssenceCollection_FTC__small.jpg') ?>"
+                     alt="Essence Collection" loading="lazy" width="300" height="300">
+            </a>
+            <p>Care for what you love</p>
+        </div>
+        <div class="ftc-discover-item">
+            <a href="<?= $escaper->escapeUrl($block->getUrl('00009-0615-organic-cashmere-wash.html')) ?>">
+                <img src="<?= $escaper->escapeUrl($mediaUrl . '00009-0615_756_mf1.jpg') ?>"
+                     alt="Organic Cashmere Wash" loading="lazy" width="300" height="300">
+            </a>
+            <p>Organic Cashmere Wash</p>
+        </div>
+        <div class="ftc-discover-item">
+            <a href="<?= $escaper->escapeUrl($block->getUrl('00009-0616-organic-cashmere-wash-refill.html')) ?>">
+                <img src="<?= $escaper->escapeUrl($mediaUrl . '00009-0616_756_mf1.jpg') ?>"
+                     alt="Organic Cashmere Wash Refill" loading="lazy" width="300" height="300">
+            </a>
+            <p>Organic Cashmere Wash Refill</p>
+        </div>
+        <div class="ftc-discover-item">
+            <a href="<?= $escaper->escapeUrl($block->getUrl('00009-0606-essential-heart-bundle.html')) ?>">
+                <img src="<?= $escaper->escapeUrl($mediaUrl . 'Heart_grainsmall.jpg') ?>"
+                     alt="Essential Heart Bundle" loading="lazy" width="300" height="300">
+            </a>
+            <p>Essential Heart Bundle</p>
+        </div>
+    </div>
+</section>
+
+<?= $block->getChildHtml('product_options_wrapper_bottom') ?>
+
+<?= $block->getChildHtml('related') ?>
+
+<?= $block->getChildHtml('upsell') ?>
+
+<section aria-label="<?= $escaper->escapeHtmlAttr(__('Product Reviews')) ?>">
+    <?= $block->getChildHtml('review_list') ?>
+    <?= $block->getChildHtml('review_form') ?>
+</section>

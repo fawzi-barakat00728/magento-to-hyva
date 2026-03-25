@@ -1,0 +1,264 @@
+
+/* =========================================
+   PRODUCT PAGE LAYOUT — FTC Production Match
+   ========================================= */
+
+/* === Page Layout: 60% media | 40% info === */
+.catalog-product-view .product-detail-page {
+    display: flex;
+    gap: 40px;
+    max-width: 1540px;
+    margin: 0 auto;
+    padding: 20px;
+}
+.product-media-column {
+    width: 60%;
+    flex-shrink: 0;
+}
+.product-info-column {
+    width: 40%;
+    min-width: 0;
+}
+
+/* === Gallery: vertical thumbnails on the LEFT === */
+@media (min-width: 769px) {
+    #gallery > div {
+        display: flex !important;
+        flex-direction: row !important;
+        gap: 12px;
+    }
+    /* Thumbnail wrapper (last child) goes to left */
+    #gallery > div > div:last-child {
+        order: -1;
+        width: 80px;
+        flex-shrink: 0;
+    }
+    /* Main image area fills remaining */
+    #gallery > div > div:first-child {
+        flex: 1;
+        min-width: 0;
+    }
+    /* Thumbnails nav vertical */
+    #thumbs {
+        flex-direction: column !important;
+        min-height: auto !important;
+        gap: 8px !important;
+        align-items: flex-start !important;
+    }
+    .js_thumbs_slides {
+        flex-direction: column !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        max-height: 700px;
+        width: 80px !important;
+    }
+    .js_thumbs_slide {
+        margin-right: 0 !important;
+        margin-bottom: 0 !important;
+        width: 80px;
+    }
+    .js_thumbs_slide img {
+        width: 80px;
+        height: auto;
+    }
+    /* Hide prev/next arrows for vertical thumbs */
+    #thumbs > button {
+        display: none !important;
+    }
+    /* Remove bottom margin on main gallery */
+    #gallery-main {
+        margin-bottom: 0 !important;
+    }
+}
+
+/* === Breadcrumbs inside info column === */
+.product-info-column .breadcrumbs {
+    margin-bottom: 16px;
+    padding: 0;
+}
+.product-info-column .breadcrumbs .items {
+    font-size: 12px;
+    color: #666;
+}
+.product-info-column .breadcrumbs a {
+    color: #666;
+    text-decoration: none;
+}
+.product-info-column .breadcrumbs a:hover {
+    color: #000;
+}
+.product-info-column .breadcrumbs .item:not(:last-child)::after {
+    content: " › ";
+    margin: 0 4px;
+    color: #999;
+}
+
+/* === Product Info Main === */
+.product-info-main {
+    padding: 0;
+}
+
+/* Remove card styling */
+.catalog-product-view .product-info-main .card,
+.catalog-product-view .product-info-column .card {
+    border: none;
+    box-shadow: none;
+    padding: 0;
+    background: transparent;
+}
+
+/* Product title */
+.catalog-product-view .page-title span {
+    font-family: "Korpus-B", serif;
+    font-size: 24px;
+    font-weight: normal;
+    text-transform: uppercase;
+    color: #000;
+    letter-spacing: 0.03em;
+}
+
+/* SKU */
+.product-info-stock-sku {
+    font-family: "KorpusGrotesk-B", sans-serif;
+    font-size: 12px;
+    color: #666;
+    letter-spacing: 0.05em;
+    margin: 4px 0 16px;
+}
+
+/* === Price === */
+.product-info-price {
+    margin-bottom: 4px;
+}
+.catalog-product-view .product-info-price .price {
+    font-family: "KorpusGrotesk-B", sans-serif;
+    font-size: 20px;
+    color: #000;
+}
+.catalog-product-view .old-price .price {
+    text-decoration: line-through;
+    color: #999;
+    font-size: 16px;
+}
+.catalog-product-view .special-price .price {
+    color: #c00;
+    font-size: 20px;
+}
+/* "As low as" label — hide */
+.catalog-product-view .minimal-price .price-label,
+.catalog-product-view .price-as-configured .price-label {
+    display: none;
+}
+
+/* VAT info */
+.vat-info {
+    font-family: "KorpusGrotesk-B", sans-serif;
+    font-size: 11px;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+/* === Hide short description on PDP === */
+.catalog-product-view .product-info-main .product-description {
+    display: none;
+}
+
+/* === Hide "PRODUCT OPTIONS:" heading === */
+.product-options-wrapper > .fieldset > .legend,
+.product-options-wrapper .legend,
+.product-info-main .fieldset > .legend {
+    display: none !important;
+}
+
+/* === Swatch options === */
+.catalog-product-view .swatch-attribute-label {
+    font-family: "KorpusGrotesk-B", sans-serif;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+.catalog-product-view .swatch-attribute {
+    margin-bottom: 16px;
+}
+
+/* Size dropdown */
+.catalog-product-view select.super-attribute-select,
+.catalog-product-view .swatch-attribute select {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid #ccc;
+    font-family: "KorpusGrotesk-B", sans-serif;
+    font-size: 13px;
+    letter-spacing: 0.05em;
+    appearance: auto;
+}
+
+/* === Add to Cart === */
+.ftc-addtocart-wrapper {
+    margin-top: 20px;
+}
+/* Hide quantity field */
+.ftc-addtocart-wrapper .qty-wrapper,
+.ftc-addtocart-wrapper [class*="quantity"],
+.ftc-addtocart-wrapper .field.qty {
+    display: none !important;
+}
+/* Full-width black button */
+.catalog-product-view .product-info-main button.tocart,
+.catalog-product-view .ftc-addtocart-wrapper button[type="submit"] {
+    background: #000 !important;
+    color: #fff !important;
+    font-family: "KorpusGrotesk-B", sans-serif;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    padding: 16px 20px !important;
+    border: none !important;
+    width: 100%;
+    cursor: pointer;
+    transition: background-color 300ms;
+}
+.catalog-product-view .product-info-main button.tocart:hover,
+.catalog-product-view .ftc-addtocart-wrapper button[type="submit"]:hover {
+    background: #a6bb9a !important;
+}
+
+/* === Wishlist / Compare links === */
+.catalog-product-view .product-social-links,
+.catalog-product-view .product-addto-links {
+    margin-top: 12px;
+}
+.catalog-product-view .action.towishlist,
+.catalog-product-view .action.tocompare {
+    font-family: "KorpusGrotesk-B", sans-serif;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #666;
+}
+
+/* === Accordion sections in right column === */
+.product-info-column .ftc-overview {
+    margin-top: 30px;
+    border-top: 1px solid #e0e0e0;
+}
+.product-info-column .ftc-section {
+    border-bottom: 1px solid #e0e0e0;
+}
+.product-info-column .ftc-section-title {
+    font-size: 13px;
+    letter-spacing: 0.1em;
+}
+
+/* === Responsive === */
+@media (max-width: 768px) {
+    .catalog-product-view .product-detail-page {
+        flex-direction: column;
+        gap: 20px;
+        padding: 10px 15px;
+    }
+    .product-media-column,
+    .product-info-column {
+        width: 100%;
+    }
+}

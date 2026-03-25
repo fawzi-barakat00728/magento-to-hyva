@@ -11,7 +11,7 @@ use Magento\Framework\Escaper;
 /** @var Escaper $escaper */
 
 $helper = $this->helper(\Magestall\GuestWishlist\Helper\Data::class);
-$itemCount = (int)$helper->getGuestWishlistItemCount();
+$itemCount = (int)$helper->getItemCount();
 ?>
 
 <a href="<?= $escaper->escapeUrl($block->getUrl('guestwishlist')) ?>"

@@ -1,0 +1,71 @@
+<?php
+/**
+ * Hyvä Theme — FTC Cashmere Product Info
+ * Matches production: Title → SKU → Price → VAT text → Form → Add to cart
+ */
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\ProductPage;
+use Magento\Catalog\Model\Product;
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var ProductPage $productViewModel */
+$productViewModel = $viewModels->require(ProductPage::class);
+
+/** @var Product $product */
+$product = $productViewModel->getProduct();
+$productType = $product->getTypeId();
+?>
+<div class="product-info-main">
+
+    <?= $block->getChildHtml('product.info.title') ?>
+
+    <div class="product-info-stock-sku">
+        <span>Art.-Nr.: <?= $escaper->escapeHtml($product->getSku()) ?></span>
+    </div>
+
+    <div class="product-info-price" role="group" aria-label="<?= $escaper->escapeHtmlAttr('Price') ?>">
+        <?= $block->getChildHtml("product.info.price") ?>
+    </div>
+
+    <div class="vat-info">
+        <span>Inkl. MwSt., zzgl. Versand</span>
+    </div>
+
+    <?= $block->getChildHtml('product.info.form') ?>
+
+    <?php if ($product->isSaleable()): ?>
+        <div class="ftc-addtocart-row">
+            <div class="ftc-addtocart-wrapper">
+                <?= $block->getChildHtml("product.info.quantity") ?>
+                <?= $block->getChildHtml("product.info.addtocart") ?>
+            </div>
+            <?php if ($additionalActions = $block->getChildHtml('product.info.additional.actions')): ?>
+                <div class="ftc-wishlist-wrapper">
+                    <?= /** @noEscape */ $additionalActions; ?>
+                </div>
+            <?php endif; ?>
+        </div>
+    <?php endif; ?>
+
+    <?php if ($product->isSaleable() && $block->getChildHtml('addtocart.shortcut.buttons')): ?>
+        <div class="mt-4">
+            <?= $block->getChildHtml('addtocart.shortcut.buttons') ?>
+        </div>
+    <?php endif; ?>
+
+    <?php if ($tierPriceBlock = $block->getChildHtml("product.price.tier")): ?>
+        <div class="py-4 my-2 tier-price-container">
+            <?= /** @noEscape */ $tierPriceBlock ?>
+        </div>
+    <?php endif; ?>
+
+    <?= $block->getChildHtml("product.info.additional") ?>
+</div>

@@ -1,0 +1,1725 @@
+/**
+ * Luma → Hyvä Compatibility CSS
+ * Ported from original LESS sources (footer.less, general.less, home.less)
+ */
+
+/* =========================================
+   FONT FACES
+   ========================================= */
+
+@font-face {
+    font-family: "Korpus-B";
+    src: url("../fonts/korpus-b-webfont.woff2") format("woff2"),
+         url("../fonts/korpus-b-webfont.woff") format("woff"),
+         url("../fonts/korpus-b-webfont.ttf") format("truetype");
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "KorpusGrotesk-B";
+    src: url("../fonts/Korpus-Grotesk-B-webfont.woff2") format("woff2"),
+         url("../fonts/Korpus-Grotesk-B-webfont.woff") format("woff"),
+         url("../fonts/Korpus-Grotesk-B-webfont.ttf") format("truetype");
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* =========================================
+   GLOBAL FONT OVERRIDE
+   ========================================= */
+
+body {
+    font-family: "KorpusGrotesk-B", sans-serif;
+}
+
+/* =========================================
+   FOOTER STYLES (from footer.less)
+   ========================================= */
+
+.page-footer {
+    width: 100%;
+    background: #f8f8f8;
+}
+
+.page-footer .footer {
+    max-width: 1540px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+.page-footer .area {
+    max-width: 1540px;
+    margin: 0 auto;
+    padding: 15px 0 30px 0;
+    overflow: hidden;
+}
+
+.page-footer .area a {
+    transition: color 300ms ease-in-out;
+}
+
+.page-footer .area a:hover {
+    color: #ad8b70;
+}
+
+.page-footer .area.methods,
+.page-footer .area.bottom {
+    border-top: 1px solid #e0e0e0;
+}
+
+.page-footer .area.bottom {
+    padding-top: 25px;
+}
+
+.page-footer .area .section {
+    float: left;
+    width: calc(100% / 3);
+}
+
+.page-footer .area .section h3 {
+    position: relative;
+    margin: 20px 0;
+    font-family: "Korpus-B", serif;
+    font-size: 24px;
+    font-weight: normal;
+}
+
+.page-footer .area .section img {
+    height: 32px;
+    margin: 0 16px 0 0;
+    background-color: #f8f8f8;
+    filter: saturate(0);
+    transition: filter 300ms;
+}
+
+.page-footer .area .section img:hover {
+    filter: saturate(1);
+}
+
+.page-footer .area .section .column {
+    float: left;
+    width: 50%;
+}
+
+.page-footer .area .legal {
+    float: left;
+    height: 20px;
+    line-height: 20px;
+    font-size: 12px;
+    text-transform: uppercase;
+}
+
+.page-footer .area .social {
+    float: right;
+}
+
+.page-footer .area .social .icon {
+    display: inline-block;
+    height: 20px;
+    width: 20px;
+    margin: 0 0 0 5px;
+    background-size: 100% 100%;
+    filter: saturate(0);
+    transition: filter 300ms;
+}
+
+.page-footer .area .social .icon:hover {
+    filter: saturate(1);
+}
+
+.page-footer .area .social .icon.instagram {
+    background-image: url("../images/social/instagram.png");
+}
+
+.page-footer .area .social .icon.facebook {
+    background-image: url("../images/social/facebook.png");
+}
+
+.page-footer .area .social .icon.twitter {
+    background-image: url("../images/social/twitter.png");
+}
+
+.page-footer .area .social .icon.youtube {
+    background-image: url("../images/social/youtube.png");
+}
+
+.page-footer .area .social .icon.pinterest {
+    background-image: url("../images/social/pinterest.png");
+}
+
+.page-footer .area .social .icon.linkedin {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27%3E%3Cpath d=%27M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z%27/%3E%3C/svg%3E");
+}
+
+/* Footer newsletter block */
+.page-footer .area .block.newsletter {
+    width: 100%;
+    margin: 30px 0 0 0;
+    max-width: none;
+}
+
+.page-footer .area .block.newsletter form > div {
+    float: left;
+    display: block;
+}
+
+.page-footer .area .block.newsletter .control:before {
+    content: none;
+}
+
+.page-footer .area .block.newsletter .field.newsletter {
+    width: 70%;
+    max-width: 100%;
+    margin: 0 5% 0 0;
+}
+
+.page-footer .area .block.newsletter .field.newsletter input {
+    padding: 20px 0;
+    border: none;
+    border-bottom: 1px solid #eee;
+    background-color: transparent;
+    font-size: 15px;
+}
+
+.page-footer .area .block.newsletter .actions {
+    width: 25%;
+}
+
+.page-footer .area .block.newsletter .actions button {
+    opacity: 80%;
+    width: 100%;
+    padding: 12px 0;
+    border: none;
+    border-radius: 0;
+    background-color: transparent;
+    font-size: 14px;
+    color: #ad8b70;
+    text-transform: uppercase;
+    border-bottom: 2px solid #ad8b70;
+    transition: opacity 300ms;
+}
+
+.page-footer .area .block.newsletter .actions button:hover {
+    opacity: 100%;
+}
+
+/* Footer copyright row */
+.page-footer .footer-copyright-row {
+    max-width: 1540px;
+    margin: 0 auto;
+    padding: 10px 0 20px 0;
+}
+
+@media (max-width: 768px) {
+    .page-footer .area .section {
+        width: 100%;
+        max-height: 50px;
+        margin-top: 30px;
+        border-top: 1px solid #e0e0e0;
+        overflow: hidden;
+        transition: max-height 300ms;
+    }
+
+    .page-footer .area .section.open {
+        max-height: 300px;
+    }
+
+    .page-footer .area .section.open h3:before {
+        opacity: 0 !important;
+    }
+
+    .page-footer .area .section.open h3:after {
+        opacity: 100% !important;
+    }
+
+    .page-footer .area .section h3:before,
+    .page-footer .area .section h3:after {
+        content: "+";
+        position: absolute;
+        top: 0;
+        right: 30px;
+        transition: opacity 300ms;
+    }
+
+    .page-footer .area .section h3:after {
+        content: "-";
+        opacity: 0;
+    }
+
+    .page-footer .area .section.contact {
+        margin-top: 0;
+        border-top: none;
+    }
+
+    .page-footer .area .section .column a {
+        display: inline-block;
+        margin: 0 0 10px 0;
+    }
+
+    .page-footer .area.links {
+        padding-bottom: 0;
+    }
+
+    .page-footer .area.methods {
+        padding-top: 0;
+    }
+
+    .page-footer .area.methods,
+    .page-footer .area.bottom {
+        border-top: none;
+    }
+
+    .page-footer .area .legal {
+        float: none;
+        width: 100%;
+        text-align: center;
+    }
+
+    .page-footer .area .social {
+        float: none;
+        width: 100%;
+        margin: 10px auto;
+        text-align: center;
+    }
+
+    .page-footer .area .social .icon {
+        margin: 0 0 50px 20px;
+    }
+}
+
+/* =========================================
+   FTC BUTTON STYLES (from general.less)
+   ========================================= */
+
+a.ftc-button {
+    background: #000;
+    color: #fff !important;
+    opacity: 1 !important;
+    padding: 20px 35px !important;
+    display: inline-block !important;
+    margin-bottom: 5px;
+    margin-right: 5px;
+    font-size: 14px;
+    min-width: 80px;
+    text-align: center;
+    text-decoration: none;
+    text-transform: uppercase !important;
+    font-family: "KorpusGrotesk-B", sans-serif;
+    transition: all 0.3s ease-in-out !important;
+    box-sizing: content-box !important;
+}
+
+a.ftc-button:before {
+    display: none !important;
+}
+
+a.ftc-button:hover {
+    background-color: #a6bb9a;
+}
+
+a.ftc-button.button-creme {
+    background-color: #dacbb6;
+}
+
+a.ftc-button.button-creme:hover {
+    background-color: #000;
+}
+
+a.ftc-button.button-green {
+    background-color: #a6bb9a;
+}
+
+a.ftc-button.button-green:hover {
+    background-color: #000;
+}
+
+a.ftc-button.button-orange {
+    background-color: #ff6038;
+}
+
+a.ftc-button.button-orange:hover {
+    background-color: #000;
+}
+
+a.ftc-button.button-border {
+    background-color: transparent;
+    border: 1px solid #000;
+    padding: 19px 34px;
+    color: #000 !important;
+}
+
+a.ftc-button.button-border:hover {
+    background-color: #000;
+    color: #fff !important;
+}
+
+a.ftc-button.button-border-white {
+    background-color: transparent;
+    border: 1px solid #fff;
+    padding: 19px 34px;
+    color: #fff !important;
+}
+
+a.ftc-button.button-border-white:hover {
+    background-color: #fff;
+    color: #000 !important;
+}
+
+.ftc-center {
+    text-align: center !important;
+}
+
+.ftc-buttongroup {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    padding-left: 10vw;
+    padding-right: 10vw;
+}
+
+.ftc-buttongroup .ftc-button {
+    min-height: 55px;
+    padding: 0px 35px !important;
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box !important;
+    width: calc(25% - 5px) !important;
+}
+
+/* =========================================
+   FTC IMAGE BLOCK STYLES (from general.less)
+   ========================================= */
+
+.ftc-image-block {
+    display: flex;
+    gap: 1em 2em;
+    margin-top: 50px;
+}
+
+.ftc-image-text-block {
+    display: flex;
+    margin-top: 30px;
+    align-items: stretch;
+}
+
+.ftc-image-block .ftc-item {
+    text-align: center;
+}
+
+.ftc-image-block .ftc-item img {
+    max-width: 100%;
+    height: auto;
+}
+
+.ftc-image-text-block .ftc-image img {
+    max-width: 100%;
+    height: 100% !important;
+    display: block !important;
+    object-fit: cover !important;
+}
+
+.ftc-image-text-block .ftc-image {
+    flex: 1 1 0;
+}
+
+.ftc-image-text-block .ftc-text {
+    flex: 1 1 0;
+    padding: 60px;
+    align-self: center;
+}
+
+.ftc-text .ftc-subtitle {
+    font-family: "KorpusGrotesk-B", sans-serif;
+    color: #000;
+    margin-top: 15px;
+    margin-bottom: 5px;
+    font-size: 14px;
+    display: block;
+}
+
+.ftc-text h2 {
+    font-family: "KorpusGrotesk-B", sans-serif;
+    color: #000 !important;
+    margin-top: 5px;
+    margin-bottom: 20px !important;
+    font-size: 24px;
+    text-transform: uppercase !important;
+}
+
+.ftc-image-block .ftc-item .ftc-text a.ftc-button {
+    margin-top: 25px;
+}
+
+/* TEXT-INNER: text overlay on image */
+.ftc-image-block.text-inner .ftc-item {
+    position: relative;
+}
+
+.ftc-image-block.text-inner .ftc-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    width: 90%;
+    padding-left: 30px;
+    padding-right: 30px;
+}
+
+.ftc-image img {
+    min-width: 100%;
+    height: auto;
+}
+
+.ftc-item {
+    width: 0;
+    flex-grow: 1;
+    flex-basis: 0;
+    flex-shrink: 1;
+    display: grid;
+    position: relative;
+}
+
+.ftc-item .ftc-text {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+.ftc-item .ftc-text .ftc-button {
+    justify-self: flex-end;
+    align-self: center;
+    z-index: 20;
+}
+
+.ftc-item a.ftc-fulllink {
+    position: absolute !important;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    font-size: 0;
+    z-index: 10;
+}
+
+/* FTC image block text colors */
+.ftc-image-block .ftc-item .ftc-text .ftc-subtitle {
+    color: #000 !important;
+}
+
+.ftc-image-block .ftc-item .ftc-text h2 {
+    color: #000 !important;
+}
+
+.ftc-image-block .ftc-item .ftc-text p {
+    color: #000 !important;
+    margin-bottom: 16px !important;
+    text-transform: none !important;
+}
+
+/* White text variant */
+.ftc-image-block .ftc-item .ftc-text.ftc-white .ftc-subtitle {
+    color: #fff !important;
+}
+
+.ftc-image-block .ftc-item .ftc-text.ftc-white h2 {
+    color: #fff !important;
+}
+
+.ftc-image-block .ftc-item .ftc-text.ftc-white p {
+    color: #fff !important;
+    text-transform: none !important;
+}
+
+/* TEXT-OUTER: text below image */
+.ftc-image-block.text-outer .ftc-item .ftc-text h2 {
+    min-height: 53px;
+}
+
+.ftc-image-block.text-outer .ftc-item .ftc-text a.ftc-button {
+    margin-top: 0;
+}
+
+/* FTC image-text-block variants */
+.ftc-image-text-block.ftc-gray {
+    background: #f8f8f8;
+}
+
+.ftc-image-text-block .ftc-text p {
+    color: #000 !important;
+    text-transform: none !important;
+    margin-bottom: 16px !important;
+}
+
+.ftc-image-text-block .ftc-text p a {
+    color: #000 !important;
+    padding: 0px !important;
+    text-transform: none !important;
+    font-weight: unset !important;
+}
+
+.ftc-image-text-block .ftc-text p a:before {
+    background-color: #a6bb9a !important;
+}
+
+/* FTC spacer */
+.ftc-sapce {
+    height: 50px;
+}
+
+.ftc-space {
+    height: 50px;
+}
+
+/* FTC more toggle text */
+.ftc-complete {
+    display: none;
+}
+
+.ftc-more {
+    background-color: #a6bb9a;
+    color: #000;
+    font-size: 14px;
+    padding: 1px 6px;
+    cursor: pointer;
+    display: inline;
+    font-family: "KorpusGrotesk-B", sans-serif;
+    text-decoration: none;
+    transition: all 0.3s ease-in-out;
+}
+
+.ftc-more:hover {
+    background-color: #000;
+    color: #fff;
+}
+
+.ftc-more-text-toggle {
+    padding-left: 10vw;
+    padding-right: 10vw;
+    line-height: 20px;
+}
+
+.ftc-more-text-toggle p {
+    display: inline;
+    color: #000 !important;
+    text-transform: none !important;
+}
+
+/* FTC blog quote */
+.ftc-blogquote {
+    background-color: #000;
+    display: block;
+    padding: 70px 10vw;
+    color: #fff !important;
+    font-family: "KorpusGrotesk-B", sans-serif;
+    font-size: 32px !important;
+    text-align: center;
+}
+
+.ftc-blogquote.ftc-creme {
+    background-color: #dacbb6;
+}
+
+.ftc-blogquote.ftc-green {
+    background-color: #a6bb9a;
+}
+
+.ftc-blogquote.ftc-orange {
+    background-color: #ff6038;
+}
+
+/* Home instagram */
+.home-instagram {
+    margin-top: 50px !important;
+}
+
+/* =========================================
+   RESPONSIVE (from general.less)
+   ========================================= */
+
+@media screen and (max-width: 550px) {
+    .ftc-buttongroup {
+        padding-left: 5vw;
+        padding-right: 5vw;
+    }
+
+    .ftc-image-block.text-inner .ftc-image {
+        height: 100vw;
+    }
+
+    .ftc-image-block.text-inner .ftc-item .ftc-image img {
+        max-width: none;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+}
+
+@media (min-width: 901px) and (max-width: 1100px) {
+    .ftc-image-block .ftc-item .ftc-text h2 {
+        font-size: 20px;
+    }
+}
+
+@media screen and (max-width: 900px) {
+    .ftc-item {
+        width: 100%;
+    }
+
+    .ftc-buttongroup .ftc-button {
+        width: calc(50% - 5px) !important;
+    }
+
+    .ftc-image-block {
+        flex-direction: column;
+    }
+
+    .ftc-image-text-block {
+        flex-direction: column;
+    }
+}
+
+/* =========================================
+   HOME CMS CONTENT STYLES (from home.less)
+   ========================================= */
+
+.cms-index-index .page-main {
+    margin: 0;
+    padding: 0;
+}
+
+.cms-index-index .page-main h1,
+.cms-index-index .page-main h2,
+.cms-index-index .page-main h3,
+.cms-index-index .page-main p,
+.cms-index-index .page-main a {
+    color: #fff;
+    text-transform: uppercase;
+    font-weight: normal;
+}
+
+.cms-index-index .page-main div a {
+    display: inline-block;
+    position: relative;
+    opacity: 70%;
+    width: auto;
+    z-index: 1;
+    padding: 5px 10px;
+    transition: opacity 300ms ease-in-out;
+}
+
+.cms-index-index .page-main div a:hover {
+    opacity: 100%;
+}
+
+.cms-index-index .page-main .zone {
+    float: left;
+    position: relative;
+    text-align: center;
+    cursor: pointer;
+    overflow: hidden;
+}
+
+.cms-index-index .page-main .zone img {
+    position: absolute;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    object-fit: cover;
+    transition: filter 300ms, transform 300ms;
+}
+
+.cms-index-index .page-main .zone h2 {
+    font-family: "Korpus-B", serif;
+}
+
+.cms-index-index .page-main .zone:hover img {
+    transform: scale(1.05);
+}
+
+/* =========================================
+   SCROLLBAR HIDE UTILITY
+   ========================================= */
+
+.scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+}
+
+/* ===== FOOTER PAYMENT/SHIPPING ICONS FIX ===== */
+.page-footer .area.methods .section a {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.page-footer .area.methods .section img {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+/* ===== PRODUCT PAGE FIXES ===== */
+.catalog-product-view .product-description.prose {
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.catalog-product-view .product-description.prose ul {
+    list-style: disc;
+    padding-left: 20px;
+}
+
+.catalog-product-view .product-description.prose h3 {
+    font-family: "Korpus-B", serif;
+    font-size: 18px;
+    margin: 15px 0 10px;
+    text-transform: uppercase;
+}
+
+.catalog-product-view .product-info-main .product-description .short-description h3 {
+    font-family: "Korpus-B", serif;
+    font-size: 18px;
+    margin: 15px 0 10px;
+    text-transform: uppercase;
+}
+
+.catalog-product-view .product-info-main .material-text {
+    font-size: 14px;
+}
+
+.catalog-product-view .product-info-main .care-symbol {
+    font-family: "MaterialCare";
+    font-size: 28px;
+    letter-spacing: 8px;
+}
+
+/* ===== NAVIGATION: HIDE DROPDOWN ARROWS ===== */
+@media (min-width: 768px) {
+    .navigation-no-arrows .level-0 + button[aria-expanded] {
+        display: none !important;
+    }
+    .navigation-no-arrows [data-nav-desktop] li > span > button {
+        display: none !important;
+    }
+    .navigation-no-arrows [data-nav-desktop] li:hover > ul,
+    .navigation-no-arrows [data-nav-desktop] li:focus-within > ul {
+        display: block !important;
+        opacity: 1 !important;
+    }
+}
+
+/* ===== NAVIGATION TEXT STYLE ===== */
+.navigation-no-arrows .level-0 {
+    font-family: "Korpus-B", serif;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* ===== STORE SWITCHER ===== */
+.ftc-store-switcher {
+    font-family: "Korpus-B", serif;
+    letter-spacing: 0.5px;
+}
+
+/* ===== SARTEX CARE SYMBOLS FONT ===== */
+@font-face {
+    font-family: "Sartex";
+    src: url("../fonts/sartex.woff2") format("woff2"),
+         url("../fonts/sartex.woff") format("woff"),
+         url("../fonts/sartex.ttf") format("truetype");
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* ===== PRODUCT DETAIL SECTIONS (FTC Overview) ===== */
+.ftc-overview {
+    margin: 30px 0 0 0;
+    overflow: hidden;
+}
+
+.ftc-section {
+    margin: 0;
+}
+
+.ftc-section-title {
+    width: 100%;
+    margin: 0 0 0 0;
+    padding: 15px 0 15px 0;
+    border-bottom: 1px solid #e0e0e0;
+    font-family: "KorpusGrotesk-B", sans-serif;
+    font-size: 20px;
+    font-weight: normal;
+    text-transform: uppercase;
+    cursor: pointer;
+    position: relative;
+    user-select: none;
+}
+
+@media (max-width: 768px) {
+    .ftc-section-title {
+        font-size: 18px;
+        padding: 12px 0 10px 0;
+    }
+}
+
+.ftc-section-title::after {
+    content: "+";
+    position: absolute;
+    top: 15px;
+    right: 10px;
+    font-size: 20px;
+    transition: opacity 300ms;
+}
+
+.ftc-section-title.open::after {
+    content: "\2212";
+}
+
+.ftc-section-content {
+    overflow: hidden;
+}
+
+.ftc-section-body {
+    padding: 15px 0 25px 0;
+}
+
+@media (max-width: 768px) {
+    .ftc-section-body {
+        padding: 10px 0 15px 0;
+    }
+}
+
+.ftc-section-body ul {
+    padding: 0 0 0 15px;
+    margin: 0;
+    list-style: disc !important;
+}
+
+.ftc-section-body ul li {
+    margin: 0 0 10px 0;
+    font-size: 17px;
+    line-height: 1.5;
+}
+
+@media (max-width: 768px) {
+    .ftc-section-body ul li {
+        margin: 0 0 4px 0;
+        font-size: 14px;
+    }
+}
+
+.ftc-section-body div,
+.ftc-section-body p {
+    font-size: 17px;
+    line-height: 1.5;
+}
+
+@media (max-width: 768px) {
+    .ftc-section-body div,
+    .ftc-section-body p {
+        font-size: 14px;
+    }
+}
+
+/* Care symbols (Sartex font) */
+.ftc-care {
+    margin: 15px 0 20px 15px;
+}
+
+.ftc-care .care-symbol {
+    font-family: "Sartex", sans-serif;
+    font-size: 30px;
+    letter-spacing: 15px;
+    color: #504237;
+    cursor: default;
+}
+
+/* Material box */
+.ftc-material {
+    display: inline-block;
+    width: auto;
+    margin: 0;
+    padding: 15px;
+    border: 1px solid #e0e0e0;
+}
+
+.ftc-material-text {
+    font-size: 18px;
+    margin: 0;
+}
+
+@media (max-width: 768px) {
+    .ftc-material-text {
+        font-size: 14px;
+    }
+}
+
+/* =========================================
+   FTC HEADER (matching production layout)
+   ========================================= */
+.ftc-header {
+    position: relative;
+    z-index: 900;
+    background: #fff;
+    width: 100%;
+}
+
+.ftc-header-inner {
+    width: 100%;
+    max-width: 1540px;
+    margin: 0 auto;
+    position: relative;
+    padding: 0 20px 20px;
+}
+
+.ftc-logo {
+    display: block;
+    margin: 0 auto;
+    text-align: center;
+    padding: 15px 0 0;
+}
+
+.ftc-logo a {
+    display: inline-block;
+}
+
+.ftc-logo img {
+    height: 103px;
+    width: auto;
+}
+
+.header-ftc-flex {
+    position: relative;
+    top: -40px;
+    margin-bottom: -40px;
+}
+
+.left-nav-section {
+    position: relative;
+}
+
+/* Navigation inside left-nav-section */
+.left-nav-section nav > ul,
+.left-nav-section [data-nav-desktop] {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    flex-wrap: wrap;
+}
+
+.left-nav-section nav > ul > li > a,
+.left-nav-section [data-nav-desktop] > li > a {
+    font-family: "KorpusGrotesk-B", sans-serif;
+    font-size: 18px;
+    text-transform: uppercase;
+    line-height: 60px;
+    padding: 0 20px;
+    color: #000;
+    text-decoration: none;
+    transition: color 300ms;
+    display: block;
+    white-space: nowrap;
+}
+
+.left-nav-section nav > ul > li > a:hover,
+.left-nav-section [data-nav-desktop] > li > a:hover {
+    color: #a9ba9d;
+}
+
+/* Dropdown submenu styling */
+.left-nav-section nav > ul > li > ul,
+.left-nav-section [data-nav-desktop] > li > ul {
+    border-top: 3px solid #a9ba9d;
+}
+
+.left-nav-section nav > ul > li > ul a,
+.left-nav-section [data-nav-desktop] > li > ul a {
+    font-family: "KorpusGrotesk-B", sans-serif;
+    font-size: 14px;
+    text-transform: uppercase;
+    color: #000;
+    text-decoration: none;
+    padding: 8px 20px;
+    display: block;
+    transition: color 300ms;
+}
+
+.left-nav-section nav > ul > li > ul a:hover,
+.left-nav-section [data-nav-desktop] > li > ul a:hover {
+    color: #a9ba9d;
+}
+
+/* Right section: store switcher + icons */
+.right-nav-section {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    position: absolute;
+    right: 190px;
+    top: 15px;
+    width: 400px;
+    z-index: 999;
+}
+
+/* Store switcher - override existing */
+.ftc-header .ftc-store-switcher {
+    font-family: "KorpusGrotesk-B", sans-serif;
+    text-transform: uppercase;
+    font-size: 16px;
+    color: #111;
+    display: inline-flex;
+    align-items: center;
+    gap: 0;
+    letter-spacing: 0.5px;
+    margin-right: 15px;
+}
+
+.ftc-header .ftc-store-switcher label {
+    cursor: default;
+}
+
+.ftc-header .ftc-store-switcher label:first-of-type {
+    border-right: 1px solid #111;
+    padding-right: 6px;
+}
+
+.ftc-header .ftc-store-switcher label:last-of-type {
+    padding-left: 6px;
+}
+
+/* Shop control icons */
+.ftc-shopcontrol {
+    display: inline-flex;
+    align-items: center;
+    margin-left: 15px;
+}
+
+.ftc-shopcontrol button,
+.ftc-shopcontrol a {
+    display: inline-flex;
+    align-items: center;
+    background: transparent;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    position: relative;
+}
+
+.ftc-shopcontrol .ftc-icon {
+    height: 20px;
+    width: auto;
+    opacity: 0.8;
+    transition: opacity 300ms;
+}
+
+.ftc-shopcontrol button:hover .ftc-icon,
+.ftc-shopcontrol a:hover .ftc-icon {
+    opacity: 1;
+}
+
+.ftc-icon-counter {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: #a9ba9d;
+    color: #fff;
+    font-size: 10px;
+    font-family: "KorpusGrotesk-B", sans-serif;
+    min-width: 16px;
+    height: 16px;
+    line-height: 16px;
+    text-align: center;
+    border-radius: 50%;
+    padding: 0 3px;
+}
+
+/* Search overlay */
+.ftc-search-overlay {
+    position: absolute;
+    z-index: 10;
+    width: 100%;
+    background: #fff;
+    border-top: 1px solid #e0e0e0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    padding: 15px 20px;
+}
+
+/* ===== FTC HEADER RESPONSIVE ===== */
+@media (max-width: 1400px) {
+    .right-nav-section {
+        right: 140px;
+    }
+}
+
+@media (max-width: 1200px) {
+    .right-nav-section {
+        right: 100px;
+        width: 350px;
+    }
+    .left-nav-section nav > ul > li > a,
+    .left-nav-section [data-nav-desktop] > li > a {
+        font-size: 16px;
+        padding: 0 15px;
+    }
+}
+
+@media (max-width: 1024px) {
+    .right-nav-section {
+        right: 20px;
+        width: 300px;
+    }
+    .left-nav-section nav > ul > li > a,
+    .left-nav-section [data-nav-desktop] > li > a {
+        font-size: 14px;
+        padding: 0 10px;
+    }
+}
+
+@media (max-width: 768px) {
+    .ftc-logo img {
+        height: 59px;
+    }
+    .ftc-header-inner {
+        padding: 10px 15px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .ftc-logo {
+        padding: 0;
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    .header-ftc-flex {
+        top: 0;
+        margin-bottom: 0;
+        width: 100%;
+        display: flex;
+        justify-content: flex-end;
+    }
+    .right-nav-section {
+        position: relative;
+        right: auto;
+        top: auto;
+        width: auto;
+    }
+    .left-nav-section {
+        display: none;
+    }
+    .ftc-header .ftc-store-switcher {
+        display: none;
+    }
+}
+
+
+/* =========================================
+   PRODUCT PAGE LAYOUT — FTC Production Match
+   ========================================= */
+
+/* === Remove Tailwind container constraints on product page === */
+.catalog-product-view .page-main {
+    max-width: 100% !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+.catalog-product-view .columns {
+    max-width: 100% !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
+/* === Page Layout: 60% media | 40% info === */
+.catalog-product-view .product-detail-page {
+    display: flex;
+    gap: 40px;
+    max-width: 1680px;
+    margin: 0 auto;
+    padding: 20px 40px;
+}
+.product-media-column {
+    width: 60%;
+    flex-shrink: 0;
+}
+.product-info-column {
+    width: 40%;
+    min-width: 0;
+}
+
+/* === Gallery: vertical thumbnails on the LEFT === */
+@media (min-width: 769px) {
+    #gallery > div {
+        display: flex !important;
+        flex-direction: row !important;
+        gap: 12px;
+    }
+    /* Thumbnail wrapper (2nd child) goes to left; 3rd child is close-fullscreen button */
+    #gallery > div > div:nth-child(2) {
+        order: -1;
+        width: 80px !important;
+        flex-shrink: 0;
+        min-width: 80px;
+    }
+    /* Main image area fills remaining — override Tailwind w-full */
+    #gallery > div > div:first-child {
+        flex: 1 !important;
+        min-width: 0;
+        width: auto !important;
+        max-width: calc(100% - 92px);
+    }
+    /* Thumbnail container must also be flex column */
+    #gallery > div > div:nth-child(2) > nav {
+        flex-direction: column !important;
+    }
+    /* Thumbnails nav vertical */
+    #thumbs {
+        flex-direction: column !important;
+        min-height: auto !important;
+        gap: 8px !important;
+        align-items: flex-start !important;
+    }
+    .js_thumbs_slides {
+        flex-direction: column !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        max-height: 700px;
+        width: 80px !important;
+        flex-wrap: nowrap !important;
+    }
+    .js_thumbs_slide {
+        margin-right: 0 !important;
+        margin-bottom: 0 !important;
+        width: 80px;
+    }
+    .js_thumbs_slide img {
+        width: 80px;
+        height: auto;
+    }
+    /* Hide prev/next arrows for vertical thumbs */
+    #thumbs > button {
+        display: none !important;
+    }
+    /* Remove bottom margin on main gallery */
+    #gallery-main {
+        margin-bottom: 0 !important;
+    }
+}
+
+/* === Breadcrumbs inside info column === */
+.product-info-column .breadcrumbs {
+    margin-bottom: 16px;
+    padding: 0;
+}
+.product-info-column .breadcrumbs .items {
+    font-size: 12px;
+    color: #666;
+}
+.product-info-column .breadcrumbs a {
+    color: #666;
+    text-decoration: none;
+}
+.product-info-column .breadcrumbs a:hover {
+    color: #000;
+}
+.product-info-column .breadcrumbs .item:not(:last-child)::after {
+    content: " › ";
+    margin: 0 4px;
+    color: #999;
+}
+
+/* === Product Info Main === */
+.product-info-main {
+    padding: 0;
+}
+
+/* Remove card styling */
+.catalog-product-view .product-info-main .card,
+.catalog-product-view .product-info-column .card {
+    border: none;
+    box-shadow: none;
+    padding: 0;
+    background: transparent;
+}
+
+/* Product title */
+.catalog-product-view .page-title span {
+    font-family: "Korpus-B", serif;
+    font-size: 24px;
+    font-weight: normal;
+    text-transform: uppercase;
+    color: #000;
+    letter-spacing: 0.03em;
+}
+
+/* SKU */
+.product-info-stock-sku {
+    font-family: "KorpusGrotesk-B", sans-serif;
+    font-size: 12px;
+    color: #666;
+    letter-spacing: 0.05em;
+    margin: 4px 0 16px;
+}
+
+/* === Price === */
+.product-info-price {
+    margin-bottom: 4px;
+}
+.catalog-product-view .product-info-price .price {
+    font-family: "KorpusGrotesk-B", sans-serif;
+    font-size: 20px;
+    color: #000;
+}
+.catalog-product-view .old-price .price {
+    text-decoration: line-through;
+    color: #999;
+    font-size: 16px;
+}
+.catalog-product-view .special-price .price {
+    color: #c00;
+    font-size: 20px;
+}
+/* "As low as" label — hide */
+.catalog-product-view .minimal-price .price-label,
+.catalog-product-view .price-as-configured .price-label {
+    display: none;
+}
+
+/* VAT info */
+.vat-info {
+    font-family: "KorpusGrotesk-B", sans-serif;
+    font-size: 11px;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+/* === Hide short description on PDP === */
+.catalog-product-view .product-info-main .product-description {
+    display: none;
+}
+
+/* === Hide "PRODUCT OPTIONS:" heading (Hyvä uses h2.title-font) === */
+.product-options-wrapper > .fieldset > .legend,
+.product-options-wrapper .legend,
+.product-info-main .fieldset > .legend,
+.product-info-column h2.title-font,
+.catalog-product-view [x-data] > h2.title-font {
+    display: none !important;
+}
+
+/* === Swatch options === */
+.catalog-product-view .swatch-attribute-label {
+    font-family: "KorpusGrotesk-B", sans-serif;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+.catalog-product-view .swatch-attribute {
+    margin-bottom: 16px;
+}
+/* Make color swatch image larger (production ~50px) */
+.catalog-product-view .swatch-option.w-6.h-6,
+.catalog-product-view .swatch-option[style*="background"] {
+    width: 50px !important;
+    height: 50px !important;
+    background-size: cover !important;
+    border: 1px solid #ccc !important;
+    border-radius: 0 !important;
+}
+.catalog-product-view .swatch-option[style*="background"]:hover {
+    border-color: #000 !important;
+}
+
+/* Size dropdown */
+.catalog-product-view select.super-attribute-select,
+.catalog-product-view .swatch-attribute select {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid #ccc;
+    font-family: "KorpusGrotesk-B", sans-serif;
+    font-size: 13px;
+    letter-spacing: 0.05em;
+    appearance: auto;
+}
+
+/* === Add to Cart === */
+.ftc-addtocart-wrapper {
+    margin-top: 0;
+}
+/* Hide quantity field (Hyvä renders input[name=qty] directly) */
+.ftc-addtocart-wrapper .qty-wrapper,
+.ftc-addtocart-wrapper [class*="quantity"],
+.ftc-addtocart-wrapper .field.qty,
+.ftc-addtocart-wrapper label[for^="qty"],
+.ftc-addtocart-wrapper input[name="qty"] {
+    display: none !important;
+}
+/* Full-width black button */
+.catalog-product-view .product-info-main button.tocart,
+.catalog-product-view .ftc-addtocart-wrapper button[type="submit"],
+#product-addtocart-button {
+    background: #000 !important;
+    color: #fff !important;
+    font-family: "KorpusGrotesk-B", sans-serif;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    padding: 16px 20px !important;
+    border: none !important;
+    border-radius: 0 !important;
+    width: 100%;
+    cursor: pointer;
+    transition: background-color 300ms;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+}
+.catalog-product-view .product-info-main button.tocart:hover,
+.catalog-product-view .ftc-addtocart-wrapper button[type="submit"]:hover,
+#product-addtocart-button:hover {
+    background: #a6bb9a !important;
+}
+/* Hide cart icon SVG in add-to-cart button */
+#product-addtocart-button svg {
+    display: none !important;
+}
+/* Force button text to always show */
+#product-addtocart-button span {
+    display: block !important;
+}
+
+/* === Add to Cart Row: button + wishlist heart === */
+.ftc-addtocart-row {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    margin-top: 20px;
+}
+.ftc-addtocart-row .ftc-addtocart-wrapper {
+    flex: 1;
+    margin-top: 0;
+}
+.ftc-addtocart-row .ftc-wishlist-wrapper {
+    display: flex;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+}
+/* Wishlist heart button — right of add-to-cart */
+.ftc-wishlist-wrapper button[data-addto="wishlist"],
+.ftc-wishlist-wrapper #add-to-wishlist {
+    border: 1px solid #ccc !important;
+    background: #fff !important;
+    border-radius: 0 !important;
+    width: 52px;
+    height: 100%;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    padding: 0 !important;
+    margin: 0 !important;
+    cursor: pointer;
+    transition: border-color 300ms;
+}
+.ftc-wishlist-wrapper button[data-addto="wishlist"]:hover {
+    border-color: #000 !important;
+}
+/* Hide compare button */
+.ftc-wishlist-wrapper button[data-addto="compare"],
+.ftc-wishlist-wrapper #add-to-compare,
+.ftc-wishlist-wrapper script + button[data-addto="compare"] {
+    display: none !important;
+}
+/* Hide scripts in wishlist wrapper (they take no space but be safe) */
+.ftc-wishlist-wrapper script {
+    display: none;
+}
+
+/* === Wishlist / Compare links === */
+.catalog-product-view .product-social-links,
+.catalog-product-view .product-addto-links {
+    margin-top: 12px;
+}
+.catalog-product-view .action.towishlist,
+.catalog-product-view .action.tocompare {
+    font-family: "KorpusGrotesk-B", sans-serif;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #666;
+}
+
+/* === Accordion sections in right column === */
+.product-info-column .ftc-overview {
+    margin-top: 30px;
+    border-top: 1px solid #e0e0e0;
+}
+.product-info-column .ftc-section {
+    border-bottom: 1px solid #e0e0e0;
+}
+.product-info-column .ftc-section-title {
+    font-size: 13px;
+    letter-spacing: 0.1em;
+}
+
+/* === Responsive === */
+@media (max-width: 768px) {
+    .catalog-product-view .product-detail-page {
+        flex-direction: column;
+        gap: 20px;
+        padding: 10px 15px;
+    }
+    .product-media-column,
+    .product-info-column {
+        width: 100%;
+    }
+}
+
+
+/* === Additional fixes === */
+
+/* Hide 'So niedrig wie:' / 'As low as:' price label */
+.catalog-product-view .price-label {
+    display: none;
+}
+
+/* Hide orphaned product-social-links outside product section */
+.catalog-product-view .column.main > .product-social-links {
+    display: none;
+}
+
+/* Hide default breadcrumbs on product page - we render custom breadcrumbs inside product-info-column */
+.catalog-product-view nav.breadcrumbs {
+    display: none;
+}
+
+/* FTC custom breadcrumbs */
+.ftc-breadcrumbs {
+    font-family: "KorpusGrotesk-B", sans-serif;
+    font-size: 12px;
+    color: #666;
+    margin-bottom: 16px;
+}
+.ftc-breadcrumbs a {
+    color: #666;
+    text-decoration: none;
+}
+.ftc-breadcrumbs a:hover {
+    color: #000;
+}
+.ftc-breadcrumbs .sep {
+    margin: 0 6px;
+    color: #999;
+}
+
+/* Hide short description if still visible */
+.catalog-product-view .product.attribute.overview {
+    display: none;
+}
+
+/* Hide compare link on PDP (production only shows wishlist heart) */
+.catalog-product-view .action.tocompare,
+.catalog-product-view [data-addto="compare"] {
+    display: none !important;
+}
+
+/* Swatch: visual type with no image — show as small circle */
+.catalog-product-view .swatch-option {
+    border: 2px solid #ccc !important;
+    border-radius: 0 !important;
+    min-width: 40px;
+    min-height: 40px;
+}
+.catalog-product-view .swatch-option.selected,
+.catalog-product-view .swatch-option[class*="ring-primary"] {
+    border-color: #000 !important;
+}
+
+/* Swatch attribute: remove default padding, tighter layout */
+.catalog-product-view .swatch-attribute {
+    border-top: none !important;
+    border-bottom: none !important;
+}
+.catalog-product-view .swatch-attribute label.product-option-label {
+    font-family: "KorpusGrotesk-B", sans-serif;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Size dropdown: Hyvä renders as select inside swatch-attribute */
+.catalog-product-view .super-attribute-select,
+.catalog-product-view .swatch-attribute select {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid #ccc;
+    font-family: "KorpusGrotesk-B", sans-serif;
+    font-size: 13px;
+    letter-spacing: 0.05em;
+    appearance: auto;
+    border-radius: 0;
+}
+
+/* === DISCOVER OUR ESSENCE COLLECTION === */
+.ftc-discover-section {
+    max-width: 1540px;
+    margin: 60px auto 40px;
+    padding: 0 20px;
+}
+.ftc-discover-title {
+    font-family: "Korpus-B", serif;
+    font-size: 18px;
+    font-weight: normal;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 24px;
+}
+.ftc-discover-title a {
+    color: #000;
+    text-decoration: none;
+}
+.ftc-discover-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+}
+.ftc-discover-item {
+    text-align: left;
+}
+.ftc-discover-item a {
+    display: block;
+    overflow: hidden;
+}
+.ftc-discover-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    transition: transform 0.4s ease;
+}
+.ftc-discover-item a:hover img {
+    transform: scale(1.03);
+}
+.ftc-discover-item p {
+    font-family: "KorpusGrotesk-B", sans-serif;
+    font-size: 13px;
+    color: #666;
+    margin-top: 12px;
+    letter-spacing: 0.03em;
+}
+@media (max-width: 768px) {
+    .ftc-discover-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}

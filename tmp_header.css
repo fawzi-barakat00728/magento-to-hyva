@@ -1,0 +1,326 @@
+
+/* =========================================
+   FTC HEADER (matching production layout)
+   ========================================= */
+.ftc-header {
+    position: relative;
+    z-index: 900;
+    background: #fff;
+    width: 100%;
+}
+
+.ftc-header-inner {
+    width: 100%;
+    max-width: 1540px;
+    margin: 0 auto;
+    position: relative;
+    padding: 0 20px 20px;
+}
+
+.ftc-logo {
+    display: block;
+    margin: 0 auto;
+    text-align: center;
+    padding: 15px 0 0;
+}
+
+.ftc-logo a {
+    display: inline-block;
+}
+
+.ftc-logo img {
+    height: 103px;
+    width: auto;
+}
+
+.header-ftc-flex {
+    position: relative;
+    top: -40px;
+    margin-bottom: -40px;
+}
+
+.left-nav-section {
+    position: relative;
+}
+
+/* Navigation inside left-nav-section */
+.left-nav-section nav > ul,
+.left-nav-section [data-nav-desktop] {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    flex-wrap: wrap;
+}
+
+.left-nav-section nav > ul > li > a,
+.left-nav-section [data-nav-desktop] > li > a {
+    font-family: "KorpusGrotesk-B", sans-serif;
+    font-size: 18px;
+    text-transform: uppercase;
+    line-height: 60px;
+    padding: 0 20px;
+    color: #000;
+    text-decoration: none;
+    transition: color 300ms;
+    display: block;
+    white-space: nowrap;
+}
+
+.left-nav-section nav > ul > li > a:hover,
+.left-nav-section [data-nav-desktop] > li > a:hover {
+    color: #a9ba9d;
+}
+
+/* Dropdown submenu styling */
+.left-nav-section nav > ul > li > ul,
+.left-nav-section [data-nav-desktop] > li > ul {
+    border-top: 3px solid #a9ba9d;
+}
+
+.left-nav-section nav > ul > li > ul a,
+.left-nav-section [data-nav-desktop] > li > ul a {
+    font-family: "KorpusGrotesk-B", sans-serif;
+    font-size: 14px;
+    text-transform: uppercase;
+    color: #000;
+    text-decoration: none;
+    padding: 8px 20px;
+    display: block;
+    transition: color 300ms;
+}
+
+.left-nav-section nav > ul > li > ul a:hover,
+.left-nav-section [data-nav-desktop] > li > ul a:hover {
+    color: #a9ba9d;
+}
+
+/* Right section: store switcher + icons */
+.right-nav-section {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    position: absolute;
+    right: 190px;
+    top: 15px;
+    width: 400px;
+    z-index: 999;
+}
+
+/* Store switcher - override existing */
+.ftc-header .ftc-store-switcher {
+    font-family: "KorpusGrotesk-B", sans-serif;
+    text-transform: uppercase;
+    font-size: 16px;
+    color: #111;
+    display: inline-flex;
+    align-items: center;
+    gap: 0;
+    letter-spacing: 0.5px;
+    margin-right: 15px;
+}
+
+.ftc-header .ftc-store-switcher label {
+    cursor: default;
+}
+
+.ftc-header .ftc-store-switcher label:first-of-type {
+    border-right: 1px solid #111;
+    padding-right: 6px;
+}
+
+.ftc-header .ftc-store-switcher label:last-of-type {
+    padding-left: 6px;
+}
+
+/* Shop control icons */
+.ftc-shopcontrol {
+    display: inline-flex;
+    align-items: center;
+    margin-left: 15px;
+}
+
+.ftc-shopcontrol button,
+.ftc-shopcontrol a {
+    display: inline-flex;
+    align-items: center;
+    background: transparent;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    position: relative;
+}
+
+.ftc-shopcontrol .ftc-icon {
+    height: 20px;
+    width: auto;
+    opacity: 0.8;
+    transition: opacity 300ms;
+}
+
+.ftc-shopcontrol button:hover .ftc-icon,
+.ftc-shopcontrol a:hover .ftc-icon {
+    opacity: 1;
+}
+
+.ftc-icon-counter {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: #a9ba9d;
+    color: #fff;
+    font-size: 10px;
+    font-family: "KorpusGrotesk-B", sans-serif;
+    min-width: 16px;
+    height: 16px;
+    line-height: 16px;
+    text-align: center;
+    border-radius: 50%;
+    padding: 0 3px;
+}
+
+/* Search overlay */
+.ftc-search-overlay {
+    position: absolute;
+    z-index: 10;
+    width: 100%;
+    background: #fff;
+    border-top: 1px solid #e0e0e0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    padding: 15px 20px;
+}
+
+/* ===== FTC HEADER RESPONSIVE ===== */
+@media (max-width: 1400px) {
+    .right-nav-section {
+        right: 140px;
+    }
+}
+
+@media (max-width: 1200px) {
+    .right-nav-section {
+        right: 100px;
+        width: 350px;
+    }
+    .left-nav-section nav > ul > li > a,
+    .left-nav-section [data-nav-desktop] > li > a {
+        font-size: 16px;
+        padding: 0 15px;
+    }
+}
+
+@media (max-width: 1024px) {
+    .right-nav-section {
+        right: 20px;
+        width: 300px;
+    }
+    .left-nav-section nav > ul > li > a,
+    .left-nav-section [data-nav-desktop] > li > a {
+        font-size: 14px;
+        padding: 0 10px;
+    }
+}
+
+@media (max-width: 768px) {
+    .ftc-logo img {
+        height: 59px;
+    }
+    .ftc-header-inner {
+        padding: 10px 15px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .ftc-logo {
+        padding: 0;
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    .header-ftc-flex {
+        top: 0;
+        margin-bottom: 0;
+        width: 100%;
+        display: flex;
+        justify-content: flex-end;
+    }
+    .right-nav-section {
+        position: relative;
+        right: auto;
+        top: auto;
+        width: auto;
+    }
+    .left-nav-section {
+        display: none;
+    }
+    .ftc-header .ftc-store-switcher {
+        display: none;
+    }
+}
+
+/* =========================================
+   PRODUCT PAGE LAYOUT (60/40 matching production)
+   ========================================= */
+.catalog-product-view .product-detail-page {
+    max-width: 1540px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Product info card: remove card styling */
+.catalog-product-view .product-info-main .card {
+    border: none;
+    box-shadow: none;
+    padding: 0;
+}
+
+/* Product title */
+.catalog-product-view .page-title span {
+    font-family: "Korpus-B", serif;
+    font-size: 28px;
+    font-weight: normal;
+    text-transform: uppercase;
+    color: #000;
+}
+
+/* Product price */
+.catalog-product-view .product-info-price .price {
+    font-family: "KorpusGrotesk-B", sans-serif;
+    font-size: 22px;
+    color: #000;
+}
+
+/* Old price / special price */
+.catalog-product-view .old-price .price {
+    text-decoration: line-through;
+    color: #999;
+}
+
+.catalog-product-view .special-price .price {
+    color: #c00;
+}
+
+/* Add to cart button */
+.catalog-product-view .product-info-main button.tocart {
+    background: #000;
+    color: #fff;
+    font-family: "KorpusGrotesk-B", sans-serif;
+    font-size: 14px;
+    text-transform: uppercase;
+    padding: 18px 40px;
+    border: none;
+    width: 100%;
+    transition: background-color 300ms;
+    cursor: pointer;
+}
+
+.catalog-product-view .product-info-main button.tocart:hover {
+    background: #a6bb9a;
+}
+
+/* Swatch options */
+.catalog-product-view .swatch-attribute-label {
+    font-family: "KorpusGrotesk-B", sans-serif;
+    font-size: 14px;
+    text-transform: uppercase;
+}

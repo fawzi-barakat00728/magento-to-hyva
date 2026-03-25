@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceBlock name="product.attributes" remove="true" />
+        <referenceBlock name="description" remove="true" />
+        <referenceBlock name="product.info.details"
+                        template="Magento_Catalog::product/view/sections/ftc-product-sections.phtml" />
+    </body>
+</page>
