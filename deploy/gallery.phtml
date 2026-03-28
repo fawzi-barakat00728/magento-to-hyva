@@ -58,6 +58,7 @@ $productName = $block->getProduct()->getName();
         :role="fullscreen ? 'dialog' : false"
         :aria-modal="fullscreen"
         :aria-label="fullscreen ? '<?= $escaper->escapeJs(__('Gallery modal fullscreen')) ?>' : false"
+        @click.self="closeFullScreen()"
     >
         <div class="relative self-center w-full"
              @touchstart.passive="handleTouchStart"
@@ -135,18 +136,18 @@ $productName = $block->getProduct()->getName();
                 </button>
 
                 <!-- Zoom icon -->
-                <button
-                    type="button"
-                    class="gallery-zoom"
-                    aria-label="<?= $escaper->escapeHtmlAttr(__('Zoom image')) ?>"
-                    x-show="!fullscreen && images[active] && images[active].type !== 'video'"
-                    x-cloak
-                    @click.stop="openFullscreen()"
-                >
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="20" height="20">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607ZM10.5 7.5v6m3-3h-6" />
-                    </svg>
-                </button>
+                <template x-if="!fullscreen && images[active] && images[active].type !== 'video'">
+                    <button
+                        type="button"
+                        class="gallery-zoom"
+                        aria-label="<?= $escaper->escapeHtmlAttr(__('Zoom image')) ?>"
+                        @click.stop="openFullscreen()"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="20" height="20">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607ZM10.5 7.5v6m3-3h-6" />
+                        </svg>
+                    </button>
+                </template>
 
                 <!-- Video players -->
                 <div class="absolute inset-0 hidden w-full h-full bg-white nonmobile"
@@ -233,7 +234,7 @@ $productName = $block->getProduct()->getName();
         </div>
 
         <!-- Close fullscreen button -->
-        <div class="absolute top-0 right-0 pt-4 pr-4 z-[60]"
+        <div class="gallery-close-wrap"
              x-show="fullscreen"
              x-cloak
              x-transition.opacity.duration.300ms
@@ -265,9 +266,8 @@ $productName = $block->getProduct()->getName();
             "isSlider": false,
             "initialImages": <?= /* @noEscape */ $block->getGalleryImagesJson() ?>,
             "images": <?= /* @noEscape */ $block->getGalleryImagesJson() ?>,
-            "appendOnReceiveImages": <?=
-                $block->getVar('gallery_switch_strategy', 'Magento_ConfigurableProduct') === 'append' ? 'true' : 'false'
-            ?>,
+            // Match original storefront behavior: keep parent image(s) and append selected variant gallery.
+            "appendOnReceiveImages": true,
             "activeSlide": 0,
             "isSliderStart": true,
             "isSliderEnd": false,
@@ -276,6 +276,9 @@ $productName = $block->getProduct()->getName();
             "pageFillers": 0,
             "focusTrapListener": null,
             init() {
+                this.initialImages = this.normalizeImageSet(this.initialImages || []);
+                this.images = this.normalizeImageSet(this.images || []);
+                this.itemCount = this.images.length;
                 this.initActive();
                 this.$nextTick(() => {
                     this.calcPageSize();
@@ -293,13 +296,14 @@ $productName = $block->getProduct()->getName();
                 })
             },
             receiveImages(images) {
+                const normalizedIncoming = this.normalizeImageSet(images || []);
                 if (this.appendOnReceiveImages) {
-                    const initialUrls = this.initialImages.map(image => image.full);
-                    const newImages = images.filter(image => ! initialUrls.includes(image.full));
-                    this.images = [].concat(this.initialImages, newImages);
+                    const initialUrls = this.initialImages.map(image => this.canonicalMediaKey(image.full || image.img || image.thumb || ''));
+                    const newImages = normalizedIncoming.filter(image => ! initialUrls.includes(this.canonicalMediaKey(image.full || image.img || image.thumb || '')));
+                    this.images = this.normalizeImageSet([].concat(this.initialImages, newImages));
                     this.setActive(newImages.length ? this.initialImages.length : 0);
                 } else {
-                    this.images = images;
+                    this.images = normalizedIncoming;
                     this.setActive(0);
                 }
 
@@ -310,12 +314,78 @@ $productName = $block->getProduct()->getName();
                 this.itemCount = this.images.length;
             },
             resetGallery() {
-                this.images = this.initialImages;
+                this.images = this.normalizeImageSet(this.initialImages || []);
                 this.itemCount = this.images.length;
                 this.initActive();
                 this.$nextTick(() => {
                     this.scrollTo(this.active);
                 });
+            },
+            normalizeMediaUrl(url) {
+                if (!url || typeof url !== 'string') {
+                    return url;
+                }
+                const parts = url.split('?');
+                const base = parts[0]
+                    .replace(/(\/catalog\/product\/cache\/[^/]+)\/cache\/[^/]+\//i, '$1/')
+                    .replace(/(\/catalog\/product\/cache\/[^/]+)\/cache\/[^/]+\//i, '$1/');
+                return parts.length > 1 ? `${base}?${parts.slice(1).join('?')}` : base;
+            },
+            canonicalMediaKey(url) {
+                if (!url || typeof url !== 'string') {
+                    return '';
+                }
+                return url
+                    .replace(/^https?:\/\/[^/]+/i, '')
+                    .replace(/\/catalog\/product\/(?:cache\/[^/]+\/)+/i, '/catalog/product/');
+            },
+            mediaUrlScore(url) {
+                if (!url || typeof url !== 'string') {
+                    return 0;
+                }
+                const matches = url.match(/\/cache\//gi);
+                const cacheLevel = matches ? matches.length : 0;
+                if (cacheLevel === 0) {
+                    return 3;
+                }
+                if (cacheLevel === 1) {
+                    return 2;
+                }
+                return 1;
+            },
+            normalizeImage(image) {
+                if (!image || typeof image !== 'object') {
+                    return image;
+                }
+                const out = Object.assign({}, image);
+                ['img', 'full', 'thumb'].forEach((key) => {
+                    if (typeof out[key] === 'string' && out[key] !== '') {
+                        out[key] = this.normalizeMediaUrl(out[key]);
+                    }
+                });
+                return out;
+            },
+            normalizeImageSet(images) {
+                const byCanonical = new Map();
+                (Array.isArray(images) ? images : []).forEach((image) => {
+                    const normalized = this.normalizeImage(image);
+                    if (!normalized) return;
+                    const key = this.canonicalMediaKey(normalized.full || normalized.img || normalized.thumb || '');
+                    if (!key) return;
+
+                    if (!byCanonical.has(key)) {
+                        byCanonical.set(key, normalized);
+                        return;
+                    }
+
+                    const prev = byCanonical.get(key);
+                    const prevScore = this.mediaUrlScore(prev.full || prev.img || prev.thumb || '');
+                    const currScore = this.mediaUrlScore(normalized.full || normalized.img || normalized.thumb || '');
+                    if (currScore > prevScore) {
+                        byCanonical.set(key, normalized);
+                    }
+                });
+                return Array.from(byCanonical.values());
             },
             initActive() {
                 let active = this.images.findIndex(function(image) {

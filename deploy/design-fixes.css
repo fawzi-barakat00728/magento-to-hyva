@@ -324,17 +324,17 @@
     top: 50%;
     transform: translateY(-50%);
     z-index: 20;
-    width: 40px;
-    height: 40px;
+    width: 42px;
+    height: 42px;
     display: flex;
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.85);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+    background: rgba(255, 255, 255, 0.82);
+    box-shadow: none;
     border: none;
     cursor: pointer;
-    color: #555;
+    color: #4a4a4a;
     opacity: 0;
     transition: opacity 0.3s ease, background 0.2s ease, box-shadow 0.2s ease;
 }
@@ -353,7 +353,13 @@
 
 .gallery-arrow:hover {
     background: #fff;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    box-shadow: none;
+}
+
+.gallery-arrow svg {
+    width: 18px;
+    height: 18px;
+    stroke-width: 2.2;
 }
 
 .gallery-arrow:focus {
@@ -403,17 +409,48 @@
     background: rgba(0, 0, 0, 0.85) !important;
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
+    z-index: 10000 !important;
 }
 
 .gallery-fullscreen-overlay .gallery-arrow {
     opacity: 1;
-    background: rgba(255, 255, 255, 0.15);
-    color: #fff;
+    background: rgba(255, 255, 255, 0.82);
+    color: #4a4a4a;
     box-shadow: none;
 }
 
 .gallery-fullscreen-overlay .gallery-arrow:hover {
-    background: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.95);
+}
+
+.gallery-fullscreen-overlay #gallery-main {
+    margin-bottom: 0 !important;
+    height: calc(100vh - 28px) !important;
+}
+
+.gallery-fullscreen-overlay #gallery-main img {
+    max-height: calc(100vh - 42px) !important;
+    width: auto !important;
+    max-width: 100% !important;
+}
+
+.gallery-fullscreen-overlay .gallery-close-btn {
+    background: rgba(255, 255, 255, 0.24);
+}
+
+.gallery-fullscreen-overlay .gallery-close-btn:hover {
+    background: rgba(255, 255, 255, 0.4);
+}
+
+.gallery-close-wrap {
+    position: fixed !important;
+    top: 16px !important;
+    right: 16px !important;
+    z-index: 10020 !important;
+}
+
+.gallery-fullscreen-overlay .gallery-zoom {
+    display: none !important;
 }
 
 .gallery-close-btn {
@@ -441,15 +478,30 @@
 }
 
 @media (min-width: 769px) {
-    #gallery > div > div:first-child {
+    #gallery > div:not(.gallery-fullscreen-overlay) > div:first-child {
         overflow: hidden;
     }
-    #gallery > div > div:first-child img {
+    #gallery > div:not(.gallery-fullscreen-overlay) > div:first-child img {
         max-height: 720px;
         object-fit: contain;
     }
     .js_thumbs_slides {
         max-height: 720px !important;
+    }
+
+    #gallery > div.gallery-fullscreen-overlay {
+        display: block !important;
+    }
+
+    #gallery > div.gallery-fullscreen-overlay > div:first-child {
+        flex: 1 1 auto !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        overflow: visible !important;
+    }
+
+    #gallery > div.gallery-fullscreen-overlay > div:nth-child(2) {
+        display: none !important;
     }
 }
 
@@ -2631,10 +2683,10 @@ header.msg .dismiss::after {
 
 :root {
     --ftc-backtotop-right: 16px;
-    --ftc-backtotop-bottom: 16px;
-    --ftc-backtotop-radius: 16px;
-    --ftc-backtotop-width: 34px;
-    --ftc-backtotop-min-height: 124px;
+    --ftc-backtotop-bottom: 24px;
+    --ftc-backtotop-radius: 18px;
+    --ftc-backtotop-width: 36px;
+    --ftc-backtotop-min-height: 120px;
     --ftc-backtotop-icon-size: 22px;
     --ftc-backtotop-desktop-offset: 30px;
     --ftc-seo-title-size-desktop: 52px;
@@ -2643,7 +2695,7 @@ header.msg .dismiss::after {
 @supports (bottom: max(0px)) {
     :root {
         --ftc-backtotop-right: max(16px, env(safe-area-inset-right));
-        --ftc-backtotop-bottom: max(16px, calc(env(safe-area-inset-bottom) + 8px));
+        --ftc-backtotop-bottom: max(24px, calc(env(safe-area-inset-bottom) + 10px));
     }
 }
 
@@ -2710,12 +2762,12 @@ header.msg .dismiss::after {
     align-items: center;
     justify-content: center;
     gap: 6px;
-    width: 40px;
-    min-width: 40px;
-    max-width: 40px;
-    min-height: 112px;
-    padding: 8px 7px 10px;
-    border-radius: 18px 18px 0 0 !important;
+    width: var(--ftc-backtotop-width);
+    min-width: var(--ftc-backtotop-width);
+    max-width: var(--ftc-backtotop-width);
+    min-height: var(--ftc-backtotop-min-height);
+    padding: 8px 7px 14px;
+    border-radius: var(--ftc-backtotop-radius) !important;
     background-color: #a6bb9a !important;
     color: #fff !important;
     transform: none !important;

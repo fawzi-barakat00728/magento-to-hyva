@@ -213,35 +213,38 @@
 
                             
                             $imgarr = array();
+                            $imgarr2 = array();
                             $path = "/pub/media/catalog/product";
                             $colors = array();
                             $sizes = array();
                             foreach($_children as $child){    
                               if($child->isSalable()){
                                 $childComplete = $objectManager->create('Magento\Catalog\Model\Product')->load($child->getId()); 
-                                if(!in_array($child["image"], $imgarr)){                                
-                                  $imgarr[] = $child["image"];      
+                                $childImage = (string) $child["image"];
+                                if($childImage !== '' && $childImage !== 'no_selection' && !in_array($childImage, $imgarr, true)){                                
+                                  $imgarr[] = $childImage;      
                                 }  
                                 $getColor = $childComplete->getRgbFarbe();
-                                if(!in_array($getColor, $colors)){
+                                if($getColor && !in_array($getColor, $colors, true)){
                                   $colors[] = $getColor;
                                 }
                                 $getSize = $childComplete->getAttributeText("size");
-                                if(!in_array($getSize, $sizes) && $child->isSaleable()){
+                                if($getSize && !in_array($getSize, $sizes, true) && $child->isSaleable()){
                                   $sizes[] = $getSize;
                                 }
-                              }        
-								
-								$imgarr2 = array();
-				                $images = $child->getMediaGalleryImages();
+                                $images = $childComplete->getMediaGalleryImages();
                                 if ($images && $images->getSize()) {
                                     foreach ($images as $image) {
-                                        $url = $image->getUrl();
-                                        if(preg_match('/mfz/',$url) && !in_array($url, $imgarr2)) {
-                                            $imgarr2[] = $image->getUrl();
+                                        $url = (string) $image->getUrl();
+                                        if ($url === '' || stripos($url, 'placeholder') !== false) {
+                                            continue;
+                                        }
+                                        if (preg_match('/mfz/i', $url) && !in_array($url, $imgarr2, true)) {
+                                            $imgarr2[] = $url;
                                         }
                                     }
                                 }
+                              }        
 								
                             }    
 				 
@@ -252,30 +255,30 @@
 				 
                             $imageHelper = $objectManager->get('Magento\Catalog\Helper\Image');
                             $ProductImage = $imageHelper->init($productComplete, 'category_page_grid')->getUrl();
-                            //if(isset($imgarr[0])){
-
-
-                            //$ProductImage = $imgarr[0];
-                            if(!preg_match('/(mf1|mfz1)/',$ProductImage)) {
+                            if (
+                                !$ProductImage ||
+                                stripos($ProductImage, 'placeholder') !== false ||
+                                stripos($ProductImage, 'no_selection') !== false ||
+                                !preg_match('/(mf1|mfz1|mh|pfg)/i', $ProductImage)
+                            ) {
                                 foreach ($imgarr as $item) {
-									 $ProductImage = $path.$item;
-                                     break;
+                                    if ($item && stripos($item, 'no_selection') === false) {
+                                        $ProductImage = $path . $item;
+                                        break;
+                                    }
                                 }
-							}	
+                            }
 				 
 
-								$ProductImage2 = false;
-                                if(isset($imgarr2[0])){
-								  $ProductImage2 = $imgarr2[0];
-								}
+                            $ProductImage2 = false;
+                            if (isset($imgarr2[0]) && stripos($imgarr2[0], 'placeholder') === false) {
+                                $ProductImage2 = $imgarr2[0];
+                            }
 			                   
                             
-                            //}else{
-                            //    $ProductImage = "/pub/media/placeholder.png";
-                            //}
                             $primaryImageClass = $ProductImage2 ? 'primary-image has-secondary-image' : 'primary-image';
-                            echo '<img class="' . $primaryImageClass . '" src="' . $ProductImage . '">';
-				 if($ProductImage2){ echo '<div class="image-overlay has-secondary-image" style="background-image: url('.$ProductImage2.');"></div>'; }
+                            echo '<img class="' . $primaryImageClass . '" loading="lazy" decoding="async" src="' . $ProductImage . '">';
+                            if($ProductImage2){ echo '<div class="image-overlay has-secondary-image" style="background-image: url('.$ProductImage2.');"></div>'; }
 							
                                   
                 /*
