@@ -139,11 +139,16 @@
    ===================================================== */
 
 /* Product title — 28px, sans-serif body font (not serif Korpus-B) */
-.catalog-product-view .page-title span {
+.catalog-product-view .page-title,
+.catalog-product-view .page-title span,
+.catalog-product-view .product-info-main .page-title,
+.catalog-product-view .product-info-main .page-title * {
     font-family: "KorpusGrotesk-B", sans-serif !important;
     font-size: 28px !important;
-    line-height: 1.2;
-    letter-spacing: 0;
+    line-height: 30.8px !important;
+    letter-spacing: 0 !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
 }
 
 /* Price — 28px (luma-compat says 20px, original is 28px) */
@@ -249,13 +254,55 @@
    6. ADD TO CART BUTTON — 15px, opacity hover
    ===================================================== */
 #product-addtocart-button {
-    text-transform: uppercase;
-    font-size: 15px;
-    letter-spacing: 0.15em;
+    text-transform: uppercase !important;
+    font-size: 15px !important;
+    letter-spacing: 0.15em !important;
+    font-weight: 600 !important;
+    line-height: 22px !important;
+    height: 50px !important;
+    padding: 14px 17px !important;
+    display: inline-block !important;
 }
 #product-addtocart-button:hover {
     background: #000 !important;
     opacity: 0.9;
+}
+
+/* PDP add-to-cart row parity — simple heart icon, no compare box */
+.catalog-product-view .ftc-addtocart-row {
+    gap: 15px !important;
+    align-items: center !important;
+}
+
+.catalog-product-view .ftc-addtocart-row .ftc-wishlist-wrapper {
+    flex: 0 0 auto !important;
+    width: auto !important;
+    border: 0 !important;
+}
+
+.catalog-product-view .ftc-wishlist-wrapper #add-to-wishlist,
+.catalog-product-view .ftc-wishlist-wrapper button[data-addto="wishlist"],
+.catalog-product-view .ftc-wishlist-wrapper .action.towishlist {
+    border: 0 !important;
+    background: transparent !important;
+    width: 18px !important;
+    min-width: 18px !important;
+    height: 18px !important;
+    padding: 0 !important;
+}
+
+.catalog-product-view .ftc-wishlist-wrapper #add-to-wishlist svg,
+.catalog-product-view .ftc-wishlist-wrapper button[data-addto="wishlist"] svg,
+.catalog-product-view .ftc-wishlist-wrapper .action.towishlist svg {
+    width: 18px !important;
+    height: 18px !important;
+}
+
+.catalog-product-view .ftc-wishlist-wrapper #add-to-compare,
+.catalog-product-view .ftc-wishlist-wrapper button[data-addto="compare"],
+.catalog-product-view .action.tocompare,
+.catalog-product-view [data-addto="compare"] {
+    display: none !important;
 }
 
 
@@ -804,15 +851,16 @@ header.msg .dismiss {
     position: relative;
 }
 .ftc-inline-search input[type="text"] {
-    border: 1px solid #ccc;
+    border: 1px solid #c2c2c2;
     border-radius: 0;
     padding: 4px 30px 4px 10px;
-    font-size: 13px;
-    width: 140px;
-    height: 28px;
-    line-height: 28px;
+    font-size: 14px;
+    width: 200px;
+    height: 30px;
+    line-height: 30px;
     outline: none;
     font-family: inherit;
+    background: #f8f8f8;
     transition: width 0.3s;
 }
 .ftc-inline-search input[type="text"]:focus {
@@ -883,19 +931,19 @@ body {
    (Ref: header.less:1179-1235, 1851-1870)
    ===================================================== */
 .ftc-header-inner {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
     max-width: none !important;
 }
 
-/* Navigation inner div padding (header.less:1222-1235) */
-.left-nav-section .navigation > div {
-    padding-left: 100px !important;
-    padding-right: 100px !important;
+/* Single source of truth for desktop menu gutters */
+.ftc-header {
+    --ftc-menu-gutter: 100px;
 }
 
 @media (max-width: 1200px) {
-    .left-nav-section .navigation > div {
-        padding-left: 40px !important;
-        padding-right: 40px !important;
+    .ftc-header {
+        --ftc-menu-gutter: 40px;
     }
 }
 
@@ -943,7 +991,7 @@ body {
 .catalogsearch-result-index .column.main {
     max-width: 100% !important;
     margin: 0 auto !important;
-    padding: 20px 40px 40px !important;
+    padding: 20px 0 40px !important;
 }
 
 /* Product items — no extra padding on grid items */
@@ -1170,7 +1218,7 @@ body {
 .catalog-category-view .column.main {
     max-width: 100% !important;
     margin: 0 auto !important;
-    padding: 20px 40px 40px !important;
+    padding: 20px 0 40px !important;
 }
 
 /* Center category description text & image */
@@ -1322,6 +1370,7 @@ body {
 }
 
 .catalog-category-view .category-image img {
+    display: none !important;
     margin: 0 auto;
 }
 
@@ -1354,10 +1403,24 @@ body {
 
 /* Category image full width */
 .catalog-category-view .category-image img {
+    display: none !important;
     width: 100% !important;
     max-width: 100% !important;
     height: auto !important;
     margin: 0 !important;
+}
+
+/* Hide migrated CMS hero images on category pages to match original listing layout */
+.catalog-category-view .category-description .ftc-image-block,
+.catalog-category-view .category-cms .ftc-image-block {
+    display: none !important;
+}
+
+/* Category page on original has no breadcrumb row above description/products */
+.catalog-category-view .top-container,
+.catalog-category-view .breadcrumbs,
+.catalog-category-view .ftc-breadcrumbs {
+    display: none !important;
 }
 
 /* Hide the parent title container too */
@@ -1400,8 +1463,8 @@ body {
     width: 100%;
     max-width: 1920px;
     margin: 0 auto;
-    padding-left: 40px;
-    padding-right: 40px;
+    padding-left: var(--ftc-menu-gutter);
+    padding-right: var(--ftc-menu-gutter);
 }
 
 /* Level 0 list */
@@ -1415,14 +1478,9 @@ body {
 /* Level 0 item */
 .mega-nav-item.level-0 {
     display: inline-block;
-    padding: 0 20px;
     height: 60px;
     cursor: pointer;
     position: static;
-}
-
-.mega-nav-item.level-0:first-child {
-    padding-left: 0;
 }
 
 /* Level 0 link */
@@ -1472,23 +1530,33 @@ body {
     z-index: 100;
     padding: 0;
     margin: 0;
+    font-family: "KorpusGrotesk-B", sans-serif;
+    font-size: 15px;
+    line-height: 21px;
+    letter-spacing: normal;
+    text-transform: none;
 }
 
 .mega-dropdown-inner {
+    width: 100%;
     max-width: 1920px;
     margin: 0 auto;
-    padding-left: 40px;
-    padding-right: 40px;
+    padding-left: 0;
+    padding-right: 0;
 }
 
 /* Level 1 list (horizontal tabs: Featured, Ready to wear, etc.) */
 .mega-level1-list {
     list-style: none;
     margin: 0;
-    padding: 0;
+    padding-left: var(--ftc-menu-gutter);
+    padding-right: var(--ftc-menu-gutter);
     display: flex;
     flex-wrap: wrap;
-    position: relative;
+    position: static;
+    width: 100%;
+    text-transform: none;
+    letter-spacing: normal;
 }
 
 .mega-level1-item {
@@ -1496,6 +1564,10 @@ body {
     padding: 0 20px;
     height: 40px;
     position: static;
+    margin-left: -4px;
+}
+.mega-level1-item:first-child {
+    padding-left: 0;
 }
 
 .mega-level1-link {
@@ -1509,6 +1581,9 @@ body {
     color: #111;
     font-size: 18px;
     line-height: 40px;
+    text-transform: none;
+    letter-spacing: normal;
+    font-weight: 400;
 }
 
 .mega-level1-item:hover .mega-level1-link > span {
@@ -1521,12 +1596,12 @@ body {
     width: 16px;
     height: 16px;
     background-color: #fff;
-    display: block;
+    display: inline-block;
     border-bottom: 1px solid #A9BA9D;
     border-right: 1px solid #A9BA9D;
     transform: rotate(45deg);
     position: absolute;
-    bottom: -12px;
+    bottom: -20px;
     left: calc(50% - 8px);
     z-index: 110;
 }
@@ -1534,44 +1609,95 @@ body {
 /* Level 2 panel (sub-panel below level 1 tabs) */
 .mega-level2-panel {
     position: absolute;
-    left: 0;
+    left: -4px;
     right: 0;
+    transform: none;
+    width: auto;
     top: 40px;
     background: #fff;
     border-top: 1px solid #A9BA9D;
     z-index: 105;
-    padding: 20px 40px 40px;
+    padding: 0;
+    font-family: "KorpusGrotesk-B", sans-serif;
 }
 
 /* Level 2 columns layout */
 .mega-level2-columns {
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: flex-start;
+    position: relative;
     gap: 0;
+    width: 100%;
+    max-width: 1920px;
+    margin: 0 auto;
+    padding: 20px var(--ftc-menu-gutter) 100px var(--ftc-menu-gutter);
     border-bottom: 1px solid #A9BA9D;
-    padding-bottom: 20px;
+    font-family: "KorpusGrotesk-B", sans-serif;
+    letter-spacing: normal;
+    text-transform: none;
+}
+
+.mega-level2-main {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.mega-level2-columns.has-side-content .mega-level2-main {
+    width: 50%;
+}
+
+.mega-level2-cms {
+    width: 50%;
+    display: flex;
+    justify-content: flex-end;
+    padding-left: 20px;
+}
+
+.mega-level2-cms > * {
+    width: 100%;
 }
 
 .mega-level2-column {
-    min-width: 180px;
-    max-width: 300px;
-    padding: 0 20px;
+    min-width: unset;
+    max-width: unset;
+    width: 100%;
+    padding: 0 0;
     vertical-align: top;
 }
 
 /* Level 2 link (category heading) */
 .mega-level2-link {
-    display: block;
+    display: inline-block;
     text-decoration: none;
-    margin-bottom: 4px;
+    margin-bottom: 0;
+    position: relative;
+    padding-right: 16px;
+}
+
+.mega-level2-link::after {
+    content: "";
+    width: 6px;
+    height: 6px;
+    display: inline-block;
+    border-bottom: 2px solid #A9BA9D;
+    border-right: 2px solid #A9BA9D;
+    transform: rotate(-45deg);
+    position: absolute;
+    top: 17px;
+    margin-left: 5px;
 }
 
 .mega-level2-link > span {
     font-family: "KorpusGrotesk-B", sans-serif;
-    color: #444;
-    font-size: 16px;
-    line-height: 24px;
-    text-transform: uppercase;
+    color: #111;
+    font-size: 18px;
+    line-height: 40px;
+    text-transform: none;
+    letter-spacing: normal;
+    font-weight: 400;
 }
 
 .mega-level2-link:hover > span {
@@ -1593,9 +1719,12 @@ body {
 
 .mega-level3-link > span {
     font-family: "KorpusGrotesk-B", sans-serif;
-    color: #666;
-    font-size: 14px;
-    line-height: 22px;
+    color: #444;
+    font-size: 16px;
+    line-height: 24px;
+    text-transform: uppercase;
+    font-weight: 400;
+    letter-spacing: normal;
 }
 
 .mega-level3-link:hover > span {
@@ -1610,8 +1739,1075 @@ body {
     color: #A9BA9D !important;
 }
 
+/* Level 0 active item in original stays black with underline */
+.mega-nav-link.level-0[aria-current="page"] > span {
+    color: #111 !important;
+}
+
+.mega-nav-item.level-0 > .mega-nav-link.level-0[aria-current="page"] {
+    border-bottom: 2px solid #111;
+}
+
+
+
+
+/* Close nav arrow at bottom of level 2 panel */
+.mega-level2-panel::after {
+    display: none;
+}
+
+.close-nav-arrow {
+    width: 16px;
+    height: 16px;
+    background-color: #fff;
+    display: inline;
+    border-top: 1px solid #A9BA9D;
+    border-left: 1px solid #A9BA9D;
+    transform: rotate(45deg);
+    position: absolute;
+    bottom: 30px;
+    left: calc(50% - 8px);
+    z-index: 110;
+}
 /* Override default Hyva navigation styles */
 .navigation.z-20 {
     background: #fff;
 }
 
+
+/* =====================================================
+   20. LOGO POSITIONING — centered like original
+   ===================================================== */
+.ftc-logo {
+    display: block;
+    margin: 0 auto;
+    text-align: center;
+    padding: 0;
+    position: relative;
+    border: none;
+    top: -5px;
+    height: auto;
+    line-height: normal;
+}
+.ftc-logo > * {
+    text-align: center;
+}
+.ftc-logo p {
+    margin: 0;
+    padding: 0;
+}
+.ftc-logo a {
+    display: inline-block !important;
+    line-height: normal;
+}
+.ftc-logo img {
+    display: inline-block;
+    margin: 0 auto;
+    vertical-align: middle;
+    position: relative;
+    top: 0;
+    height: 103px;
+    width: auto;
+    max-width: none;
+}
+.ftc-logo img:not(:only-of-type):last-of-type {
+    display: none;
+}
+
+/* Neutralize legacy luma-compat nav typography leaking into mega menu */
+.navigation-no-arrows .mega-nav .level-0,
+.navigation-no-arrows .mega-nav .level-0 * {
+    font-family: "KorpusGrotesk-B", sans-serif !important;
+    letter-spacing: normal !important;
+}
+.navigation-no-arrows .mega-dropdown,
+.navigation-no-arrows .mega-dropdown * {
+    text-transform: none !important;
+    letter-spacing: normal !important;
+}
+.navigation-no-arrows .mega-nav-link.level-0 > span,
+.navigation-no-arrows .mega-level3-link > span {
+    text-transform: uppercase !important;
+}
+
+
+/* =====================================================
+   21. MISSING CMS COMPONENT STYLES — ftc-toggle
+   (Accordion/toggle component used in CMS pages)
+   ===================================================== */
+.ftc-toggle-group {
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+@media screen and (min-width: 768px) {
+    .ftc-toggle-group {
+        padding-left: 10vw;
+        padding-right: 10vw;
+    }
+}
+.ftc-toggle {
+    border-top: 1px solid #dacbb6;
+    text-align: left;
+    margin: auto;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    position: relative;
+}
+.ftc-toggle .ftc-title-toggle {
+    margin-top: 30px;
+    margin-bottom: 30px;
+    text-align: left;
+    padding-left: 30px;
+    padding-right: 70px;
+    color: #111 !important;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all ease-in-out 0.3s;
+}
+.ftc-toggle .ftc-title-toggle:hover {
+    color: #a6bb9a !important;
+}
+.ftc-toggle .ftc-title-toggle:after {
+    content: "+";
+    position: absolute;
+    right: 30px;
+    font-size: 30px;
+    line-height: 20px;
+    color: #a6bb9a;
+    display: inline-block;
+    font-weight: 200;
+    transition: all ease-in-out 0.3s;
+}
+.ftc-toggle .ftc-title-toggle.active:after {
+    transform: rotate(45deg);
+    color: #ff6038;
+}
+.ftc-toggle .ftc-text-toggle {
+    display: none;
+    padding-left: 30px;
+    color: #111 !important;
+    padding-right: 30px;
+    transition: all ease-in-out 0.3s;
+}
+.ftc-toggle .ftc-text-toggle p {
+    color: #111 !important;
+}
+.ftc-toggle .ftc-text-toggle.active {
+    display: block;
+}
+
+
+/* =====================================================
+   22. MISSING CMS COMPONENT STYLES — ftc-popup/overlay
+   (Popup/modal component used in CMS pages)
+   ===================================================== */
+.ftc-popup-button {
+    cursor: pointer;
+}
+.ftc-overlay {
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    right: 0;
+    z-index: 99999;
+    bottom: 0;
+    left: 0;
+    background: rgba(255, 255, 255, 0.8);
+    display: none;
+}
+.ftc-popup {
+    max-width: 800px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    max-height: 95vh;
+    width: 100%;
+    height: auto;
+    padding: 0px;
+    position: relative;
+    background: #fff;
+    margin: 20px auto;
+}
+.ftc-popup img {
+    width: 100%;
+    height: auto;
+}
+.ftc-close {
+    position: absolute;
+    top: 10px;
+    transform: rotate(45deg);
+    right: 10px;
+    font-size: 50px;
+    cursor: pointer;
+    color: #000;
+    font-weight: 200;
+}
+
+
+/* =====================================================
+   23. MISSING CMS COMPONENT STYLES — ftc-download
+   (Download button with icon)
+   ===================================================== */
+a.ftc-download {
+    position: relative;
+    padding-left: 60px !important;
+}
+.ftc-download:after {
+    position: absolute;
+    left: 25px;
+    top: 18px;
+    content: "";
+    display: inline-block;
+    width: 20px;
+    filter: invert(1);
+    height: 20px;
+    background: url(../images/download-icon.svg);
+}
+.ftc-download.button-border:after {
+    filter: invert(0);
+}
+.ftc-download.button-border:hover:after {
+    filter: invert(1);
+}
+
+
+/* =====================================================
+   24. MISSING CMS COMPONENT STYLES — ftc-text-block-v
+   (Vertical text block layout)
+   ===================================================== */
+.ftc-text-block-v .ftc-text-block-flex {
+    display: flex;
+    gap: 50px;
+    flex-wrap: wrap;
+}
+.ftc-text-block-v .ftc-text-block-flex .ftc-text {
+    flex: 1 1 0px;
+    flex-basis: 20%;
+}
+.ftc-text-block-v {
+    padding-left: 10vw;
+    padding-right: 10vw;
+    padding-top: 30px;
+    padding-bottom: 30px;
+}
+.ftc-text-block-v.ftc-gray {
+    background: #f8f8f8;
+}
+@media screen and (max-width: 1000px) {
+    .ftc-text-block-v .ftc-text-block-flex {
+        flex-wrap: wrap;
+        gap: 20px 50px;
+    }
+    .ftc-text-block-v .ftc-text-block-flex .ftc-text {
+        flex: 1 1 0px;
+        flex-basis: 40%;
+    }
+}
+@media screen and (max-width: 767px) {
+    .ftc-text-block-v .ftc-text-block-flex {
+        flex-direction: column;
+        gap: 20px;
+    }
+}
+
+
+/* =====================================================
+   25. MISSING CMS COMPONENT STYLES — ftc-teaser
+   ===================================================== */
+.ftc-teaser {
+    display: inline !important;
+}
+.ftc-complete.ftc-inline {
+    display: inline !important;
+}
+
+
+/* =====================================================
+   26. MISSING CMS COMPONENT STYLES — ftc-video
+   (Video container with responsive aspect ratio)
+   ===================================================== */
+.ftc-video {
+    position: relative;
+    padding-bottom: 56.25%;
+    padding-top: 0;
+    height: 0;
+    overflow: hidden;
+    max-height: 300px;
+}
+.ftc-video iframe,
+.ftc-video object,
+.ftc-video embed {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+
+/* =====================================================
+   27. CATEGORY PAGE FILTER OVERRIDES
+   (Match original inline styles)
+   ===================================================== */
+.toggle-category-filter {
+    display: none !important;
+}
+.block.filter {
+    display: none !important;
+}
+#amasty-shopby-product-list .toolbar.toolbar-products:last-of-type,
+#amasty-shopby-product-list .toolbar.toolbar-products:nth-of-type(2n) {
+    display: block !important;
+}
+.catalog-category-view .columns .toggle-category-filter {
+    z-index: 100 !important;
+}
+.category-kaschmir-pflege .toggle-category-filter {
+    display: none !important;
+}
+.catalog-category-view .columns .toolbar .top-toolbar {
+    justify-content: space-between;
+    display: flex;
+}
+.catalog-category-view .columns .block.filter .filter-content .filter-list-container .filter-options-content .am-shopby-form .am-swatch-link .swatch-option.selected:before {
+    background-color: #a6bb9a;
+    border-color: #a6bb9a;
+}
+#amasty-shopby-product-list .toolbar-products:last-of-type .top-toolbar {
+    display: none;
+}
+@media (max-width: 767px) {
+    .catalog-category-view .columns .product-item .product-item-details .swatch-attribute .swatch-option {
+        width: 20px !important;
+        height: 20px !important;
+        margin: 1px 5px 0 0;
+        border: 2px solid #f8f8f8;
+    }
+    .catalog-category-view .category-cms h1 {
+        font-size: 22px;
+    }
+}
+
+
+/* =====================================================
+   28. SEARCH RESULTS PAGE
+   ===================================================== */
+.catalogsearch-result-index .page-wrapper .page-main {
+    padding: 40px 20px 0 !important;
+}
+@media (max-width: 900px) {
+    .catalogsearch-result-index .column.main .product-item:nth-of-type(odd) {
+        margin-right: 10px !important;
+    }
+    .catalog-category-view .columns .product-item .product-actions,
+    .product-slider .product-item .product-actions {
+        z-index: 10;
+    }
+    .catalog-product-view .product-images-container {
+        height: auto !important;
+        margin-bottom: 300px;
+    }
+}
+.catalogsearch-result-index .column.main .product-item .product-item-details .product-item-name {
+    padding-top: 10px !important;
+}
+.catalogsearch-result-index.page-products .page-wrapper .page-main {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+.cms-page-view .page-main {
+    max-width: 100%;
+}
+
+
+/* =====================================================
+   29. AMASTY SLIDER (category carousel)
+   ===================================================== */
+.amslider-container.am-swiper-slider {
+    width: 100%;
+}
+#category-carousel.amslider {
+    position: relative;
+    margin: 0px auto;
+}
+#category-carousel .swiper-button-prev,
+.swiper-button-next {
+    background-size: 12px;
+}
+.amslider .swiper-slide .swiper-category-item:hover,
+.amslider .swiper-slide .swiper-category-item.active {
+    background: #ffffff;
+    box-shadow: none !important;
+    border: none !important;
+    margin: 0;
+    color: #a6bb9a !important;
+}
+
+
+/* =====================================================
+   30. PRODUCT LIST ITEM - Stock Alert & Sizes
+   ===================================================== */
+.product-info-main .amxnotif-block {
+    display: none;
+}
+.product-info-main .product-options-bottom .amstockstatus-stockalert .amxnotif-block {
+    display: block;
+}
+.catalog-category-view .columns .product-item .FTC-ListItem .available-colors div span.more-available-colors {
+    border: none;
+}
+.catalog-category-view .columns .product-item .FTC-ListItem .available-colors .available-sizes div span {
+    border: none;
+}
+
+
+/* =====================================================
+   31. FOOTER COPYRIGHT ROW — hide duplicate
+   ===================================================== */
+.page-footer .footer-copyright-row {
+    display: none;
+}
+
+
+/* =====================================================
+   32. HEADER FIXED CLASS — sticky behavior on scroll
+   ===================================================== */
+.ftc-header.fixed {
+    position: relative;
+    top: auto;
+    z-index: 900;
+}
+
+
+
+/* =====================================================
+   33. HEADER ICONS — dark/black to match original
+   Original uses filter: invert(1) brightness(0.2) on
+   wishlist, cart icons and invert(1) sepia(100%) on account
+   ===================================================== */
+.ftc-shopcontrol .ftc-icon {
+    filter: invert(1) brightness(0.2);
+}
+
+/* =====================================================
+   34. ANNOUNCEMENT BAR SLIDE — ensure overlapping slides
+   ===================================================== */
+header.msg .home-message {
+    position: relative;
+    min-height: 18px;
+}
+header.msg .home-message p.slide {
+    margin: 0;
+    position: absolute;
+    left: 0;
+    right: 0;
+    transition: opacity 2s;
+}
+header.msg .home-message p.slide:first-child {
+    position: relative;
+}
+
+/* =====================================================
+   35. ANNOUNCEMENT BAR COLOR — match original #A9BA9D bg + black text
+   ===================================================== */
+header.msg {
+    background-color: #A9BA9D !important;
+}
+header.msg .home-message,
+header.msg .home-message a {
+    color: #000 !important;
+}
+header.msg .dismiss::before,
+header.msg .dismiss::after {
+    background: #000;
+}
+
+
+
+/* =====================================================
+   36. MENU SPACING — authoritative nav spacing rules
+   ===================================================== */
+.mega-nav-item.level-0 {
+    padding: 0 20px;
+}
+.mega-nav-item.level-0:first-child {
+    padding-left: 0;
+}
+
+/* =====================================================
+   37. DISMISS BUTTON — chevron style like original
+   ===================================================== */
+header.msg .dismiss {
+    width: 16px;
+    height: 16px;
+}
+header.msg .dismiss::before,
+header.msg .dismiss::after {
+    width: 9px;
+    height: 1.5px;
+    background: #000;
+    top: 55%;
+}
+header.msg .dismiss::before {
+    transform: translate(-85%, -50%) rotate(-45deg);
+}
+header.msg .dismiss::after {
+    transform: translate(-15%, -50%) rotate(45deg);
+}
+
+/* =====================================================
+   38. RIGHT NAV SECTION — widen for search + icons
+   ===================================================== */
+.right-nav-section {
+    width: 400px;
+}
+
+/* =====================================================
+   39. FOOTER PARITY — remove extra Hyva-only copyright row
+   ===================================================== */
+.page-footer .footer-copyright-row {
+    display: none !important;
+}
+
+/* =====================================================
+   40. PLP PARITY — Category list/toolbar/cards like original FTC
+   ===================================================== */
+.catalog-category-view .category-view .category-description {
+    width: 900px !important;
+    margin: 60px auto 70px auto !important;
+    text-align: center !important;
+    font-family: "KorpusGrotesk-B", sans-serif !important;
+    font-size: 20px !important;
+    line-height: 1.5 !important;
+    padding: 0 !important;
+}
+
+@media (max-width: 1200px) {
+    .catalog-category-view .category-view .category-description {
+        width: 100% !important;
+        margin: 0 auto 30px auto !important;
+        padding: 50px 20px !important;
+    }
+}
+
+.catalog-category-view .columns,
+.catalogsearch-result-index .columns {
+    width: 100% !important;
+    max-width: 100% !important;
+    border-top: 1px solid #f1f1f1 !important;
+}
+
+.catalog-category-view .column.main,
+.catalogsearch-result-index .column.main {
+    padding-top: 20px !important;
+}
+
+.catalog-category-view .toolbar.toolbar-products {
+    position: relative !important;
+    padding: 0 !important;
+}
+
+.catalog-category-view .toolbar .top-toolbar {
+    position: absolute !important;
+    z-index: 20 !important;
+    top: 10px !important;
+    left: 0 !important;
+    right: 0 !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    pointer-events: none;
+}
+
+.catalog-category-view .toolbar .sorting-options {
+    pointer-events: auto;
+    margin-right: 15px;
+}
+
+.catalog-category-view .toolbar .toolbar-sorter {
+    float: left !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+}
+
+.catalog-category-view .toolbar .toolbar-sorter .sorter-label {
+    margin: 0 !important;
+    color: #111 !important;
+    font-family: "KorpusGrotesk-B", sans-serif !important;
+    font-size: 14px !important;
+    text-transform: uppercase !important;
+}
+
+.catalog-category-view .toolbar .toolbar-sorter .sorter-options {
+    margin: 0 !important;
+    padding: 0 18px 0 0 !important;
+    border: none !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
+    color: #a6bb9a !important;
+    font-family: "KorpusGrotesk-B", sans-serif !important;
+    font-size: 14px !important;
+    text-transform: uppercase !important;
+    cursor: pointer !important;
+}
+
+.catalog-category-view .toolbar .toolbar-sorter .sorter-options:hover {
+    color: #111 !important;
+}
+
+.catalog-category-view .products.wrapper .product-item,
+.catalogsearch-result-index .products.wrapper .product-item {
+    width: calc(25% - 3px) !important;
+    margin: 0 4px 4px 0 !important;
+    padding: 0 !important;
+    position: relative !important;
+    height: auto !important;
+}
+
+.catalog-category-view .products.wrapper .product-item:nth-of-type(4n),
+.catalogsearch-result-index .products.wrapper .product-item:nth-of-type(4n) {
+    margin-right: 0 !important;
+}
+
+@media (max-width: 900px) {
+    .catalog-category-view .products.wrapper .product-item,
+    .catalogsearch-result-index .products.wrapper .product-item {
+        width: calc(50% - 3px) !important;
+        margin: 0 0 6px 0 !important;
+    }
+
+    .catalog-category-view .products.wrapper .product-item:nth-of-type(odd),
+    .catalogsearch-result-index .products.wrapper .product-item:nth-of-type(odd) {
+        margin-right: 6px !important;
+    }
+}
+
+.catalog-category-view .products .FTC-ListItem,
+.catalogsearch-result-index .products .FTC-ListItem {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    padding-bottom: 20px;
+    transition: all 0.3s;
+}
+
+.catalog-category-view .products .FTC-ListItem:hover,
+.catalogsearch-result-index .products .FTC-ListItem:hover {
+    background: #eee;
+}
+
+.catalog-category-view .products .FTC-ListItem .product-item-photo,
+.catalogsearch-result-index .products .FTC-ListItem .product-item-photo {
+    display: block;
+    width: 100%;
+    position: relative;
+}
+
+.catalog-category-view .products .FTC-ListItem .product-item-photo img,
+.catalogsearch-result-index .products .FTC-ListItem .product-item-photo img {
+    display: block;
+    width: 100%;
+    height: auto;
+    position: relative;
+    z-index: 1;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+
+.catalog-category-view .products .FTC-ListItem .product-item-photo .image-overlay,
+.catalogsearch-result-index .products .FTC-ListItem .product-item-photo .image-overlay {
+    position: absolute;
+    inset: 0;
+    background-position: center center !important;
+    background-size: cover !important;
+    background-repeat: no-repeat !important;
+    z-index: 2;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.catalog-category-view .products .FTC-ListItem:hover .image-overlay.has-secondary-image,
+.catalogsearch-result-index .products .FTC-ListItem:hover .image-overlay.has-secondary-image {
+    opacity: 1 !important;
+}
+
+.catalog-category-view .products .FTC-ListItem:hover .product-item-photo > img.has-secondary-image,
+.catalogsearch-result-index .products .FTC-ListItem:hover .product-item-photo > img.has-secondary-image {
+    opacity: 0;
+}
+
+.catalog-category-view .products .FTC-ListItem .wishlit-container,
+.catalogsearch-result-index .products .FTC-ListItem .wishlit-container {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 50px;
+    height: 50px;
+    z-index: 4;
+}
+
+.catalog-category-view .products .FTC-ListItem .wishlit-container .action.to-wishlist,
+.catalogsearch-result-index .products .FTC-ListItem .wishlit-container .action.to-wishlist {
+    display: block;
+    width: 50px;
+    height: 50px;
+    position: relative;
+    opacity: 0.7;
+}
+
+.catalog-category-view .products .FTC-ListItem .wishlit-container .action.to-wishlist::before,
+.catalogsearch-result-index .products .FTC-ListItem .wishlit-container .action.to-wishlist::before {
+    content: "\2661";
+    font-size: 22px;
+    line-height: 50px;
+    color: #111;
+    display: block;
+    text-align: center;
+}
+
+.catalog-category-view .products .FTC-ListItem .toplabels,
+.catalogsearch-result-index .products .FTC-ListItem .toplabels {
+    position: absolute;
+    z-index: 3;
+    top: 18px;
+    left: 18px;
+    text-transform: uppercase;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.catalog-category-view .products .FTC-ListItem .toplabels .sale-product,
+.catalogsearch-result-index .products .FTC-ListItem .toplabels .sale-product {
+    color: #f3633c;
+}
+
+.catalog-category-view .products .FTC-ListItem .toplabels .upcycled-product,
+.catalogsearch-result-index .products .FTC-ListItem .toplabels .upcycled-product {
+    color: #ad8b70;
+}
+
+.catalog-category-view .products .FTC-ListItem .product-item-details,
+.catalogsearch-result-index .products .FTC-ListItem .product-item-details {
+    margin: 0;
+    padding-top: 10px;
+    padding-left: 10px;
+    box-sizing: border-box;
+}
+
+.catalog-category-view .products .FTC-ListItem .product-item-details .product-item-name a,
+.catalogsearch-result-index .products .FTC-ListItem .product-item-details .product-item-name a {
+    display: block;
+    text-transform: none;
+    font-family: "KorpusGrotesk-B", sans-serif !important;
+    font-size: 18px;
+    color: #111;
+    opacity: 0.7;
+    transition: opacity 300ms;
+}
+
+.catalog-category-view .products .FTC-ListItem .product-item-details .product-item-name a:hover,
+.catalogsearch-result-index .products .FTC-ListItem .product-item-details .product-item-name a:hover {
+    opacity: 1;
+    text-decoration: none;
+}
+
+@media (max-width: 900px) {
+    .catalog-category-view .products .FTC-ListItem .product-item-details .product-item-name a,
+    .catalogsearch-result-index .products .FTC-ListItem .product-item-details .product-item-name a {
+        font-size: 15px;
+    }
+}
+
+.catalog-category-view .products .FTC-ListItem .available-colors,
+.catalogsearch-result-index .products .FTC-ListItem .available-colors {
+    position: relative;
+}
+
+.catalog-category-view .products .FTC-ListItem .available-colors > div > span:not(.more-available-colors),
+.catalogsearch-result-index .products .FTC-ListItem .available-colors > div > span:not(.more-available-colors) {
+    width: 15px;
+    height: 15px;
+    border-radius: 100%;
+    display: inline-block;
+    margin-right: 5px;
+    border: 1px solid rgb(229, 229, 229);
+}
+
+.catalog-category-view .products .FTC-ListItem .available-colors .available-sizes,
+.catalogsearch-result-index .products .FTC-ListItem .available-colors .available-sizes {
+    position: absolute;
+    opacity: 0;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    transition: all 0.3s;
+}
+
+.catalog-category-view .products .FTC-ListItem .available-colors .available-sizes span,
+.catalogsearch-result-index .products .FTC-ListItem .available-colors .available-sizes span {
+    width: auto;
+    height: 15px;
+    display: inline-block;
+    margin-right: 8px;
+    font-size: 14px;
+    color: #999;
+    border: 0 !important;
+}
+
+.catalog-category-view .products .FTC-ListItem:hover .available-colors > div {
+    opacity: 0;
+}
+
+.catalog-category-view .products .FTC-ListItem:hover .available-colors .available-sizes {
+    opacity: 1;
+}
+
+/* =============================================
+   41. PLP GRID HARD FIX
+   Prevent single-column fallback when other styles
+   force block/float behavior on product items.
+   ============================================= */
+.catalog-category-view .products.wrapper.products-grid > ol.products.list.items.product-items,
+.catalogsearch-result-index .products.wrapper.products-grid > ol.products.list.items.product-items {
+    display: grid !important;
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    gap: 4px !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    list-style: none !important;
+}
+
+.catalog-category-view .products.wrapper.products-grid > ol.products.list.items.product-items > li.item.product.product-item,
+.catalogsearch-result-index .products.wrapper.products-grid > ol.products.list.items.product-items > li.item.product.product-item {
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    float: none !important;
+    clear: none !important;
+    display: block !important;
+}
+
+@media (max-width: 1200px) {
+    .catalog-category-view .products.wrapper.products-grid > ol.products.list.items.product-items,
+    .catalogsearch-result-index .products.wrapper.products-grid > ol.products.list.items.product-items {
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    }
+}
+
+@media (max-width: 900px) {
+    .catalog-category-view .products.wrapper.products-grid > ol.products.list.items.product-items,
+    .catalogsearch-result-index .products.wrapper.products-grid > ol.products.list.items.product-items {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 6px !important;
+    }
+}
+
+/* Keep sorter in normal flow so it doesn't overlap product cards */
+.catalog-category-view .toolbar.toolbar-products,
+.catalogsearch-result-index .toolbar.toolbar-products {
+    min-height: 44px !important;
+    padding: 0 0 10px 0 !important;
+}
+
+.catalog-category-view .toolbar.toolbar-products .top-toolbar,
+.catalogsearch-result-index .toolbar.toolbar-products .top-toolbar {
+    position: static !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    z-index: auto !important;
+    display: flex !important;
+    justify-content: flex-end !important;
+    pointer-events: auto !important;
+    margin: 0 15px 0 0 !important;
+}
+
+.catalog-category-view .toolbar.toolbar-products .sorting-options,
+.catalogsearch-result-index .toolbar.toolbar-products .sorting-options {
+    margin-right: 0 !important;
+}
+
+/* =============================================
+   42. PLP parity fixpack (toolbar/pagination/back-to-top/cms text)
+   ============================================= */
+
+/* Keep sorter row in normal flow so it cannot overlap first product row */
+.catalog-category-view .toolbar.toolbar-products,
+.catalogsearch-result-index .toolbar.toolbar-products {
+    position: relative !important;
+    min-height: 44px !important;
+    padding: 0 0 10px 0 !important;
+}
+
+.catalog-category-view .toolbar.toolbar-products .top-toolbar,
+.catalogsearch-result-index .toolbar.toolbar-products .top-toolbar {
+    position: static !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    z-index: auto !important;
+    display: flex !important;
+    justify-content: flex-end !important;
+    pointer-events: auto !important;
+    margin: 0 15px 0 0 !important;
+}
+
+.catalog-category-view .toolbar.toolbar-products .bottom-toolbar,
+.catalogsearch-result-index .toolbar.toolbar-products .bottom-toolbar {
+    display: block !important;
+    margin: 26px 0 0 !important;
+    text-align: center !important;
+}
+
+:root {
+    --ftc-backtotop-right: max(16px, env(safe-area-inset-right));
+    --ftc-backtotop-bottom: max(24px, env(safe-area-inset-bottom));
+    --ftc-seo-title-size-desktop: 52px;
+}
+
+/* Match original Amasty "MEHR LADEN" button look */
+.amscroll-load-button,
+.mehr-laden-btn {
+    background: #000 !important;
+    color: #fff !important;
+    opacity: 1 !important;
+    padding: 20px 35px !important;
+    font-size: 14px !important;
+    text-decoration: none !important;
+    text-transform: uppercase !important;
+    font-family: "KorpusGrotesk-B", sans-serif !important;
+    transition: all 0.3s ease-in-out !important;
+    border: 0 !important;
+}
+
+.amscroll-load-button:hover,
+.mehr-laden-btn:hover {
+    background-color: #a6bb9a !important;
+    color: #fff !important;
+}
+
+.mehr-laden-btn.is-loading {
+    pointer-events: none;
+    opacity: 0.85 !important;
+}
+
+.amscroll-load-button.-before {
+    display: none !important;
+}
+
+/* Match original right-edge back-to-top control */
+.amscroll-backtotop-block {
+    background-color: #a6bb9a !important;
+}
+
+.amscroll-backtotop-block.-desktop-edge {
+    right: var(--ftc-backtotop-right) !important;
+    bottom: var(--ftc-backtotop-bottom) !important;
+    padding: 8px 10px !important;
+    min-width: 48px !important;
+    border-radius: 16px 16px 0 0 !important;
+    transform: none !important;
+    box-sizing: border-box !important;
+}
+
+/* Fallback styling for custom button markup if Amasty did not inject its own */
+.back-to-top-btn {
+    position: fixed;
+    left: auto !important;
+    right: var(--ftc-backtotop-right) !important;
+    bottom: var(--ftc-backtotop-bottom) !important;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-width: 48px;
+    padding: 8px 10px;
+    border-radius: 16px 16px 0 0;
+    background-color: #a6bb9a !important;
+    color: #fff !important;
+    transform: none !important;
+    transform-origin: center !important;
+    cursor: pointer;
+    overflow: visible;
+    box-sizing: border-box;
+}
+
+.back-to-top-btn svg {
+    width: 20px;
+    height: 20px;
+    padding: 4px;
+    border: 1px solid currentColor;
+    border-radius: 50%;
+    transform: none !important;
+}
+
+.back-to-top-btn:hover {
+    color: #fff !important;
+    background-color: #98ad8c !important;
+}
+
+.back-to-top-text {
+    font-size: 9px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    line-height: 1;
+}
+
+/* Category CMS SEO text block parity */
+.catalog-category-view .category-cms,
+.catalogsearch-result-index .category-cms {
+    margin: 80px 20px 50px !important;
+    padding: 0 !important;
+    text-align: left !important;
+}
+
+@media (max-width: 1540px) {
+    .catalog-category-view .category-cms,
+    .catalogsearch-result-index .category-cms {
+        padding: 0 20px !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .catalog-category-view .category-cms,
+    .catalogsearch-result-index .category-cms {
+        padding: 0 40px !important;
+    }
+}
+
+.catalog-category-view .category-cms h1,
+.catalogsearch-result-index .category-cms h1 {
+    margin: 0 0 20px !important;
+    font-family: "KorpusGrotesk-B", sans-serif !important;
+    font-size: var(--ftc-seo-title-size-desktop) !important;
+    font-weight: 600 !important;
+    line-height: 1.06 !important;
+    letter-spacing: 0 !important;
+    text-transform: uppercase !important;
+    color: #111 !important;
+    text-align: left !important;
+}
+
+@media (max-width: 767px) {
+    .catalog-category-view .category-cms h1,
+    .catalogsearch-result-index .category-cms h1 {
+        font-size: 22px !important;
+    }
+}
+
+.catalog-category-view .category-cms p,
+.catalogsearch-result-index .category-cms p {
+    margin: 0 0 10px !important;
+    text-align: left !important;
+    font-family: "KorpusGrotesk-B", sans-serif !important;
+    font-size: 15px !important;
+    line-height: 1.5 !important;
+    color: #111 !important;
+}
