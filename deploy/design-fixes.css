@@ -2633,8 +2633,10 @@ header.msg .dismiss::after {
     --ftc-backtotop-right: 16px;
     --ftc-backtotop-bottom: 16px;
     --ftc-backtotop-radius: 16px;
-    --ftc-backtotop-width: 38px;
-    --ftc-backtotop-min-height: 108px;
+    --ftc-backtotop-width: 34px;
+    --ftc-backtotop-min-height: 124px;
+    --ftc-backtotop-icon-size: 22px;
+    --ftc-backtotop-desktop-offset: 30px;
     --ftc-seo-title-size-desktop: 52px;
 }
 
@@ -2688,7 +2690,7 @@ header.msg .dismiss::after {
     width: var(--ftc-backtotop-width) !important;
     min-width: var(--ftc-backtotop-width) !important;
     min-height: var(--ftc-backtotop-min-height) !important;
-    padding: 8px 6px 10px !important;
+    padding: 6px 4px 8px !important;
     border-radius: var(--ftc-backtotop-radius) !important;
     transform: none !important;
     box-sizing: border-box !important;
@@ -2700,36 +2702,38 @@ header.msg .dismiss::after {
 .back-to-top-btn {
     position: fixed !important;
     left: auto !important;
-    right: var(--ftc-backtotop-right) !important;
-    bottom: var(--ftc-backtotop-bottom) !important;
+    right: 0 !important;
+    bottom: var(--ftc-backtotop-desktop-offset) !important;
     z-index: 9999 !important;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
     justify-content: center;
-    gap: 4px;
-    width: var(--ftc-backtotop-width);
-    min-width: var(--ftc-backtotop-width);
-    max-width: var(--ftc-backtotop-width);
-    min-height: var(--ftc-backtotop-min-height);
-    padding: 8px 6px 10px;
-    border-radius: var(--ftc-backtotop-radius) !important;
+    gap: 0;
+    width: auto;
+    min-width: 0;
+    max-width: none;
+    min-height: 0;
+    padding: 4px 26px 4px 20px;
+    border-radius: 20px 20px 0 0 !important;
     background-color: #a6bb9a !important;
     color: #fff !important;
-    transform: none !important;
-    transform-origin: center !important;
+    transform: rotate(-90deg) translate(71px, 72px) !important;
+    transform-origin: bottom right !important;
     cursor: pointer;
-    overflow: visible;
+    overflow: hidden;
     box-sizing: border-box;
+    transition: none !important;
 }
 
 .back-to-top-btn svg {
-    width: 18px;
-    height: 18px;
-    padding: 3px;
+    order: 2;
+    width: var(--ftc-backtotop-icon-size);
+    height: var(--ftc-backtotop-icon-size);
+    padding: 4px;
     border: 1px solid currentColor;
     border-radius: 50%;
-    transform: none !important;
+    transform: rotate(90deg) translateX(2px) !important;
 }
 
 .back-to-top-btn:hover {
@@ -2737,15 +2741,20 @@ header.msg .dismiss::after {
     background-color: #98ad8c !important;
 }
 
+.amscroll-backtotop-block .amscroll-text,
 .back-to-top-text {
-    font-size: 8px;
-    font-family: "KorpusGrotesk-A", "KorpusGrotesk-B", sans-serif;
-    font-weight: 400;
-    letter-spacing: 0.06em;
+    position: relative;
+    z-index: 1;
+    margin-right: 10px;
+    font-family: "KorpusGrotesk-B", sans-serif;
+    font-weight: 600;
+    font-size: 1.8rem;
+    line-height: 2.5rem;
+    letter-spacing: 0;
     text-transform: uppercase;
-    writing-mode: vertical-rl;
+    writing-mode: horizontal-tb;
     text-orientation: mixed;
-    line-height: 1;
+    white-space: nowrap;
 }
 
 /* Category CMS SEO text block parity */
