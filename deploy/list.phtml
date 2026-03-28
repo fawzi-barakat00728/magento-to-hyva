@@ -432,7 +432,7 @@
     <script>
     (function () {
       const buttonSelector = '.js-ftc-load-more';
-      const listContainerSelector = '#amasty-shopby-product-list .products.wrapper.products-grid, #amasty-shopby-product-list .products.wrapper.products-list, .products.wrapper.products-grid, .products.wrapper.products-list';
+      const listContainerSelector = '.products.wrapper.products-grid, .products.wrapper.products-list';
 
       const bindLoadMore = () => {
         document.querySelectorAll(buttonSelector).forEach((button) => {
@@ -470,8 +470,9 @@
               const parser = new DOMParser();
               const nextDocument = parser.parseFromString(html, 'text/html');
 
-              const currentContainer = document.querySelector(listContainerSelector);
-              const nextContainer = nextDocument.querySelector(listContainerSelector);
+              const currentScope = trigger.closest('#amasty-shopby-product-list') || trigger.closest('.column.main') || document;
+              const currentContainer = currentScope.querySelector(listContainerSelector) || document.querySelector(listContainerSelector);
+              const nextContainer = nextDocument.querySelector('#amasty-shopby-product-list ' + listContainerSelector + ', ' + listContainerSelector);
               if (!currentContainer || !nextContainer) {
                 throw new Error('Product container not found');
               }
