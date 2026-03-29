@@ -246,18 +246,31 @@ $tooltipBlockHtml = $block->getBlockHtml('product.swatch.tooltip');
                         </div>
                     </div>
                 <?php else: ?>
-                    <div class="flex flex-col sm:flex-row items-center py-2 w-full border-t border-gray-300 last:border-b">
-                        <label class="w-full sm:w-1/2 text-left text-gray-700 label"
+                    <?php $attributeCode = (string) $attribute->getProductAttribute()->getAttributeCode(); ?>
+                    <?php $isSizeAttribute = $attributeCode === 'size'; ?>
+                    <div class="<?= $isSizeAttribute
+                        ? 'flex flex-col items-start py-2 w-full border-t border-gray-300 last:border-b ftc-size-row'
+                        : 'flex flex-col sm:flex-row items-center py-2 w-full border-t border-gray-300 last:border-b' ?>">
+                        <label class="<?= $isSizeAttribute
+                            ? 'w-full text-left text-gray-700 label ftc-size-label'
+                            : 'w-full sm:w-1/2 text-left text-gray-700 label' ?>"
                                for="attribute<?= $escaper->escapeHtmlAttr($attributeId) ?>"
                         >
                             <span>
                                 <?= $escaper->escapeHtml($attribute->getProductAttribute()->getStoreLabel()) ?>
                             </span>
+                            <?php if ($isSizeAttribute): ?>
+                                <span class="sizes"><?= $escaper->escapeHtml(__('Grössentabelle')) ?></span>
+                            <?php endif; ?>
                         </label>
-                        <div class="w-full sm:ml-2 sm:w-1/2 text-left text-gray-900">
+                        <div class="<?= $isSizeAttribute
+                            ? 'w-full text-left text-gray-900 ftc-size-select-wrap'
+                            : 'w-full sm:ml-2 sm:w-1/2 text-left text-gray-900' ?>">
                             <select name="super_attribute[<?= $escaper->escapeHtmlAttr($attribute->getAttributeId()) ?>]"
                                     id="attribute<?= $escaper->escapeHtmlAttr($attributeId) ?>"
-                                    class="form-select super-attribute-select max-w-full"
+                                    class="<?= $isSizeAttribute
+                                        ? 'form-select super-attribute-select swatch-select size max-w-full'
+                                        : 'form-select super-attribute-select max-w-full' ?>"
                                     x-on:change="changeOption(<?= (int) $attributeId ?>, event.target.value)"
                                     required>
                                 <option value="">
@@ -368,18 +381,78 @@ $tooltipBlockHtml = $block->getBlockHtml('product.swatch.tooltip');
             min-height: calc(var(--ftc-pdp-color-swatch-height) - 4px);
             margin-top: 2px;
             padding: 0;
+            display: inline-block !important;
             border: 2px solid #ffffff;
             background: #f8f8f8;
             color: #222222;
             font-family: "KorpusGrotesk-B", sans-serif;
-            font-size: 32px;
+            font-size: 15px;
             font-weight: 400;
-            line-height: 1;
+            line-height: 114px;
+            text-align: center;
             box-sizing: border-box;
         }
         .catalog-product-view .swatch-attribute.color_name .ftc-swatch-more:hover,
         .catalog-product-view .swatch-attribute.color .ftc-swatch-more:hover {
             border: 2px solid #a9ba9d;
+        }
+
+        /* Match original size selector layout:
+           label row with Sizes Chart on top-right and select full-width below. */
+        .catalog-product-view .ftc-size-row {
+            display: block;
+            width: 100%;
+            border-top: 1px solid #d1d5db;
+            padding: 12px 0;
+        }
+        .catalog-product-view .ftc-size-row .ftc-size-label {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-family: "KorpusGrotesk-B", sans-serif;
+            font-size: 15px;
+            line-height: 21px;
+            color: #111111;
+        }
+        .catalog-product-view .ftc-size-row .ftc-size-label .sizes {
+            position: static;
+            margin: 0;
+            font-family: "KorpusGrotesk-B", sans-serif;
+            font-size: 15px;
+            font-weight: 400;
+            line-height: 21px;
+            color: #111111;
+            transition: color 0.2s ease;
+            cursor: pointer;
+        }
+        .catalog-product-view .ftc-size-row .ftc-size-label .sizes:hover {
+            color: #a9ba9d;
+        }
+        .catalog-product-view .ftc-size-row .ftc-size-select-wrap {
+            width: 100%;
+            margin-left: 0;
+        }
+        .catalog-product-view .ftc-size-row .super-attribute-select,
+        .catalog-product-view .ftc-size-row .swatch-select.size {
+            width: 100%;
+            max-width: 100%;
+            height: 50px;
+            border: 1px solid #000000;
+            font-family: "KorpusGrotesk-B", sans-serif;
+            font-size: 18px;
+            font-weight: 400;
+            line-height: 25.7143px;
+            padding: 4px 25px 5px 10px;
+            appearance: none;
+            -webkit-appearance: none;
+        }
+        .catalog-product-view .ftc-size-row .super-attribute-select:focus,
+        .catalog-product-view .ftc-size-row .swatch-select.size:focus {
+            border-color: #a9ba9d;
+            outline: none;
+            box-shadow: none;
         }
     </style>
 
