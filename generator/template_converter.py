@@ -95,7 +95,7 @@ TEMPLATE_STRATEGY = {
     # Complex header/footer: REWRITE with Hyvä Alpine.js versions
     # Header: centered logo layout with Hyvä Alpine.js components
     # Footer: renders footer CMS block with Alpine.js newsletter
-    "Magento_Theme/templates/html/ftcheader.phtml": "preserve",
+    "Magento_Theme/templates/html/ftcheader.phtml": "skip",
     "Magento_Theme/templates/html/footer.phtml": "rewrite",
     "Magento_Theme/templates/html/header.phtml": "rewrite",
 

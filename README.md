@@ -9,8 +9,11 @@ Converts KnockoutJS/RequireJS/jQuery templates to Alpine.js, LESS styles to Tail
 
 - **Design token extraction** — Automatically extracts colors, fonts, breakpoints, and font sizes from LESS variables
 - **Tailwind v3 & v4 support** — Generates CSS-first config (`@theme` block) for v4 or JS config for v3
-- **Safe template strategy** — Only overrides templates that need Hyvä-specific changes; skips product listing/view templates where Hyvä defaults work best
+- **Safe template strategy** — Uses rewrite/skip/preserve rules, then applies production overrides from `deploy/` as final layer
 - **Layout XML conversion** — Adapts Luma layout XMLs for Hyvä block structure
+- **Hyvä-native header wiring** — Uses `header-content` template override (keeps logo/topmenu/search/cart child blocks alive)
+- **Deploy pack auto-apply** — Production-tested files from `deploy/` are copied automatically into generated output
+- **No RequireJS shim by default** — Avoids silent failures from no-op `require()` shims in Hyvä
 - **i18n enrichment** — Extracts translatable strings from templates and enriches locale CSV files
 - **Module compatibility analysis** — Identifies modules needing Hyvä compatibility packages, generates stub modules
 - **Asset migration** — Copies fonts, images, icons, and social media assets
@@ -96,38 +99,23 @@ The generator produces a complete Hyvä child theme:
 - Layout XMLs (adapted for Hyvä block structure)
 - Static assets (images, fonts, translations)
 
-## Template Strategy
+## Deploy Overrides (`deploy/`)
 
-Templates are handled with different strategies based on safety:
+The generator now automatically applies production-tested overrides from `deploy/` after normal template/layout generation.
 
-| Strategy | Count | Description |
-|----------|-------|-------------|
-| **Rewrite** | 9 | Safe Alpine.js rewrites for forms, search, widgets |
-| **Skip** | 36 | Use Hyvä defaults — custom overrides break these |
-| **Copy** | 3 | Unchanged from source theme |
-| **Remove** | 5 | KO-only templates removed |
+Critical files copied automatically include:
+- `deploy/header.phtml` → `Magento_Theme/templates/html/header.phtml`
+- `deploy/luma-compat.css` → `web/css/luma-compat.css`
+- `deploy/design-fixes.css` → `web/css/design-fixes.css`
+- `deploy/design-fixes-additions.css` → `web/css/design-fixes-additions.css`
+- `deploy/catalog_product_view.xml` → `Magento_Catalog/layout/catalog_product_view.xml`
+- `deploy/view.xml` → `etc/view.xml`
+- `deploy/de_DE.csv` → `i18n/de_DE.csv`
 
-### Safe Rewrites (deployed automatically)
+Additional product/swatch/listing template overrides from `deploy/` are also copied automatically.
 
-| Template | What Changed |
-|----------|-------------|
-| `form.mini.phtml` | jQuery autocomplete → Alpine.js fetch + keyboard nav |
-| `languages.phtml` | KO dropdown → Alpine.js x-show with transitions |
-| `newsletter.phtml` | mage/validation → HTML5 + Alpine.js loading state |
-| `login.phtml` | jQuery validation → Alpine.js show/hide password |
-| `register.phtml` | jQuery strength meter → Alpine.js password scoring |
-| `edit.phtml` (account) | jQuery form → Alpine.js form handling |
-| `address/edit.phtml` | jQuery region updater → Alpine.js x-model |
-| `minicart.phtml` | KnockoutJS data-bind → Alpine.js private-content-loaded |
-| `widget/grid.phtml` | jQuery slider → Alpine.js snap scroll |
-
-### Skipped (use Hyvä defaults)
-
-Product listing (`list.phtml`, `items.phtml`) and product view templates (`addtocart.phtml`, `gallery.phtml`, etc.) are **skipped** — Hyvä provides its own optimized versions that work better than custom overrides.
-
-### Optional Templates
-
-Store-specific templates are available in `generator/templates/optional/` but not deployed automatically. Copy them manually if needed for your specific store setup.
+Custom modules from `deploy/DisabledProductView` and `deploy/PaginationFix` are copied to:
+- `output/<project>/custom-modules/MediaDivision/...`
 
 ## Deployment
 
@@ -138,8 +126,12 @@ After generating the theme:
 cd output/myshop/MyVendor/MyShopHyva
 npm install && npm run build
 
-# 2. Copy theme to Magento
-cp -r output/myshop/MyVendor/MyShopHyva /path/to/magento/app/design/frontend/MyVendor/MyShopHyva
+# 2. Deploy theme to Magento (exclude runtime dirs)
+rsync -a --delete \
+  --exclude node_modules \
+  --exclude .git \
+  output/myshop/MyVendor/MyShopHyva/ \
+  /path/to/magento/app/design/frontend/MyVendor/MyShopHyva/
 
 # 3. Install Hyvä compat packages (see compatibility report)
 composer require hyva-themes/hyva-compat-<module>
@@ -147,11 +139,33 @@ composer require hyva-themes/hyva-compat-<module>
 # 4. Copy stub modules
 cp -r output/myshop/compatibility/stubs/* /path/to/magento/app/code/
 
-# 5. Activate and deploy
+# 5. Copy custom deploy modules (if generated)
+cp -r output/myshop/custom-modules/* /path/to/magento/app/code/
+
+# 6. Activate and deploy
 bin/magento setup:upgrade
 bin/magento setup:di:compile
 bin/magento setup:static-content:deploy
 bin/magento cache:flush
+```
+
+For a full production workflow (Git -> server), issue closure matrix (points 1-12),
+and DB dump instructions for `hyvatestproject`, use:
+
+- [`docs/GIT_TO_SERVER_RUNBOOK.md`](/Users/oleksandr/Documents/GitHub/magento-to-hyva/docs/GIT_TO_SERVER_RUNBOOK.md)
+
+### Magento Admin / Config Checklist
+
+```bash
+# Activate theme
+bin/magento config:set design/theme/theme_id <THEME_ID>
+
+# Configure logo (used by $block->getChildHtml('logo') in header.phtml)
+bin/magento config:set design/header/logo_src images/logo.svg
+bin/magento config:set design/header/logo_alt "Store Logo"
+
+# Search engine (shared hosting fallback)
+bin/magento config:set catalog/search/engine lmysql
 ```
 
 ## Shared Hosting Notes

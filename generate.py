@@ -23,8 +23,8 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from generator.style_extractor import extract_design_tokens
 from generator.hyva_theme import scaffold_hyva_theme
 from generator.template_converter import (
-    get_strategy, get_strategy_with_analysis, analyze_template_complexity,
-    plan_conversion, TEMPLATE_STRATEGY,
+    analyze_template_complexity,
+    TEMPLATE_STRATEGY,
 )
 from generator.layout_converter import (
     process_all_layouts,
@@ -33,6 +33,38 @@ from generator.layout_converter import (
     generate_hyva_catalog_category_view_xml,
 )
 from compatibility.compat_generator import run_phase3
+
+
+DEPLOY_THEME_FILE_MAP = {
+    # Core theme fixes
+    "header.phtml": "Magento_Theme/templates/html/header.phtml",
+    "footer-fix.phtml": "Magento_Theme/templates/html/footer.phtml",
+    "luma-compat.css": "web/css/luma-compat.css",
+    "design-fixes.css": "web/css/design-fixes.css",
+    "design-fixes-additions.css": "web/css/design-fixes-additions.css",
+    "announcement-bar.css": "web/css/announcement-bar.css",
+    "css-fixes.css": "web/css/css-fixes.css",
+    "product-css-section.css": "web/css/product-css-section.css",
+    "catalog_product_view.xml": "Magento_Catalog/layout/catalog_product_view.xml",
+    "view.xml": "etc/view.xml",
+    "de_DE.csv": "i18n/de_DE.csv",
+    # Template overrides that were previously applied manually
+    "gallery.phtml": "Magento_Catalog/templates/product/view/gallery.phtml",
+    "list.phtml": "Magento_Catalog/templates/product/list.phtml",
+    "toolbar.phtml": "Magento_Catalog/templates/product/list/toolbar.phtml",
+    "sorter.phtml": "Magento_Catalog/templates/product/list/toolbar/sorter.phtml",
+    "swatch-renderer.phtml": "Magento_Swatches/templates/product/view/renderer.phtml",
+    "swatch-item.phtml": "Magento_Swatches/templates/product/swatch-item.phtml",
+    "product-detail-page.phtml": "Magento_Catalog/templates/product/product-detail-page.phtml",
+    "product-info.phtml": "Magento_Catalog/templates/product/view/product-info.phtml",
+    "ftc-product-sections.phtml": "Magento_Catalog/templates/product/view/sections/ftc-product-sections.phtml",
+    "menu-desktop.phtml": "Hyva_Theme/templates/html/header/menu/desktop.phtml",
+}
+
+DEPLOY_CUSTOM_MODULES = {
+    "DisabledProductView": "MediaDivision/DisabledProductView",
+    "PaginationFix": "MediaDivision/PaginationFix",
+}
 
 
 def find_luma_theme(project_path: str) -> str:
@@ -55,9 +87,13 @@ def find_luma_theme(project_path: str) -> str:
 
 def copy_templates(templates_dir: str, output_theme: str, strategy_map: dict) -> list:
     """
-    Copy Hyvä template rewrites (strategy=rewrite) to the output theme directory.
-    Skips templates whose strategy is "preserve" — those are handled separately
-    by copy_preserved_templates() which copies originals from the source theme.
+    Copy generator templates to the output theme directory only when the
+    strategy explicitly allows deployment (`rewrite` or `copy`).
+
+    `optional/` templates are intentionally excluded from automatic deployment.
+    Templates with strategy `preserve` are handled separately by
+    copy_preserved_templates() which copies originals from the source theme.
+
     Returns list of copied template paths.
     """
     copied = []
@@ -71,9 +107,12 @@ def copy_templates(templates_dir: str, output_theme: str, strategy_map: dict) ->
             src = os.path.join(root, fname)
             rel = os.path.relpath(src, templates_dir)
 
-            # Skip templates whose strategy is "preserve" — originals will be used
+            # Optional templates are never auto-deployed.
+            if rel.startswith("optional/"):
+                continue
+
             strategy = strategy_map.get(rel, "")
-            if strategy == "preserve":
+            if strategy not in {"rewrite", "copy"}:
                 continue
 
             dst = os.path.join(output_theme, rel)
@@ -512,12 +551,20 @@ def generate_layout_xmls(source_theme: str, output_theme: str, preserve_header: 
     Process layout XMLs: convert where needed, generate Hyvä-specific ones.
 
     Args:
-        preserve_header: When True, generate layout that works with preserved original
-                        templates. When False, generate layout for full Hyvä rewrite.
+        preserve_header: Legacy flag kept for backward compatibility.
+                        Layout generation now always keeps Hyvä header containers intact
+                        and overrides only `header-content` template.
     """
     generated = []
 
-    brand_config = {"preserve_header": preserve_header}
+    script_root = os.path.dirname(os.path.abspath(__file__))
+    deploy_dir = os.path.join(script_root, "deploy")
+    brand_config = {
+        "preserve_header": preserve_header,
+        "header_template": "header.phtml",
+        "include_design_fixes": os.path.isfile(os.path.join(deploy_dir, "design-fixes.css")),
+        "include_design_fix_additions": os.path.isfile(os.path.join(deploy_dir, "design-fixes-additions.css")),
+    }
 
     # Generate Hyvä-specific layout XMLs
     hyva_layouts = {
@@ -551,6 +598,73 @@ def generate_layout_xmls(source_theme: str, output_theme: str, preserve_header: 
     return generated
 
 
+def apply_deploy_theme_overrides(deploy_dir: str, output_theme: str) -> list[tuple[str, str]]:
+    """
+    Apply production-tested files from deploy/ to the generated theme.
+
+    Returns list of (source_name, destination_relative_path).
+    """
+    applied = []
+    if not os.path.isdir(deploy_dir):
+        return applied
+
+    for src_name, rel_dst in DEPLOY_THEME_FILE_MAP.items():
+        src = os.path.join(deploy_dir, src_name)
+        if not os.path.isfile(src):
+            continue
+        dst = os.path.join(output_theme, rel_dst)
+        os.makedirs(os.path.dirname(dst), exist_ok=True)
+        shutil.copy2(src, dst)
+        applied.append((src_name, rel_dst))
+
+    return applied
+
+
+def copy_deploy_custom_modules(deploy_dir: str, output_path: str) -> list[str]:
+    """
+    Copy custom Magento modules from deploy/ into output/custom-modules/.
+
+    These modules are not theme files and must be copied to app/code on target Magento.
+    """
+    copied = []
+    if not os.path.isdir(deploy_dir):
+        return copied
+
+    modules_base = os.path.join(output_path, "custom-modules")
+    if os.path.isdir(modules_base):
+        shutil.rmtree(modules_base)
+
+    for src_dir_name, rel_module_dst in DEPLOY_CUSTOM_MODULES.items():
+        src = os.path.join(deploy_dir, src_dir_name)
+        if not os.path.isdir(src):
+            continue
+
+        dst = os.path.join(modules_base, rel_module_dst)
+        if os.path.exists(dst):
+            shutil.rmtree(dst)
+        os.makedirs(os.path.dirname(dst), exist_ok=True)
+        shutil.copytree(src, dst)
+        copied.append(rel_module_dst)
+
+    return copied
+
+
+def clean_theme_runtime_artifacts(output_theme: str) -> list[str]:
+    """
+    Remove runtime directories that should never be versioned/deployed from generated theme.
+    """
+    removed = []
+    runtime_paths = [
+        "node_modules",
+    ]
+    for rel in runtime_paths:
+        path = os.path.join(output_theme, rel)
+        if os.path.isdir(path):
+            shutil.rmtree(path)
+            removed.append(rel)
+    return removed
+
+
 def main():
     parser = argparse.ArgumentParser(description="Generate Hyvä child theme from Magento Luma theme")
     parser.add_argument("--project", required=True, help="Path to Magento project (e.g. projects/ftcshop)")
@@ -577,8 +691,11 @@ def main():
     print(f"  Tailwind: v{args.tailwind_version}")
     print(f"{'='*60}\n")
 
+    script_root = os.path.dirname(os.path.abspath(__file__))
+    deploy_dir = os.path.join(script_root, "deploy")
+
     # 1. Find Luma theme
-    print("[1/6] Finding Luma theme...")
+    print("[1/8] Finding Luma theme...")
     luma_theme = find_luma_theme(project_path)
     if not luma_theme:
         print("  ERROR: No Luma theme found in project!")
@@ -586,15 +703,20 @@ def main():
     print(f"  Found: {luma_theme}")
 
     # 2. Extract design tokens from LESS
-    print("\n[2/6] Extracting design tokens from LESS...")
+    print("\n[2/8] Extracting design tokens from LESS...")
     tokens = extract_design_tokens(luma_theme)
     print(f"  Colors:      {len(tokens.colors)}")
     print(f"  Fonts:       {len(tokens.fonts)}")
     print(f"  Breakpoints: {len(tokens.breakpoints)}")
     print(f"  Font sizes:  {len(tokens.font_sizes)}")
 
-    # 3. Scaffold Hyvä theme (registration.php, theme.xml, tailwind.config.js, etc.)
-    print("\n[3/6] Scaffolding Hyvä child theme...")
+    # 3. Scaffold Hyvä theme (registration.php, theme.xml, tailwind config, etc.)
+    print("\n[3/8] Scaffolding Hyvä child theme...")
+    theme_target = os.path.join(output_path, args.vendor, args.theme)
+    if os.path.isdir(theme_target):
+        shutil.rmtree(theme_target)
+        print(f"  Removed previous output: {theme_target}")
+
     theme_base = scaffold_hyva_theme(
         output_path=output_path,
         vendor=args.vendor,
@@ -607,7 +729,7 @@ def main():
     print(f"  Created: {theme_base}")
 
     # 4. Copy converted phtml templates + preserve complex originals
-    print("\n[4/6] Copying Hyvä template rewrites...")
+    print("\n[4/8] Copying Hyvä template rewrites...")
     templates_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "generator", "templates")
     copied_templates = copy_templates(templates_dir, theme_base, TEMPLATE_STRATEGY)
     print(f"  Rewritten: {len(copied_templates)} template files:")
@@ -637,14 +759,14 @@ def main():
 
     # 5. Generate/convert layout XMLs
     has_preserved = len(preserved_templates) > 0
-    print(f"\n[5/6] Processing layout XMLs (preserve_header={has_preserved})...")
+    print(f"\n[5/8] Processing layout XMLs (preserve_header={has_preserved})...")
     layout_files = generate_layout_xmls(luma_theme, theme_base, preserve_header=has_preserved)
     print(f"  Generated {len(layout_files)} layout files:")
     for l in sorted(layout_files):
         print(f"    ✓ {l}")
 
     # 6. Copy static assets, LESS sources, and translations
-    print("\n[6/7] Copying assets, styles, and translations...")
+    print("\n[6/8] Copying assets, styles, and translations...")
     assets = copy_luma_assets(luma_theme, theme_base)
     less_files = copy_less_sources(luma_theme, theme_base)
     translations = copy_i18n(luma_theme, theme_base)
@@ -659,8 +781,25 @@ def main():
     print(f"  Enriched:     {enriched} strings added to {len(translations)} locales")
     print(f"  Template strings: {len(template_strings)} unique translatable strings")
 
-    # 7. Phase 3: Compatibility modules
-    print("\n[7/7] Phase 3: Analyzing module compatibility...")
+    # 7. Apply deploy overrides and remove runtime artifacts
+    print("\n[7/8] Applying deploy overrides...")
+    deploy_overrides = apply_deploy_theme_overrides(deploy_dir, theme_base)
+    custom_modules = copy_deploy_custom_modules(deploy_dir, output_path)
+    removed_runtime = clean_theme_runtime_artifacts(theme_base)
+
+    print(f"  Deploy overrides applied: {len(deploy_overrides)}")
+    for src_name, dst_rel in deploy_overrides:
+        print(f"    ✓ deploy/{src_name} → {dst_rel}")
+
+    print(f"  Custom modules copied: {len(custom_modules)}")
+    for module_rel in custom_modules:
+        print(f"    ✓ custom-modules/{module_rel}")
+
+    if removed_runtime:
+        print(f"  Removed runtime dirs: {', '.join(removed_runtime)}")
+
+    # 8. Phase 3: Compatibility modules
+    print("\n[8/8] Phase 3: Analyzing module compatibility...")
     compat_output = os.path.join(output_path, "compatibility")
     compat_analysis, compat_modules = run_phase3(project_path, compat_output)
 
@@ -686,6 +825,13 @@ def main():
             "packages_available": len(compat_analysis.get("compatible", [])),
             "needs_custom": len(compat_analysis.get("needs_custom", [])),
             "stub_modules_generated": len(compat_modules),
+        },
+        "deploy_overrides": {
+            "files_applied": len(deploy_overrides),
+            "custom_modules": custom_modules,
+        },
+        "cleanup": {
+            "runtime_artifacts_removed": removed_runtime,
         },
     }
 
@@ -714,22 +860,23 @@ def main():
     print(f"  Layouts:    {len(layout_files)}")
     print(f"  Assets:     {len(assets)}")
     print(f"  LESS:       {len(less_files)} source files")
+    print(f"  Deploy:     {len(deploy_overrides)} overrides")
+    print(f"  Modules:    {len(custom_modules)} custom deploy modules")
     print(f"  Compat:     {len(compat_modules)} stub modules")
     print(f"  Report:     {report_path}")
-    if has_preserved:
-        print(f"\n  Mode: PRESERVE — original header/footer templates kept intact.")
-        print(f"  The LESS/jQuery stack from Luma parent provides styling & interactivity.")
-        if less_files:
-            print(f"  {len(less_files)} LESS source files copied for compile compatibility.")
     print(f"\n  Next steps:")
     if stubs_generated:
         print(f"  0. Copy stubs/{os.path.basename(stub_theme)} → app/design/frontend/Hyva/default/")
         print(f"     Copy stubs/{os.path.basename(stub_module)} → app/code/Hyva/Theme/")
     print(f"  1. cd {theme_base} && npm install && npm run build")
-    print(f"  2. Install Hyvä compat packages (see compatibility/COMPATIBILITY_REPORT.md)")
-    print(f"  3. Copy stub modules from compatibility/stubs/ to app/code/")
-    print(f"  4. Deploy theme to Magento and activate")
-    print(f"  5. Test all pages and adjust templates as needed")
+    print(f"  2. Deploy theme with rsync excluding node_modules/.git")
+    print(f"  3. Install Hyvä compat packages (see compatibility/COMPATIBILITY_REPORT.md)")
+    print(f"  4. Copy stub modules from compatibility/stubs/ to app/code/")
+    if custom_modules:
+        print(f"  5. Copy custom-modules/* to app/code/")
+        print(f"  6. Activate theme, configure logo/search, flush caches")
+    else:
+        print(f"  5. Activate theme, configure logo/search, flush caches")
     print(f"{'='*60}\n")
 
 

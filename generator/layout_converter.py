@@ -124,55 +124,44 @@ def generate_hyva_default_xml(brand_config: dict) -> str:
     """
     Generate the default.xml for the Hyvä child theme.
 
-    Supports two modes based on brand_config['preserve_header']:
-
-    1. preserve_header=True (default):
-       The original header/footer templates are preserved as-is.
-       The layout simply includes the custom header template within the existing
-       Luma page structure. The original jQuery/LESS stack handles everything.
-       This avoids creating duplicate wrapper elements or conflicting containers.
-
-    2. preserve_header=False:
-       Full Hyvä rewrite mode — replaces header.container entirely with
-       a custom Alpine.js-powered header container.
-
-    The critical insight: when preserving templates, do NOT remove header.container
-    or create new wrapper divs — the original templates expect the Luma DOM structure.
-    Instead, override only the template reference so the original template renders
-    within Luma's layout containers.
+    Important for Hyvä compatibility:
+    - Keep `header-content` alive (don't hide/remove header.container)
+    - Override header template on existing Hyvä header block
+    - Keep child blocks available: logo, topmenu, header-search, cart-drawer
     """
-    preserve = brand_config.get("preserve_header", True)
+    header_template = brand_config.get("header_template", "header.phtml")
+    include_design_fixes = bool(brand_config.get("include_design_fixes", False))
+    include_design_fix_additions = bool(brand_config.get("include_design_fix_additions", False))
 
-    if preserve:
-        # Preserve mode: keep Luma's header structure, just override the template
-        # The original ftcheader.phtml creates its own header markup including
-        # .msg banner, .ftc-logo, .header-ftc-flex, .navigation, .right-nav-section,
-        # .region-chooser - all styled by the original LESS files.
-        return """<?xml version="1.0"?>
+    css_files = [
+        "css/styles.css",
+        "css/fonts.css",
+    ]
+    if include_design_fixes:
+        css_files.append("css/design-fixes.css")
+    if include_design_fix_additions:
+        css_files.append("css/design-fixes-additions.css")
+
+    head_css = "\n".join(f'        <css src="{css_path}"/>' for css_path in css_files)
+
+    return f"""<?xml version="1.0"?>
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <head>
-        <css src="css/styles.css"/>
-        <css src="css/fonts.css"/>
+{head_css}
     </head>
     <body>
-        <!-- Override header with custom FTC header template -->
-        <referenceBlock name="header.container" display="false"/>
-        <referenceBlock name="logo" remove="true"/>
+        <!-- Keep Hyvä header block and only override its template -->
+        <referenceBlock name="header-content" template="Magento_Theme::html/{header_template}"/>
 
-        <referenceContainer name="page.wrapper">
-            <block class="Magento\\Framework\\View\\Element\\Template"
-                   name="ftc.header"
-                   template="Magento_Theme::html/ftcheader.phtml"
-                   before="-"/>
-        </referenceContainer>
-
-        <!-- Move standard blocks into areas the header template expects -->
-        <move element="minicart" destination="page.wrapper" after="ftc.header"/>
-        <move element="top.search" destination="page.wrapper" after="ftc.header"/>
-
-        <!-- Remove blocks not needed (handled by custom header) -->
+        <!-- Remove legacy/duplicate header links -->
         <referenceBlock name="catalog.compare.link" remove="true"/>
+        <referenceBlock name="guest.wishlist.header.link" remove="true"/>
+        <referenceBlock name="ftc.guest.wishlist.link" remove="true"/>
+
+        <referenceContainer name="before.body.end">
+            <block name="back.to.top" template="Magento_Theme::html/back-to-top.phtml"/>
+        </referenceContainer>
 
         <!-- Custom footer -->
         <referenceContainer name="footer-container">
@@ -180,53 +169,6 @@ def generate_hyva_default_xml(brand_config: dict) -> str:
                    name="ftc.footer"
                    template="Magento_Theme::html/footer.phtml"
                    before="-"/>
-        </referenceContainer>
-    </body>
-</page>
-"""
-    else:
-        # Full Hyvä rewrite mode — create custom containers
-        return """<?xml version="1.0"?>
-<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
-    <head>
-        <css src="css/styles.css"/>
-        <css src="css/fonts.css"/>
-    </head>
-    <body>
-        <!-- FTC custom header replaces default Magento header -->
-        <referenceContainer name="header.container" remove="true"/>
-
-        <referenceContainer name="page.wrapper">
-            <container name="custom_header" htmlTag="div" htmlClass="ftc-header"
-                       before="-">
-                <container name="custom_header_inner" htmlTag="div" htmlClass="ftc-header-inner">
-                    <block class="Magento\\Framework\\View\\Element\\Template"
-                           name="ftc.header"
-                           template="Magento_Theme::html/ftcheader.phtml">
-                        <arguments>
-                            <argument name="store_manager" xsi:type="object">Magento\\Store\\Model\\StoreManagerInterface</argument>
-                            <argument name="locale_resolver" xsi:type="object">Magento\\Framework\\Locale\\Resolver</argument>
-                            <argument name="switcher_url_provider" xsi:type="object">Magento\\Store\\ViewModel\\SwitcherUrlProvider</argument>
-                        </arguments>
-                    </block>
-                </container>
-            </container>
-        </referenceContainer>
-
-        <!-- Move minicart into custom header area -->
-        <move element="minicart" destination="custom_header_inner" after="ftc.header"/>
-
-        <!-- Remove blocks not compatible with Hyvä -->
-        <referenceBlock name="catalog.compare.link" remove="true"/>
-
-        <!-- Custom footer -->
-        <referenceContainer name="footer-container" remove="true"/>
-        <referenceContainer name="page.wrapper">
-            <block class="Magento\\Framework\\View\\Element\\Template"
-                   name="ftc.footer"
-                   template="Magento_Theme::html/footer.phtml"
-                   after="-"/>
         </referenceContainer>
     </body>
 </page>

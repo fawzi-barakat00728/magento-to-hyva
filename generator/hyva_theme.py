@@ -656,41 +656,29 @@ def generate_default_xml() -> str:
 
 
 def generate_default_head_xml() -> str:
-    """Generate default_head_blocks.xml for custom fonts, Luma compat CSS, and RequireJS shim."""
+    """Generate default_head_blocks.xml for global CSS includes and legacy CSS removals."""
     return """<?xml version="1.0"?>
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <head>
-        <script src="js/require-shim.js"/>
         <css src="css/fonts.css"/>
         <css src="css/luma-compat.css"/>
+        <remove src="Amasty_InstagramFeed::vendor/fancybox/jquery.fancyambox.min.css"/>
+        <remove src="Amasty_LibSwiperJs::vendor/swiper/swiper.min.css"/>
+        <remove src="Mageplaza_Core::css/owl.carousel.css"/>
+        <remove src="Mageplaza_Core::css/owl.theme.css"/>
+        <remove src="Magestall_GuestWishlist::css/guestwishlist.css"/>
+        <remove src="Mageplaza_Core::css/magnific-popup.css"/>
     </head>
 </page>
 """
 
 
-def generate_require_shim_js() -> str:
-    """Generate RequireJS shim that prevents 'require is not defined' errors.
-
-    Luma CMS content often contains require([...]) calls for widgets,
-    tracking scripts, and third-party modules. Hyvä does not load RequireJS,
-    so these calls would produce console errors. This shim silently absorbs them.
-    """
-    return """(function() {
-    "use strict";
-    if (typeof window.require !== "undefined") return;
-    window.require = function(deps, callback) {};
-    if (typeof window.define === "undefined") {
-        window.define = function() {};
-        window.define.amd = false;
-    }
-    if (typeof window.ProcessFingerprint === "undefined") {
-        window.ProcessFingerprint = function() {};
-    }
-    if (typeof window.GuestWishList === "undefined") {
-        window.GuestWishList = { init: function() {} };
-    }
-})();
+def generate_theme_gitignore() -> str:
+    """Generate .gitignore for generated theme workspace artifacts."""
+    return """node_modules/
+pub/static/
+var/view_preprocessed/
 """
 
 
@@ -814,6 +802,7 @@ def scaffold_hyva_theme(
 
     # Core theme files
     files = {
+        ".gitignore": generate_theme_gitignore(),
         "registration.php": generate_registration_php(vendor, theme_name),
         "theme.xml": generate_theme_xml(title),
         "composer.json": generate_composer_json(vendor, theme_name),
@@ -836,9 +825,6 @@ def scaffold_hyva_theme(
             tokens, vendor, theme_name, tailwind_version
         )
         files["web/tailwind/tailwind-source.css"] = generate_tailwind_source_css()
-
-    # RequireJS shim — absorbs require() calls from Luma CMS content
-    files["web/js/require-shim.js"] = generate_require_shim_js()
 
     # Create directories for fonts (placeholder)
     os.makedirs(os.path.join(base, "web", "fonts"), exist_ok=True)
