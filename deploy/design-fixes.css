@@ -713,7 +713,7 @@
     font-weight: 600 !important;
     text-transform: uppercase !important;
     white-space: nowrap !important;
-    line-height: 1.2 !important;
+    line-height: 26.4px !important;
     letter-spacing: normal !important;
     margin-bottom: 20px !important;
     color: #111 !important;
@@ -744,8 +744,8 @@
 /* Cert logos in security section — taller than shipping/payment */
 .page-footer .area.methods .security.section img,
 .page-footer .security.section img {
-    height: 45px !important;
-    margin: 0 12px 8px 0 !important;
+    height: 32px !important;
+    margin: 0 12px 0 0 !important;
 }
 /* Links wrapping icons must be inline */
 .page-footer .area.methods .section a {
@@ -820,15 +820,18 @@
 }
 .page-footer .newsletter.section .block.newsletter .field.newsletter input {
     width: 100% !important;
+    height: 41px !important;
     padding: 20px 0 !important;
     border: none !important;
     border-bottom: 1px solid #eee !important;
     background-color: transparent !important;
     font-family: "KorpusGrotesk-B", sans-serif !important;
     font-size: 15px !important;
+    line-height: 21.4286px !important;
     outline: none !important;
     box-shadow: none !important;
     border-radius: 0 !important;
+    box-sizing: border-box !important;
     color: #111 !important;
 }
 .page-footer .newsletter.section .block.newsletter .field.newsletter input:focus {
@@ -843,15 +846,18 @@
 .page-footer .newsletter.section .block.newsletter .actions button {
     opacity: 0.8;
     width: 100% !important;
+    height: 42px !important;
     padding: 12px 0 !important;
     border: none !important;
     border-radius: 0 !important;
     background-color: transparent !important;
     font-family: "KorpusGrotesk-B", sans-serif !important;
     font-size: 14px !important;
+    line-height: 16px !important;
     color: #A9BA9D !important;
     text-transform: uppercase !important;
     border-bottom: 2px solid #A9BA9D !important;
+    box-sizing: border-box !important;
     cursor: pointer;
     transition: opacity 300ms;
 }
@@ -2301,10 +2307,17 @@ header.msg .dismiss::after {
    36. MENU SPACING — authoritative nav spacing rules
    ===================================================== */
 .mega-nav-item.level-0 {
-    padding: 0 20px;
+    padding: 0 !important;
+    margin-right: 40px;
 }
 .mega-nav-item.level-0:first-child {
-    padding-left: 0;
+    padding-left: 0 !important;
+}
+.mega-nav-item.level-0:last-child {
+    margin-right: 0;
+}
+.mega-nav-link.level-0 {
+    padding: 0 !important;
 }
 
 /* =====================================================
@@ -2920,4 +2933,136 @@ header.msg .dismiss::after {
     font-size: 15px !important;
     line-height: 1.5 !important;
     color: #111 !important;
+}
+
+/* =====================================================
+   43. HEADER/FOOTER PIXEL PARITY — pass 2 (desktop)
+   Keep this block at end so it wins over legacy overrides.
+   ===================================================== */
+@media (min-width: 1025px) {
+    /* Original desktop header keeps larger vertical rhythm. */
+    .ftc-header,
+    .ftc-header.fixed {
+        min-height: 189px !important;
+    }
+
+    .ftc-header-inner {
+        min-height: 189px !important;
+        padding-bottom: 20px !important;
+    }
+
+    /* Fine-tune nav row baseline against original screenshot. */
+    .header-ftc-flex {
+        top: -34px !important;
+        margin-bottom: 0 !important;
+    }
+
+    /* Remove inner menu link padding so first-level items match original spacing. */
+    .left-nav-section .navigation .mega-nav .mega-nav-item.level-0 > a.mega-nav-link.level-0 {
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+
+    /* Keep logo optically centered against original (shift a bit to the left). */
+    .ftc-logo a {
+        position: relative !important;
+        left: -10px !important;
+    }
+
+    /* Lock right controls position: avoid media-query drift at 1365px viewport. */
+    .right-nav-section {
+        right: 190px !important;
+        top: 15px !important;
+        width: 400px !important;
+        overflow: visible !important;
+    }
+
+    .ftc-header .ftc-store-switcher {
+        line-height: 22.4px !important;
+        margin-right: 8px !important;
+    }
+
+    .ftc-store-switcher label:first-child {
+        padding-left: 19px !important;
+    }
+
+    .ftc-store-switcher label:first-child::before {
+        width: 13px !important;
+        height: 13px !important;
+        top: 4px !important;
+    }
+
+    .ftc-inline-search {
+        margin-left: 0 !important;
+        margin-right: 5px !important;
+    }
+
+    .ftc-inline-search input[type="text"] {
+        width: 185px !important;
+        height: 32px !important;
+        line-height: 32px !important;
+    }
+
+    /*
+     * Original Luma places wishlist/minicart controls effectively outside the
+     * inline right-nav flow. Keep account in flow, detach wishlist/cart.
+     */
+    .right-nav-section .ftc-shopcontrol.wishlist,
+    .right-nav-section .ftc-shopcontrol.cart {
+        position: absolute !important;
+        margin-left: 0 !important;
+    }
+
+    .right-nav-section .ftc-shopcontrol.wishlist {
+        right: -41px !important;
+        top: 1px !important;
+    }
+
+    .right-nav-section .ftc-shopcontrol.cart {
+        right: -90px !important;
+        top: 1px !important;
+    }
+
+    .right-nav-section .ftc-shopcontrol.account {
+        position: relative !important;
+        top: -3px !important;
+    }
+}
+
+/* PDP right column: remove extra separator and tighten spacing around size + CTA block. */
+.catalog-product-view .ftc-size-row {
+    border-bottom: 0 !important;
+    padding-top: 9px !important;
+    padding-bottom: 6px !important;
+}
+
+.catalog-product-view .ftc-size-row .ftc-size-label {
+    margin-bottom: 6px !important;
+}
+
+.catalog-product-view .ftc-size-row + .ftc-addtocart-row,
+.catalog-product-view .ftc-addtocart-row {
+    margin-top: 12px !important;
+}
+
+/* Match original icon counters (plain number near icon, not green badge bubble). */
+.ftc-icon-counter {
+    top: -1px !important;
+    right: -12px !important;
+    min-width: auto !important;
+    height: auto !important;
+    line-height: 1 !important;
+    padding: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    color: #111 !important;
+    font-size: 15px !important;
+    font-family: "KorpusGrotesk-B", sans-serif !important;
+}
+
+/* Original screenshots do not show this control; keep it disabled for parity. */
+#back-to-top,
+.back-to-top-btn,
+.amscroll-backtotop-block {
+    display: none !important;
 }

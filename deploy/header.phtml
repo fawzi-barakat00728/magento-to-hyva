@@ -50,12 +50,6 @@ try {
     }
 } catch (\Exception $e) {}
 
-$gwlItemCount = 0;
-try {
-    $gwlHelper = $this->helper(\Magestall\GuestWishlist\Helper\Data::class);
-    $gwlItemCount = (int)$gwlHelper->getItemCount();
-} catch (\Exception $e) {}
-
 $iconUrl = $block->getViewFileUrl('images/icons');
 
 // Announcement bar CMS block
@@ -250,9 +244,7 @@ $countries = [
                         <img id="wishlisticon"
                              src="<?= $escaper->escapeUrl($iconUrl . '/wishlist3.png') ?>"
                              alt="" class="ftc-icon">
-                        <?php if ($gwlItemCount > 0) : ?>
-                        <span class="ftc-icon-counter"><?= (int)$gwlItemCount ?></span>
-                        <?php endif; ?>
+                        <span class="ftc-icon-counter counter qty"></span>
                     </a>
                 </div>
 
