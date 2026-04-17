@@ -3067,6 +3067,33 @@ header.msg .dismiss::after {
     display: none !important;
 }
 
+/* Cart counter sits in normal inline flow on original (not flex-item blockification). */
+.right-nav-section .ftc-shopcontrol.cart > a,
+.right-nav-section .ftc-shopcontrol.cart > button {
+    display: inline-block !important;
+    line-height: 1 !important;
+    width: 22px !important;
+    min-width: 22px !important;
+    height: 22px !important;
+    position: relative !important;
+    overflow: visible !important;
+}
+
+.right-nav-section .ftc-shopcontrol.cart .ftc-icon-counter {
+    display: inline !important;
+    position: absolute !important;
+    top: 5px !important;
+    left: 30px !important;
+    right: auto !important;
+    margin-left: 0 !important;
+    vertical-align: baseline !important;
+}
+
+.right-nav-section .ftc-shopcontrol.cart .ftc-icon {
+    display: inline-block !important;
+    vertical-align: middle !important;
+}
+
 /* Empty wishlist counter node should not reserve/shift any space. */
 .ftc-shopcontrol.wishlist .ftc-icon-counter:empty {
     display: none !important;
@@ -3167,13 +3194,17 @@ header.msg .dismiss::after {
         transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out, background-color 0.3s ease-in-out !important;
     }
 
+    #gallery > div:not(.gallery-fullscreen-overlay) .gallery-arrow-left {
+        left: 20px !important;
+    }
+
     #gallery > div:not(.gallery-fullscreen-overlay) > div:first-child:hover .gallery-arrow {
         opacity: 1 !important;
         pointer-events: auto !important;
     }
 
     #gallery > div:not(.gallery-fullscreen-overlay) .gallery-arrow-right {
-        right: 25px !important;
+        right: 180px !important;
     }
 
     /*
@@ -3231,9 +3262,20 @@ header.msg .dismiss::after {
     margin-bottom: 10px !important;
 }
 
-.catalog-product-view .ftc-size-row {
+.catalog-product-view .swatch-attribute.color_name,
+.catalog-product-view .swatch-attribute.color {
     border-top: 0 !important;
-    padding-top: 0 !important;
+    border-bottom: 0 !important;
+}
+
+.catalog-product-view .swatch-attribute.color_name .swatch-attribute-options,
+.catalog-product-view .swatch-attribute.color .swatch-attribute-options {
+    margin-bottom: 10px !important;
+}
+
+.catalog-product-view .ftc-size-row {
+    border-top: 1px solid #d5d5d5 !important;
+    padding-top: 8px !important;
     padding-bottom: 0 !important;
 }
 
@@ -3256,7 +3298,13 @@ header.msg .dismiss::after {
 
 /* Hide full-width success/info bars on PDP to match original behavior. */
 .catalog-product-view .page.messages,
-.catalog-product-view .messages.container {
+.catalog-product-view .messages.container,
+.catalog-product-view .messages,
+.catalog-product-view .message,
+.catalog-product-view .message-success,
+.catalog-product-view .message.notice,
+.catalog-product-view .message.info,
+.catalog-product-view [role="alert"] {
     display: none !important;
 }
 
@@ -3280,11 +3328,12 @@ header.msg .dismiss::after {
 
     /* Zoom icon should sit inside image bottom-right and appear only on hover. */
     #gallery > div:not(.gallery-fullscreen-overlay) > div:first-child .gallery-zoom {
-        right: 12px !important;
-        bottom: 12px !important;
+        right: 224px !important;
+        bottom: 30px !important;
         opacity: 0 !important;
         pointer-events: none !important;
-        color: #a4a8a3 !important;
+        color: #9ea39e !important;
+        cursor: zoom-in !important;
         transition: opacity 0.3s ease-in-out !important;
         z-index: 901 !important;
     }
@@ -3295,12 +3344,12 @@ header.msg .dismiss::after {
      */
     #gallery > div:not(.gallery-fullscreen-overlay) > div:first-child button.gallery-zoom[aria-label],
     #gallery > div:not(.gallery-fullscreen-overlay) > div:first-child .gallery-zoom {
-        width: 36px !important;
-        min-width: 36px !important;
-        max-width: 36px !important;
-        height: 36px !important;
-        min-height: 36px !important;
-        max-height: 36px !important;
+        width: 20px !important;
+        min-width: 20px !important;
+        max-width: 20px !important;
+        height: 20px !important;
+        min-height: 20px !important;
+        max-height: 20px !important;
         padding: 0 !important;
         border: 0 !important;
         background: transparent !important;
@@ -3312,12 +3361,12 @@ header.msg .dismiss::after {
     }
 
     #gallery > div:not(.gallery-fullscreen-overlay) > div:first-child:hover .gallery-zoom {
-        opacity: 0.75 !important;
+        opacity: 0.4 !important;
         pointer-events: auto !important;
     }
 
     #gallery > div:not(.gallery-fullscreen-overlay) > div:first-child .gallery-zoom:hover {
-        opacity: 1 !important;
+        opacity: 0.7 !important;
     }
 }
 

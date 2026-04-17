@@ -263,7 +263,8 @@ $countries = [
                              alt="" class="ftc-icon">
                         <span class="ftc-icon-counter"
                               x-text="summaryCount()"
-                              x-show="summaryCount()"
+                              x-bind:style="summaryCount() ? 'display:inline' : 'display:none'"
+                              style="display:inline"
                               x-cloak></span>
                     <?php if ($showMiniCart): ?>
                     </button>
