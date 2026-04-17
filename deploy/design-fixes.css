@@ -3141,7 +3141,7 @@ header.msg .dismiss::after {
 
     /* Arrow style/placement parity with original PDP. */
     #gallery > div:not(.gallery-fullscreen-overlay) .gallery-arrow {
-        opacity: 1 !important;
+        opacity: 0 !important;
         width: 80px !important;
         height: 900px !important;
         border: 0 !important;
@@ -3151,19 +3151,28 @@ header.msg .dismiss::after {
         color: #b8bbb6 !important;
         top: 0 !important;
         transform: none !important;
-    }
-
-    #gallery-main:hover .gallery-arrow {
-        opacity: 1 !important;
-    }
-
-    #gallery > div:not(.gallery-fullscreen-overlay) .gallery-arrow-left {
-        opacity: 0 !important;
         pointer-events: none !important;
+        transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out, background-color 0.3s ease-in-out !important;
+    }
+
+    #gallery > div:not(.gallery-fullscreen-overlay) > div:first-child:hover .gallery-arrow {
+        opacity: 1 !important;
+        pointer-events: auto !important;
     }
 
     #gallery > div:not(.gallery-fullscreen-overlay) .gallery-arrow-right {
         right: 25px !important;
+    }
+
+    /*
+     * luma-compat.css applies a broad button[aria-label] rule with
+     * background: rgba(255,255,255,.7) !important; override it for gallery arrows.
+     */
+    #gallery > div > div:first-child button.gallery-arrow[aria-label],
+    #gallery .relative button.gallery-arrow[aria-label*="revious"],
+    #gallery .relative button.gallery-arrow[aria-label*="ext"],
+    #gallery .relative button.gallery-arrow.absolute {
+        background: transparent !important;
     }
 
     #gallery > div:not(.gallery-fullscreen-overlay) .gallery-arrow svg {
@@ -3206,17 +3215,28 @@ header.msg .dismiss::after {
 }
 
 /* Size/add-to-cart vertical rhythm parity in product card. */
+.catalog-product-view .swatch-attribute.color_name {
+    margin-bottom: 10px !important;
+}
+
 .catalog-product-view .ftc-size-row {
-    padding-top: 3px !important;
+    border-top: 0 !important;
+    padding-top: 0 !important;
     padding-bottom: 0 !important;
 }
 
 .catalog-product-view .ftc-size-row .ftc-size-label {
-    margin-bottom: 4px !important;
+    margin-bottom: 10px !important;
+}
+
+.catalog-product-view .ftc-addtocart-row {
+    margin-top: 40px !important;
 }
 
 .catalog-product-view #product-addtocart-button {
-    height: 65px !important;
-    padding-top: 21px !important;
-    padding-bottom: 21px !important;
+    height: 50px !important;
+    padding-top: 14px !important;
+    padding-bottom: 14px !important;
+    margin-bottom: 15px !important;
+    background: #111111 !important;
 }
