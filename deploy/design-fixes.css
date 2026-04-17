@@ -3066,3 +3066,157 @@ header.msg .dismiss::after {
 .amscroll-backtotop-block {
     display: none !important;
 }
+
+/* =====================================================
+   44. PDP CARD PARITY — layout, gallery arrows, thumb rail
+   ===================================================== */
+@media (min-width: 1025px) {
+    /* Original PDP starts lower under the header. */
+    .catalog-product-view .page-main {
+        padding-top: 50px !important;
+    }
+
+    /* Match original 60/40 desktop split without extra side paddings/gaps. */
+    .catalog-product-view .product-detail-page {
+        max-width: none !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        gap: 0 !important;
+    }
+
+    .catalog-product-view .product-media-column {
+        flex: 0 0 60% !important;
+        width: 60% !important;
+        min-width: 60% !important;
+    }
+
+    .catalog-product-view .product-info-column {
+        flex: 0 0 40% !important;
+        width: 40% !important;
+        min-width: 40% !important;
+        padding-top: 52px !important;
+    }
+
+    /* Internal paddings follow original offsets in the right column. */
+    .catalog-product-view .column.main > .product-info-main {
+        padding: 0 !important;
+    }
+
+    .catalog-product-view .product-info-column > .product-info-main {
+        padding: 10px 51px 3vw 17px !important;
+    }
+
+    .catalog-product-view .product-info-main .page-title {
+        margin-bottom: 10px !important;
+    }
+
+    .catalog-product-view .product-info-stock-sku {
+        margin: 4px 0 0 !important;
+        padding-bottom: 60px !important;
+    }
+
+    /* Gallery visual height and thumb rail geometry (desktop). */
+    #gallery-main {
+        height: 900px !important;
+    }
+
+    #gallery > div:not(.gallery-fullscreen-overlay) > div:first-child img,
+    #gallery-main > img.invisible:first-child {
+        max-height: 900px !important;
+        height: 900px !important;
+    }
+
+    #gallery > div:not(.gallery-fullscreen-overlay) > div:nth-child(2),
+    #thumbs,
+    #thumbs .js_thumbs_slides,
+    #thumbs .js_thumbs_slide {
+        width: 128px !important;
+        min-width: 128px !important;
+    }
+
+    #thumbs > button {
+        display: none !important;
+    }
+
+    /* Arrow style/placement parity with original PDP. */
+    #gallery > div:not(.gallery-fullscreen-overlay) .gallery-arrow {
+        opacity: 1 !important;
+        width: 80px !important;
+        height: 900px !important;
+        border: 0 !important;
+        border-radius: 0 !important;
+        background: transparent !important;
+        box-shadow: none !important;
+        color: #b8bbb6 !important;
+        top: 0 !important;
+        transform: none !important;
+    }
+
+    #gallery-main:hover .gallery-arrow {
+        opacity: 1 !important;
+    }
+
+    #gallery > div:not(.gallery-fullscreen-overlay) .gallery-arrow-left {
+        opacity: 0 !important;
+        pointer-events: none !important;
+    }
+
+    #gallery > div:not(.gallery-fullscreen-overlay) .gallery-arrow-right {
+        right: 25px !important;
+    }
+
+    #gallery > div:not(.gallery-fullscreen-overlay) .gallery-arrow svg {
+        width: 40px !important;
+        height: 40px !important;
+        stroke: #b8bbb6 !important;
+        stroke-width: 1.05 !important;
+    }
+
+    #gallery > div:not(.gallery-fullscreen-overlay) .gallery-arrow:focus,
+    #gallery > div:not(.gallery-fullscreen-overlay) .gallery-arrow:hover {
+        outline: none !important;
+        background: transparent !important;
+        box-shadow: none !important;
+    }
+}
+
+/* Thumb focus/active border should not become browser-blue. */
+.catalog-product-view #thumbs button,
+.catalog-product-view #thumbs button:focus,
+.catalog-product-view #thumbs button:focus-visible {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.catalog-product-view #thumbs button.border-primary {
+    border-color: #a9ba9d !important;
+    border-width: 2px !important;
+}
+
+/* Color label line should match original casing/weight. */
+.catalog-product-view .swatch-attribute.color_name .product-option-label {
+    text-transform: none !important;
+    letter-spacing: 0 !important;
+}
+
+.catalog-product-view .swatch-attribute.color_name .product-option-label > span:last-child {
+    font-weight: 400 !important;
+    text-transform: none !important;
+}
+
+/* Size/add-to-cart vertical rhythm parity in product card. */
+.catalog-product-view .ftc-size-row {
+    padding-top: 3px !important;
+    padding-bottom: 0 !important;
+}
+
+.catalog-product-view .ftc-size-row .ftc-size-label {
+    margin-bottom: 4px !important;
+}
+
+.catalog-product-view #product-addtocart-button {
+    height: 65px !important;
+    padding-top: 21px !important;
+    padding-bottom: 21px !important;
+}

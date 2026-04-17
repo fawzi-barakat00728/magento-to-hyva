@@ -118,7 +118,7 @@ $productName = $block->getProduct()->getName();
                     type="button"
                     class="gallery-arrow gallery-arrow-left"
                     aria-label="<?= $escaper->escapeHtmlAttr(__('Previous image')) ?>"
-                    x-show="images.length > 1"
+                    x-show="images.length > 1 && active > 0"
                     x-cloak
                     @click.stop="setActiveAndScrollTo(getPreviousIndex())"
                 >
@@ -128,7 +128,7 @@ $productName = $block->getProduct()->getName();
                     type="button"
                     class="gallery-arrow gallery-arrow-right"
                     aria-label="<?= $escaper->escapeHtmlAttr(__('Next image')) ?>"
-                    x-show="images.length > 1"
+                    x-show="images.length > 1 && active < (images.length - 1)"
                     x-cloak
                     @click.stop="setActiveAndScrollTo(getNextIndex())"
                 >
