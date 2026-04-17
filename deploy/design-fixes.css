@@ -3104,7 +3104,7 @@ header.msg .dismiss::after {
     }
 
     .catalog-product-view .product-info-column > .product-info-main {
-        padding: 10px 51px 3vw 17px !important;
+        padding: 10px 116px 3vw 17px !important;
     }
 
     .catalog-product-view .product-info-main .page-title {
@@ -3239,4 +3239,148 @@ header.msg .dismiss::after {
     padding-bottom: 14px !important;
     margin-bottom: 15px !important;
     background: #111111 !important;
+    letter-spacing: normal !important;
+}
+
+/* Hide full-width success/info bars on PDP to match original behavior. */
+.catalog-product-view .page.messages,
+.catalog-product-view .messages.container {
+    display: none !important;
+}
+
+/* =====================================================
+   45. PDP INTERACTIONS PARITY — arrows, zoom, minicart
+   ===================================================== */
+@media (min-width: 1025px) {
+    /* Match original arrow reveal motion: fade + slight slide on gallery hover. */
+    #gallery > div:not(.gallery-fullscreen-overlay) .gallery-arrow-left {
+        transform: translateX(-10px) !important;
+    }
+
+    #gallery > div:not(.gallery-fullscreen-overlay) .gallery-arrow-right {
+        transform: translateX(10px) !important;
+    }
+
+    #gallery > div:not(.gallery-fullscreen-overlay) > div:first-child:hover .gallery-arrow-left,
+    #gallery > div:not(.gallery-fullscreen-overlay) > div:first-child:hover .gallery-arrow-right {
+        transform: translateX(0) !important;
+    }
+
+    /* Zoom icon should sit inside image bottom-right and appear only on hover. */
+    #gallery > div:not(.gallery-fullscreen-overlay) > div:first-child .gallery-zoom {
+        right: 12px !important;
+        bottom: 12px !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+        color: #a4a8a3 !important;
+        transition: opacity 0.3s ease-in-out !important;
+        z-index: 901 !important;
+    }
+
+    /*
+     * luma-compat.css has a broad button[aria-label] rule that forces 40x60.
+     * Keep zoom control square like the original.
+     */
+    #gallery > div:not(.gallery-fullscreen-overlay) > div:first-child button.gallery-zoom[aria-label],
+    #gallery > div:not(.gallery-fullscreen-overlay) > div:first-child .gallery-zoom {
+        width: 36px !important;
+        min-width: 36px !important;
+        max-width: 36px !important;
+        height: 36px !important;
+        min-height: 36px !important;
+        max-height: 36px !important;
+        padding: 0 !important;
+        border: 0 !important;
+        background: transparent !important;
+    }
+
+    #gallery > div:not(.gallery-fullscreen-overlay) > div:first-child .gallery-zoom svg {
+        width: 20px !important;
+        height: 20px !important;
+    }
+
+    #gallery > div:not(.gallery-fullscreen-overlay) > div:first-child:hover .gallery-zoom {
+        opacity: 0.75 !important;
+        pointer-events: auto !important;
+    }
+
+    #gallery > div:not(.gallery-fullscreen-overlay) > div:first-child .gallery-zoom:hover {
+        opacity: 1 !important;
+    }
+}
+
+/* Match original empty minicart popup look (centered modal, not side drawer). */
+#cart-drawer[open]:has(.grow.grid.place-items-center .mt-10.text-xl) {
+    inset: 0 !important;
+    width: 100vw !important;
+    max-width: 100vw !important;
+    height: 100vh !important;
+    max-height: 100vh !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    background: rgba(0, 0, 0, 0.35) !important;
+    overflow: hidden !important;
+}
+
+#cart-drawer[open]:has(.grow.grid.place-items-center .mt-10.text-xl) > .flex.gap-2.justify-between.items-center,
+#cart-drawer[open]:has(.grow.grid.place-items-center .mt-10.text-xl) > .grow.grid.place-items-center {
+    width: 750px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    background: #ffffff !important;
+}
+
+#cart-drawer[open]:has(.grow.grid.place-items-center .mt-10.text-xl) > .flex.gap-2.justify-between.items-center {
+    margin-top: calc(50vh - 96px) !important;
+    height: 70px !important;
+    padding: 30px 30px 0 !important;
+    align-items: flex-start !important;
+}
+
+#cart-drawer[open]:has(.grow.grid.place-items-center .mt-10.text-xl) > .grow.grid.place-items-center {
+    height: 130px !important;
+    padding: 0 30px 30px !important;
+    place-items: start center !important;
+}
+
+#cart-drawer[open]:has(.grow.grid.place-items-center .mt-10.text-xl) > .flex.flex-col {
+    display: none !important;
+}
+
+#cart-drawer[open]:has(.grow.grid.place-items-center .mt-10.text-xl) #cart-drawer-title {
+    font-size: 50px !important;
+    line-height: 70px !important;
+    font-weight: 400 !important;
+    text-transform: uppercase !important;
+}
+
+#cart-drawer[open]:has(.grow.grid.place-items-center .mt-10.text-xl) #cart-drawer-title .items-total {
+    display: none !important;
+}
+
+#cart-drawer[open]:has(.grow.grid.place-items-center .mt-10.text-xl) .grow.grid.place-items-center .text-center svg {
+    display: none !important;
+}
+
+#cart-drawer[open]:has(.grow.grid.place-items-center .mt-10.text-xl) .grow.grid.place-items-center .mt-10.text-xl {
+    margin-top: 30px !important;
+    font-size: 14px !important;
+    line-height: 19.6px !important;
+    font-weight: 700 !important;
+}
+
+#cart-drawer[open]:has(.grow.grid.place-items-center .mt-10.text-xl) > .flex.gap-2.justify-between.items-center > button {
+    width: 20px !important;
+    height: 20px !important;
+    padding: 0 !important;
+    margin-top: 20px !important;
+    border: 0 !important;
+    background: transparent !important;
+}
+
+#cart-drawer[open]:has(.grow.grid.place-items-center .mt-10.text-xl) > .flex.gap-2.justify-between.items-center > button svg {
+    width: 20px !important;
+    height: 20px !important;
+    stroke-width: 1.5 !important;
 }
