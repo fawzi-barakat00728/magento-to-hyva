@@ -260,7 +260,7 @@ $tooltipBlockHtml = $block->getBlockHtml('product.swatch.tooltip');
                     <?php $attributeCode = (string) $attribute->getProductAttribute()->getAttributeCode(); ?>
                     <?php $isSizeAttribute = $attributeCode === 'size'; ?>
                     <div class="<?= $isSizeAttribute
-                        ? 'flex flex-col items-start py-2 w-full border-t border-gray-300 last:border-b ftc-size-row'
+                        ? 'flex flex-col items-start py-2 w-full ftc-size-row'
                         : 'flex flex-col sm:flex-row items-center py-2 w-full border-t border-gray-300 last:border-b' ?>">
                         <label class="<?= $isSizeAttribute
                             ? 'w-full text-left text-gray-700 label ftc-size-label'
@@ -414,6 +414,7 @@ $tooltipBlockHtml = $block->getBlockHtml('product.swatch.tooltip');
             display: block;
             width: 100%;
             border-top: 1px solid #d1d5db;
+            border-bottom: 0;
             padding: 12px 0;
         }
         .catalog-product-view .ftc-size-row .ftc-size-label {

@@ -1,0 +1,23 @@
+<?php
+declare(strict_types=1);
+
+use Magento\Checkout\Block\Cart;
+use Magento\Framework\Escaper;
+
+/** @var Cart $block */
+/** @var Escaper $escaper */
+?>
+<div class="cart-empty">
+    <?= $block->getChildHtml('checkout_cart_empty_widget') ?>
+    <div>
+        <p><?= $escaper->escapeHtml(__('You have no items in your shopping cart.')) ?></p>
+        <p>
+            <?= $escaper->escapeHtml(__('Click')) ?>
+            <a href="<?= $escaper->escapeUrl($block->getContinueShoppingUrl()) ?>">
+                <?= $escaper->escapeHtml(__('here')) ?>
+            </a>,
+            <?= $escaper->escapeHtml(__('to continue shopping.')) ?>
+        </p>
+    </div>
+    <?= $block->getChildHtml('shopping.cart.table.after') ?>
+</div>

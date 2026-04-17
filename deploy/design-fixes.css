@@ -867,14 +867,17 @@
 
 
 /* =====================================================
-   11. ANNOUNCEMENT BAR — Homepage only
-   (original only shows on cms-index-index)
+   11. ANNOUNCEMENT BAR — hidden for parity with original screenshots
    ===================================================== */
+header.msg,
 .catalog-product-view header.msg,
 .catalog-category-view header.msg,
 .catalogsearch-result-index header.msg,
 .customer-account-index header.msg,
-.checkout-index-index header.msg {
+.customer-account-login header.msg,
+.customer-account-create header.msg,
+.checkout-index-index header.msg,
+.checkout-cart-index header.msg {
     display: none !important;
 }
 /* Dismiss button position — original right: 45px */
@@ -3071,21 +3074,22 @@ header.msg .dismiss::after {
 .right-nav-section .ftc-shopcontrol.cart > a,
 .right-nav-section .ftc-shopcontrol.cart > button {
     display: inline-block !important;
+    vertical-align: top !important;
     line-height: 1 !important;
-    width: 22px !important;
-    min-width: 22px !important;
-    height: 22px !important;
+    width: auto !important;
+    min-width: 0 !important;
+    height: auto !important;
     position: relative !important;
     overflow: visible !important;
 }
 
 .right-nav-section .ftc-shopcontrol.cart .ftc-icon-counter {
     display: inline !important;
-    position: absolute !important;
+    position: relative !important;
     top: 5px !important;
-    left: 30px !important;
+    left: auto !important;
     right: auto !important;
-    margin-left: 0 !important;
+    margin-left: 6px !important;
     vertical-align: baseline !important;
 }
 
@@ -3110,6 +3114,10 @@ header.msg .dismiss::after {
    44. PDP CARD PARITY — layout, gallery arrows, thumb rail
    ===================================================== */
 @media (min-width: 1025px) {
+    :root {
+        --ftc-pdp-gallery-height: min(900px, calc(100vh - 190px));
+    }
+
     /* Original PDP starts lower under the header. */
     .catalog-product-view .page-main {
         padding-top: 50px !important;
@@ -3157,13 +3165,13 @@ header.msg .dismiss::after {
 
     /* Gallery visual height and thumb rail geometry (desktop). */
     #gallery-main {
-        height: 900px !important;
+        height: var(--ftc-pdp-gallery-height) !important;
     }
 
     #gallery > div:not(.gallery-fullscreen-overlay) > div:first-child img,
     #gallery-main > img.invisible:first-child {
-        max-height: 900px !important;
-        height: 900px !important;
+        max-height: var(--ftc-pdp-gallery-height) !important;
+        height: var(--ftc-pdp-gallery-height) !important;
     }
 
     #gallery > div:not(.gallery-fullscreen-overlay) > div:nth-child(2),
@@ -3182,7 +3190,7 @@ header.msg .dismiss::after {
     #gallery > div:not(.gallery-fullscreen-overlay) .gallery-arrow {
         opacity: 0 !important;
         width: 80px !important;
-        height: 900px !important;
+        height: var(--ftc-pdp-gallery-height) !important;
         border: 0 !important;
         border-radius: 0 !important;
         background: transparent !important;
@@ -3204,7 +3212,7 @@ header.msg .dismiss::after {
     }
 
     #gallery > div:not(.gallery-fullscreen-overlay) .gallery-arrow-right {
-        right: 180px !important;
+        right: 20px !important;
     }
 
     /*
@@ -3275,6 +3283,7 @@ header.msg .dismiss::after {
 
 .catalog-product-view .ftc-size-row {
     border-top: 1px solid #d5d5d5 !important;
+    border-bottom: 0 !important;
     padding-top: 8px !important;
     padding-bottom: 0 !important;
 }
@@ -3284,7 +3293,7 @@ header.msg .dismiss::after {
 }
 
 .catalog-product-view .ftc-addtocart-row {
-    margin-top: 40px !important;
+    margin-top: 12px !important;
 }
 
 .catalog-product-view #product-addtocart-button {
@@ -3328,8 +3337,8 @@ header.msg .dismiss::after {
 
     /* Zoom icon should sit inside image bottom-right and appear only on hover. */
     #gallery > div:not(.gallery-fullscreen-overlay) > div:first-child .gallery-zoom {
-        right: 224px !important;
-        bottom: 30px !important;
+        right: 20px !important;
+        bottom: 24px !important;
         opacity: 0 !important;
         pointer-events: none !important;
         color: #9ea39e !important;
