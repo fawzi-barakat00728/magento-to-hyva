@@ -261,11 +261,13 @@ $countries = [
                         <img id="carticon"
                              src="<?= $escaper->escapeUrl($iconUrl . '/cart4.png') ?>"
                              alt="" class="ftc-icon">
-                        <span class="ftc-icon-counter"
-                              x-text="summaryCount()"
-                              x-bind:style="summaryCount() ? 'display:inline' : 'display:none'"
-                              style="display:inline"
-                              x-cloak></span>
+                        <span class="counter qty"
+                              x-bind:style="summaryCount() ? 'display:inline-block' : 'display:none'"
+                              style="display:none"
+                              x-cloak>
+                            <span class="counter-number ftc-icon-counter"
+                                  x-text="summaryCount()"></span>
+                        </span>
                     <?php if ($showMiniCart): ?>
                     </button>
                     <?php else: ?>

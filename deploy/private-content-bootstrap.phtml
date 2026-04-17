@@ -1,0 +1,50 @@
+<?php
+/**
+ * Bootstrap private-content reload in a CSP-safe way.
+ *
+ * @var \Magento\Framework\View\Helper\SecureHtmlRenderer $secureRenderer
+ */
+
+$script = <<<'JS'
+(() => {
+    const PRIVATE_CONTENT_VERSION_KEY = 'private_content_version';
+    const PRIVATE_CONTENT_STORAGE_KEY = 'mage-cache-storage';
+
+    const ensurePrivateContentReload = () => {
+        if (typeof window.hyva === 'undefined' || !hyva.getCookie || !hyva.setCookie) {
+            return;
+        }
+
+        const hasCookieVersion = !!hyva.getCookie(PRIVATE_CONTENT_VERSION_KEY);
+        if (!hasCookieVersion) {
+            // Skip domain rewrite to avoid cross-subdomain cookie mismatches on staging hosts.
+            hyva.setCookie(PRIVATE_CONTENT_VERSION_KEY, String(Date.now()), 1, true);
+        }
+
+        let hasStorage = false;
+        try {
+            const storage = hyva.getBrowserStorage && hyva.getBrowserStorage();
+            hasStorage = !!(storage && storage.getItem(PRIVATE_CONTENT_STORAGE_KEY));
+        } catch (e) {
+            hasStorage = false;
+        }
+
+        if (!hasStorage) {
+            window.dispatchEvent(new CustomEvent('reload-customer-section-data'));
+        }
+    };
+
+    const run = () => {
+        setTimeout(ensurePrivateContentReload, 300);
+        setTimeout(ensurePrivateContentReload, 1500);
+    };
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', run, { once: true });
+    } else {
+        run();
+    }
+})();
+JS;
+?>
+<?= /* @noEscape */ $secureRenderer->renderTag('script', [], $script, false); ?>

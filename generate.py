@@ -45,6 +45,11 @@ DEPLOY_THEME_FILE_MAP = {
     "announcement-bar.css": "web/css/announcement-bar.css",
     "css-fixes.css": "web/css/css-fixes.css",
     "product-css-section.css": "web/css/product-css-section.css",
+    "default_head_blocks.xml": "Magento_Theme/layout/default_head_blocks.xml",
+    "private-content-bootstrap.phtml": "Magento_Theme/templates/html/private-content-bootstrap.phtml",
+    "requirejs-config.js": "requirejs-config.js",
+    "checkout_index_index.xml": "Magento_Checkout/layout/checkout_index_index.xml",
+    "checkout-require-baseurl.js": "web/js/checkout-require-baseurl.js",
     "catalog_product_view.xml": "Magento_Catalog/layout/catalog_product_view.xml",
     "view.xml": "etc/view.xml",
     "de_DE.csv": "i18n/de_DE.csv",
@@ -59,11 +64,15 @@ DEPLOY_THEME_FILE_MAP = {
     "product-info.phtml": "Magento_Catalog/templates/product/view/product-info.phtml",
     "ftc-product-sections.phtml": "Magento_Catalog/templates/product/view/sections/ftc-product-sections.phtml",
     "menu-desktop.phtml": "Hyva_Theme/templates/html/header/menu/desktop.phtml",
+    "Mollie_Payment/requirejs-config.js": "Mollie_Payment/requirejs-config.js",
+    "Mollie_Payment/web/js/view/payment/method-renderer.js": "Mollie_Payment/web/js/view/payment/method-renderer.js",
+    "Mollie_Payment/web/js/view/payment/method-renderer-safe.js": "Mollie_Payment/web/js/view/payment/method-renderer-safe.js",
 }
 
 DEPLOY_CUSTOM_MODULES = {
     "DisabledProductView": "MediaDivision/DisabledProductView",
     "PaginationFix": "MediaDivision/PaginationFix",
+    "SodiumFallback": "MediaDivision/SodiumFallback",
 }
 
 

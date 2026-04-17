@@ -3089,8 +3089,19 @@ header.msg .dismiss::after {
     top: 5px !important;
     left: auto !important;
     right: auto !important;
-    margin-left: 6px !important;
+    margin-left: 0 !important;
     vertical-align: baseline !important;
+}
+
+.right-nav-section .ftc-shopcontrol.cart .counter.qty {
+    display: inline-block !important;
+    position: static !important;
+    top: auto !important;
+    right: auto !important;
+    margin-left: 0 !important;
+    line-height: 1 !important;
+    min-width: 0 !important;
+    vertical-align: top !important;
 }
 
 .right-nav-section .ftc-shopcontrol.cart .ftc-icon {
@@ -3282,7 +3293,7 @@ header.msg .dismiss::after {
 }
 
 .catalog-product-view .ftc-size-row {
-    border-top: 1px solid #d5d5d5 !important;
+    border-top: 0 !important;
     border-bottom: 0 !important;
     padding-top: 8px !important;
     padding-bottom: 0 !important;
