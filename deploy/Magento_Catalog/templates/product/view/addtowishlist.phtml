@@ -1,0 +1,143 @@
+<?php
+/**
+ * Hyva override: PDP wishlist action parity with original FTC behavior.
+ * For guests, redirect to login page instead of showing duplicate inline messages.
+ */
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\CurrentProduct;
+use Hyva\Theme\ViewModel\LucideIcons;
+use Hyva\Theme\ViewModel\Wishlist;
+use Magento\Catalog\Model\Product;
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var Wishlist $wishlistViewModel */
+$wishlistViewModel = $viewModels->require(Wishlist::class);
+
+/** @var LucideIcons $lucideIcons */
+$lucideIcons = $viewModels->require(LucideIcons::class);
+
+/** @var CurrentProduct $currentProduct */
+$currentProduct = $viewModels->require(CurrentProduct::class);
+
+/** @var Product $product */
+$product = $currentProduct->get();
+
+if (!$product->getId() || !$wishlistViewModel->isEnabled()) {
+    return;
+}
+
+$updateParams = $block->getUpdateParams() ?: null;
+$uniqueId = '_' . uniqid();
+?>
+<script>
+    function initWishlist<?= /** @noEscape */ $uniqueId ?>() {
+        return {
+            addToWishlist(productId) {
+                const postParams = <?php if ($updateParams): ?>
+                    <?= /* @noEscape */ $updateParams ?>
+                <?php else: ?>
+                {
+                    action: BASE_URL + "wishlist/index/add/",
+                    data: {
+                        product: productId,
+                        uenc: hyva.getUenc()
+                    }
+                }
+                <?php endif; ?>;
+
+                postParams.data.form_key = hyva.getFormKey();
+                postParams.data.qty = document.getElementById(`qty[${productId}]`)
+                    ? document.getElementById(`qty[${productId}]`).value || 1
+                    : 1;
+
+                let postData = Object.keys(postParams.data).map((key) => `${key}=${postParams.data[key]}`).join('&');
+
+                Array.from(document.querySelectorAll(
+                    '[name^=options], [name^=super_attribute], [name^=bundle_option], [name^=super_group], [name^=links]'
+                )).map((input) => {
+                    if (input.type === "select-multiple") {
+                        Array.from(input.selectedOptions).forEach((option) => {
+                            postData += `&${input.name}=${option.value}`;
+                        });
+                    } else if (!(['radio', 'checkbox', 'select'].includes(input.type) && !input.checked)) {
+                        postData += `&${input.name}=${input.value}`;
+                    }
+                });
+
+                fetch(postParams.action, {
+                    headers: {
+                        "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+                    },
+                    body: postData,
+                    method: "POST",
+                    mode: "cors",
+                    credentials: "include"
+                }).then((response) => {
+                    if (response.redirected) {
+                        window.location.href = response.url;
+                        return;
+                    }
+                    if (response.ok) {
+                        return response.json();
+                    }
+                    if (typeof window.dispatchMessages !== "undefined") {
+                        window.dispatchMessages([{
+                            type: "warning",
+                            text: "<?= $escaper->escapeHtml(__('Could not add item to wishlist.')) ?>"
+                        }], 5000);
+                    }
+                }).then((response) => {
+                    if (!response) {
+                        return;
+                    }
+
+                    const error = (response.error_message || '').toLowerCase();
+                    const authRequired = error.includes('login')
+                        || error.includes('register')
+                        || error.includes('anmelden')
+                        || error.includes('registrieren')
+                        || error.includes('must');
+                    if (!response.success && authRequired) {
+                        window.location.href = BASE_URL + 'customer/account/login/';
+                        return;
+                    }
+
+                    if (typeof window.dispatchMessages !== "undefined") {
+                        window.dispatchMessages([{
+                            type: response.success ? "success" : "error",
+                            text: response.success
+                                ? "<?= $escaper->escapeHtml(
+                                    __("%1 has been added to your Wish List.", __("Product"))
+                                ) ?>"
+                                : response.error_message
+                        }], 5000);
+                    }
+                    window.dispatchEvent(new CustomEvent("reload-customer-section-data"));
+                }).catch((error) => {
+                    if (typeof window.dispatchMessages !== "undefined") {
+                        window.dispatchMessages([{ type: "error", text: error }], 5000);
+                    }
+                });
+            }
+        };
+    }
+</script>
+
+<button x-data="initWishlist<?= /** @noEscape */ $uniqueId ?>()"
+        x-defer="intersect"
+        @click.prevent="addToWishlist(<?= (int)$product->getId() ?>)"
+        title="<?= $escaper->escapeHtmlAttr(($updateParams) ? __('Update Wish List') : __('Add to Wish List')) ?>"
+        aria-label="<?= $escaper->escapeHtmlAttr(($updateParams) ? __('Update Wish List') : __('Add to Wish List')) ?>"
+        id="add-to-wishlist"
+        class="btn p-2 rounded-full ml-4"
+        data-addto="wishlist">
+    <?= $lucideIcons->heartHtml('', 20, 20, ['aria-hidden' => 'true']) ?>
+</button>

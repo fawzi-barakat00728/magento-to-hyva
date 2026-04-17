@@ -262,8 +262,8 @@ $countries = [
                              src="<?= $escaper->escapeUrl($iconUrl . '/cart4.png') ?>"
                              alt="" class="ftc-icon">
                         <span class="ftc-icon-counter"
-                              x-text="summaryCount"
-                              x-show="summaryCount"
+                              x-text="summaryCount()"
+                              x-show="summaryCount()"
                               x-cloak></span>
                     <?php if ($showMiniCart): ?>
                     </button>

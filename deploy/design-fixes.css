@@ -3047,17 +3047,29 @@ header.msg .dismiss::after {
 
 /* Match original icon counters (plain number near icon, not green badge bubble). */
 .ftc-icon-counter {
-    top: -1px !important;
-    right: -12px !important;
+    position: relative !important;
+    top: 5px !important;
+    right: auto !important;
+    display: inline !important;
+    margin-left: 0 !important;
     min-width: auto !important;
     height: auto !important;
-    line-height: 1 !important;
+    line-height: 14px !important;
     padding: 0 !important;
     border-radius: 0 !important;
     background: transparent !important;
     color: #111 !important;
     font-size: 15px !important;
     font-family: "KorpusGrotesk-B", sans-serif !important;
+}
+
+.ftc-icon-counter[style*="display: none"] {
+    display: none !important;
+}
+
+/* Empty wishlist counter node should not reserve/shift any space. */
+.ftc-shopcontrol.wishlist .ftc-icon-counter:empty {
+    display: none !important;
 }
 
 /* Original screenshots do not show this control; keep it disabled for parity. */
