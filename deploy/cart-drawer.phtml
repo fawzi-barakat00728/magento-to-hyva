@@ -1,0 +1,398 @@
+<?php
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\HyvaCsp;
+use Hyva\Theme\ViewModel\StoreConfig;
+use Hyva\Theme\ViewModel\LucideIcons;
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+
+/** @var Escaper $escaper */
+/** @var Template $block */
+/** @var HyvaCsp $hyvaCsp */
+/** @var ViewModelRegistry $viewModels */
+
+$storeConfig = $viewModels->require(StoreConfig::class);
+$maxItemsToDisplay = $storeConfig->getStoreConfig('checkout/sidebar/max_items_display_count');
+
+/** @var LucideIcons $lucideIcons */
+$lucideIcons = $viewModels->require(LucideIcons::class);
+
+$miniCartOptionShowSku = $block->getShowSku() !== null ? (bool) $block->getShowSku() : false;
+?>
+
+<script>
+    function initCartDrawer() {
+        return {
+            open: false,
+            isLoading: false,
+            cart: {},
+            maxItemsToDisplay: <?= (int) $maxItemsToDisplay ?>,
+            itemsCount: 0,
+            showSku: <?= $miniCartOptionShowSku ? 'true' : 'false' ?>,
+            autocompleteNumber: 100,
+            init() {
+                if (document.prerendering) {
+                    document.addEventListener("prerenderingchange", () => {
+                        window.dispatchEvent(
+                            new CustomEvent('reload-customer-section-data')
+                        );
+                    }, { once: true });
+                }
+            },
+            showDetails() {
+                return this.item.options && this.item.options.length || this.showSku;
+            },
+            cartIsEmpty() {
+                return this.itemsCount === 0
+            },
+            getData() {
+                const data = this.$event.detail.data;
+
+                if (data.cart) {
+                    this.cart = data.cart;
+                    this.itemsCount = data.cart.items && data.cart.items.length || 0;
+                    this.setCartItems();
+                }
+                this.isLoading = false;
+            },
+            cartItems: [],
+            getItemCountTitle() {
+                return hyva.strf('<?= $escaper->escapeJs(__('%0 of %1 products in cart displayed')) ?>', this.maxItemsToDisplay, this.itemsCount)
+            },
+            shouldShowItemCount() {
+                return this.maxItemsToDisplay && this.maxItemsToDisplay < this.itemsCount;
+            },
+            setCartItems() {
+                this.cartItems = this.cart.items && this.cart.items.sort((a, b) => b.item_id - a.item_id) || [];
+
+                if (this.maxItemsToDisplay > 0) {
+                    this.cartItems = this.cartItems.slice(0, parseInt(this.maxItemsToDisplay, 10));
+                }
+            },
+            updateItemQty(event) {
+                const form = event.target;
+                this.isLoading = true;
+                hyvaAjaxFormMinicart({ form, redirect: false }, () => {
+                    this.isLoading = false;
+                });
+            },
+            deleteItemFromCart(itemId = null) {
+                const targetItemId = itemId ?? this.item?.item_id;
+                if (!targetItemId) {
+                    return;
+                }
+                const formKey = hyva.getFormKey();
+                this.isLoading = true;
+
+                hyvaAjaxFormMinicart({
+                    url: BASE_URL + 'checkout/sidebar/removeItem/',
+                    body: 'form_key=' + formKey + '&item_id=' + targetItemId,
+                    message: '<?= $escaper->escapeJs(__('You removed the item.')) ?>'
+                }, () => {
+                    this.isLoading = false
+                });
+            },
+            toggleCartDrawer(event) {
+                this.open = event.detail?.isOpen ?? !this.open;
+            },
+            openCartDrawer() {
+                this.open = true;
+            },
+            closeCartDrawer() {
+                this.open = false;
+            },
+            getSectionDataExtraActions() {
+                if (!this.cart.extra_actions) {
+                    return '';
+                }
+
+                const contentNode = document.createElement('div');
+                contentNode.innerHTML = this.cart.extra_actions;
+
+                hyva.activateScripts(contentNode);
+
+                return contentNode.innerHTML;
+            },
+            productIsVisibleInSite(item = null) {
+                const cartItem = item ?? this.item;
+                return !!(cartItem && cartItem.product_has_url && cartItem.is_visible_in_site_visibility)
+            },
+            productIsNotVisibleInSite(item = null) {
+                return !this.productIsVisibleInSite(item)
+            },
+            productIsNotGroupedAndVisibleInSite(item = null) {
+                const cartItem = item ?? this.item;
+                return !!(cartItem && cartItem.product_type !== 'grouped' && cartItem.is_visible_in_site_visibility)
+            },
+            proceedToCheckout() {
+                this.closeCartDrawer()
+
+                this.$dispatch(
+                    'toggle-authentication',
+                    {
+                        url: '<?= $escaper->escapeUrl($block->getUrl('checkout')) ?>'
+                    }
+                )
+            },
+            setItemMessage(itemId, message) {
+                const items = this.cartItems;
+                items.forEach((item) => {
+                    if (item.item_id === itemId) {
+                        item.message = message;
+                    }
+                });
+            },
+            cartListeners: {
+                ['@private-content-loaded.window'](event) {
+                    this.getData(event.detail.data);
+                },
+                ['@toggle-cart.window'](event) {
+                    this.toggleCartDrawer(event);
+                },
+                ['@minicart-error-message.window'](event) {
+                    if (!event.detail) return;
+                    const { itemId, message } = event.detail;
+                    this.setItemMessage(itemId, message);
+                },
+                ["@pageshow.window"](event) {
+                    if (event.persisted) {
+                        this.open = false;
+                        window.dispatchEvent(new CustomEvent("reload-customer-section-data"));
+                    }
+                }
+            }
+        }
+    }
+
+    window.addEventListener('alpine:init', () => {
+        Alpine.data('initCartDrawer', initCartDrawer);
+    }, { once: true })
+
+    async function hyvaAjaxFormMinicart(
+        {
+            form = null,
+            url = '',
+            body = '',
+            redirect = 'default',
+            message = '',
+        } = {},
+        callback = () => {}
+    ) {
+        const formData = body ? body : (form ? new FormData(form) : '');
+        const postUrl = url ? url : (form ? form.action : '');
+        if (!formData || !postUrl) {
+            console.warn('You must provide the form or formData and postUrl!');
+            return;
+        }
+
+        const formUenc = hyva.getUenc();
+        const itemId = body ? new URLSearchParams(body).get('item_id') : formData.get('item_id');
+        let bodyUrl = new URLSearchParams(formData);
+        bodyUrl.append('uenc', formUenc);
+
+        try {
+            const response = await fetch(postUrl, {
+                method: 'POST',
+                body: bodyUrl.toString(),
+                mode: 'cors',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            });
+
+            if (!response.ok) {
+                return form.submit();
+            }
+
+            if (redirect === 'default' && response.redirected) {
+                return window.location.href = response.url;
+            } else if (redirect !== 'default' && redirect !== false) {
+                return window.location.href = redirect;
+            }
+
+            const responseBody = await response.json();
+
+            if (!responseBody.success) {
+                throw responseBody.error_message;
+            }
+
+            window.dispatchEvent(new CustomEvent('reload-customer-section-data'));
+        } catch (error) {
+            window.dispatchEvent(new CustomEvent('minicart-error-message', { detail: { itemId, message: error } }));
+        } finally {
+            callback();
+        }
+    }
+</script>
+<?php $hyvaCsp->registerInlineScript() ?>
+
+<dialog
+    id="cart-drawer"
+    aria-labelledby="cart-drawer-title"
+    class="ftc-cart-drawer"
+    x-data="initCartDrawer"
+    x-bind="cartListeners"
+    x-show="open"
+    x-htmldialog="closeCartDrawer"
+    closeby="any"
+    x-transition:enter="transition ease-out duration-250"
+    x-transition:enter-start="opacity-0"
+    x-transition:enter-end="opacity-100"
+    x-transition:leave="transition ease-in duration-200"
+    x-transition:leave-start="opacity-100"
+    x-transition:leave-end="opacity-0"
+>
+    <template x-if="cartIsEmpty()">
+        <div class="ftc-cart-empty-modal">
+            <div class="ftc-cart-modal-head">
+                <h2 id="cart-drawer-title" class="ftc-cart-modal-title">WARENKORB</h2>
+                <button
+                    type="button"
+                    class="ftc-cart-modal-close"
+                    @click="closeCartDrawer"
+                    aria-label="<?= $escaper->escapeHtmlAttr(__('Close minicart')) ?>"
+                >
+                    <?= $lucideIcons->xHtml('', 24, 24, ['aria-hidden' => 'true']); ?>
+                </button>
+            </div>
+
+            <div class="ftc-cart-empty-body">
+                <p class="ftc-cart-empty-text"><?= $escaper->escapeHtml(__('Sie haben keine Artikel im Warenkorb')) ?></p>
+            </div>
+
+            <div class="ftc-cart-modal-actions ftc-cart-modal-actions-empty">
+                <button
+                    type="button"
+                    @click="closeCartDrawer"
+                    class="ftc-cart-modal-btn ftc-cart-modal-btn-checkout"
+                ><?= $escaper->escapeHtml(__('Continue Shopping')) ?></button>
+            </div>
+        </div>
+    </template>
+
+    <template x-if="itemsCount">
+        <div class="ftc-cart-modal">
+            <?= $block->getChildHtml('cart-drawer.top'); ?>
+
+            <div class="ftc-cart-modal-head">
+                <h2 id="cart-drawer-title" class="ftc-cart-modal-title">WARENKORB</h2>
+                <div class="ftc-cart-modal-meta">
+                    <span class="ftc-cart-modal-items" x-text="itemsCount + ' ARTIKEL'"></span>
+                    <span class="ftc-cart-modal-subtotal price-box" x-html="cart.subtotal"></span>
+                </div>
+                <button
+                    type="button"
+                    class="ftc-cart-modal-close"
+                    @click="closeCartDrawer"
+                    aria-label="<?= $escaper->escapeHtmlAttr(__('Close minicart')) ?>"
+                >
+                    <?= $lucideIcons->xHtml('', 24, 24, ['aria-hidden' => 'true']); ?>
+                </button>
+            </div>
+
+            <?= $block->getChildHtml('cart-drawer.items.before'); ?>
+
+            <ul class="ftc-cart-modal-items-list">
+                <template x-for="item in cartItems">
+                    <li class="ftc-cart-modal-item">
+                        <template x-if="productIsVisibleInSite(item)">
+                            <a
+                                class="ftc-cart-modal-item-image-link"
+                                :href="item.product_url"
+                                data-aria-label="<?= $escaper->escapeHtmlAttr(__('Product "%0"')) ?>"
+                                :title="item.product_name"
+                            >
+                                <img
+                                    class="ftc-cart-modal-item-image"
+                                    :src="item.product_image.src"
+                                    :width="item.product_image.width"
+                                    :height="item.product_image.height"
+                                    loading="lazy"
+                                    :alt="item.product_name"
+                                >
+                            </a>
+                        </template>
+                        <template x-if="productIsNotVisibleInSite(item)">
+                            <div class="ftc-cart-modal-item-image-link">
+                                <img
+                                    class="ftc-cart-modal-item-image"
+                                    :src="item.product_image.src"
+                                    :width="item.product_image.width"
+                                    :height="item.product_image.height"
+                                    loading="lazy"
+                                    :alt="item.product_name"
+                                />
+                            </div>
+                        </template>
+
+                        <div class="ftc-cart-modal-item-content">
+                            <div class="ftc-cart-modal-item-main">
+                                <p class="ftc-cart-modal-item-name" x-html="item.product_name"></p>
+                                <p class="ftc-cart-modal-item-sku" x-show="item.product_sku" x-html="item.product_sku"></p>
+                            </div>
+
+                            <template x-if="item.options && item.options.length">
+                                <dl class="ftc-cart-modal-item-options">
+                                    <template x-for="option in item.options">
+                                        <div class="ftc-cart-modal-item-option">
+                                            <dt x-text="option.label"></dt>
+                                            <dd x-html="option.value"></dd>
+                                        </div>
+                                    </template>
+                                </dl>
+                            </template>
+
+                            <div class="ftc-cart-modal-item-right">
+                                <span class="ftc-cart-modal-item-qty" x-html="item.qty"></span>
+                                <span class="ftc-cart-modal-item-price price-box" x-html="item.product_price"></span>
+                                <button
+                                    type="button"
+                                    class="ftc-cart-modal-item-remove"
+                                    @click="deleteItemFromCart(item.item_id)"
+                                    data-aria-label="<?= $escaper->escapeHtmlAttr(__('Remove product "%0" from cart')) ?>"
+                                    :aria-label="hyva.strf($el.dataset.ariaLabel, item.product_name)"
+                                >
+                                    <span aria-hidden="true">−</span>
+                                </button>
+                            </div>
+                        </div>
+                    </li>
+                </template>
+            </ul>
+
+            <?= $block->getChildHtml('cart-drawer.totals.before'); ?>
+
+            <div class="ftc-cart-modal-actions">
+                <a
+                    href="<?= $escaper->escapeUrl($block->getUrl('checkout/cart')) ?>"
+                    class="ftc-cart-modal-btn ftc-cart-modal-btn-cart"
+                >
+                    WEITER ZUM WARENKORB
+                </a>
+                <a
+                    @click.prevent.stop="proceedToCheckout"
+                    href="<?= $escaper->escapeUrl($block->getUrl('checkout')) ?>"
+                    class="ftc-cart-modal-btn ftc-cart-modal-btn-checkout"
+                >
+                    WEITER ZUR KASSE
+                </a>
+            </div>
+
+            <div class="ftc-cart-modal-extra" x-html="getSectionDataExtraActions"></div>
+            <?= $block->getChildHtml('extra_actions'); ?>
+            <?= $block->getChildHtml('cart-drawer.bottom'); ?>
+        </div>
+    </template>
+
+    <?= $block->getChildHtml('loading') ?>
+</dialog>

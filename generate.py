@@ -64,6 +64,7 @@ DEPLOY_THEME_FILE_MAP = {
     "product-info.phtml": "Magento_Catalog/templates/product/view/product-info.phtml",
     "ftc-product-sections.phtml": "Magento_Catalog/templates/product/view/sections/ftc-product-sections.phtml",
     "menu-desktop.phtml": "Hyva_Theme/templates/html/header/menu/desktop.phtml",
+    "cart-drawer.phtml": "Magento_Theme/templates/html/cart/cart-drawer.phtml",
     "Mollie_Payment/requirejs-config.js": "Mollie_Payment/requirejs-config.js",
     "Mollie_Payment/web/js/view/payment/method-renderer.js": "Mollie_Payment/web/js/view/payment/method-renderer.js",
     "Mollie_Payment/web/js/view/payment/method-renderer-safe.js": "Mollie_Payment/web/js/view/payment/method-renderer-safe.js",
