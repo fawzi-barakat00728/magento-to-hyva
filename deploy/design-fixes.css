@@ -243,10 +243,10 @@
     text-transform: uppercase;
 }
 .product-info-column .ftc-section-title::after {
-    right: 24px !important;
-    top: 50% !important;
-    transform: translateY(-50%) !important;
-    font-size: 30px !important;
+    right: 30px !important;
+    top: 0 !important;
+    transform: none !important;
+    font-size: 28px !important;
     line-height: 1 !important;
     color: #111 !important;
     font-weight: 300 !important;
@@ -257,8 +257,8 @@
         padding-right: 42px !important;
     }
     .product-info-column .ftc-section-title::after {
-        right: 18px !important;
-        font-size: 26px !important;
+        right: 22px !important;
+        font-size: 24px !important;
     }
 }
 .product-info-column .ftc-section-content {
@@ -3453,8 +3453,8 @@ header.msg .dismiss::after {
 #cart-drawer.ftc-cart-drawer .ftc-cart-modal-title {
     margin: 0 !important;
     font-family: "KorpusGrotesk-B", sans-serif !important;
-    font-weight: 400 !important;
-    font-size: 52px !important;
+    font-weight: 600 !important;
+    font-size: 50px !important;
     line-height: 0.95 !important;
     letter-spacing: 0 !important;
     text-transform: uppercase !important;
@@ -3471,21 +3471,22 @@ header.msg .dismiss::after {
 }
 
 #cart-drawer.ftc-cart-drawer .ftc-cart-modal-items {
-    font-size: 34px !important;
+    font-size: 20px !important;
     line-height: 1 !important;
     font-weight: 400 !important;
     text-transform: uppercase !important;
 }
 
 #cart-drawer.ftc-cart-drawer .ftc-cart-modal-subtotal {
-    font-size: 37px !important;
+    font-size: 20px !important;
     line-height: 1 !important;
     font-weight: 400 !important;
+    color: #a9ba9d !important;
 }
 
 #cart-drawer.ftc-cart-drawer .ftc-cart-modal-close {
-    width: 24px !important;
-    height: 24px !important;
+    width: 20px !important;
+    height: 20px !important;
     padding: 0 !important;
     border: 0 !important;
     background: transparent !important;
@@ -3497,8 +3498,8 @@ header.msg .dismiss::after {
 }
 
 #cart-drawer.ftc-cart-drawer .ftc-cart-modal-close svg {
-    width: 24px !important;
-    height: 24px !important;
+    width: 20px !important;
+    height: 20px !important;
     stroke-width: 1.4 !important;
 }
 
@@ -3549,15 +3550,15 @@ header.msg .dismiss::after {
 
 #cart-drawer.ftc-cart-drawer .ftc-cart-modal-item-name {
     margin: 0 !important;
-    font-size: 33px !important;
+    font-size: 18px !important;
     line-height: 1 !important;
-    font-weight: 400 !important;
+    font-weight: 500 !important;
     color: #111 !important;
 }
 
 #cart-drawer.ftc-cart-drawer .ftc-cart-modal-item-sku {
     margin: 4px 0 0 !important;
-    font-size: 18px !important;
+    font-size: 12px !important;
     line-height: 1.1 !important;
     font-weight: 400 !important;
     color: #7a7a7a !important;
@@ -3579,15 +3580,15 @@ header.msg .dismiss::after {
 
 #cart-drawer.ftc-cart-drawer .ftc-cart-modal-item-option dt {
     margin: 0 !important;
-    font-size: 24px !important;
+    font-size: 14px !important;
     line-height: 1 !important;
     color: #a9ba9d !important;
-    font-weight: 400 !important;
+    font-weight: 600 !important;
 }
 
 #cart-drawer.ftc-cart-drawer .ftc-cart-modal-item-option dd {
     margin: 0 !important;
-    font-size: 24px !important;
+    font-size: 14px !important;
     line-height: 1 !important;
     color: #111 !important;
     font-weight: 400 !important;
@@ -3603,7 +3604,7 @@ header.msg .dismiss::after {
 
 #cart-drawer.ftc-cart-drawer .ftc-cart-modal-item-qty,
 #cart-drawer.ftc-cart-drawer .ftc-cart-modal-item-price {
-    font-size: 34px !important;
+    font-size: 18px !important;
     line-height: 1 !important;
     font-weight: 400 !important;
     color: #111 !important;
@@ -3620,30 +3621,37 @@ header.msg .dismiss::after {
     align-items: center !important;
     justify-content: center !important;
     padding: 0 !important;
-    font-size: 16px !important;
+    font-size: 24px !important;
     line-height: 1 !important;
     cursor: pointer !important;
+    opacity: 1 !important;
+    transition: opacity .3s ease !important;
+}
+
+#cart-drawer.ftc-cart-drawer .ftc-cart-modal-item-remove:hover {
+    opacity: .8 !important;
 }
 
 #cart-drawer.ftc-cart-drawer .ftc-cart-modal-actions {
     display: grid !important;
     grid-template-columns: 1fr 1fr !important;
-    gap: 8px !important;
-    padding: 18px 30px 28px !important;
+    gap: 10px !important;
+    padding: 30px 30px 0 !important;
 }
 
 #cart-drawer.ftc-cart-drawer .ftc-cart-modal-btn {
-    height: 60px !important;
+    height: 70px !important;
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
     text-transform: uppercase !important;
     letter-spacing: 0 !important;
-    font-size: 25px !important;
+    font-size: 15px !important;
     line-height: 1 !important;
-    font-weight: 400 !important;
+    font-weight: 500 !important;
     text-decoration: none !important;
     border: 0 !important;
+    transition: opacity .3s ease !important;
 }
 
 #cart-drawer.ftc-cart-drawer .ftc-cart-modal-btn-cart {
@@ -3654,6 +3662,10 @@ header.msg .dismiss::after {
 #cart-drawer.ftc-cart-drawer .ftc-cart-modal-btn-checkout {
     background: #111 !important;
     color: #fff !important;
+}
+
+#cart-drawer.ftc-cart-drawer .ftc-cart-modal-btn:hover {
+    opacity: .8 !important;
 }
 
 #cart-drawer.ftc-cart-drawer .ftc-cart-modal-extra,
@@ -3696,12 +3708,12 @@ header.msg .dismiss::after {
     }
 
     #cart-drawer.ftc-cart-drawer .ftc-cart-modal-title {
-        font-size: 32px !important;
+        font-size: 30px !important;
     }
 
     #cart-drawer.ftc-cart-drawer .ftc-cart-modal-items,
     #cart-drawer.ftc-cart-drawer .ftc-cart-modal-subtotal {
-        font-size: 20px !important;
+        font-size: 16px !important;
     }
 
     #cart-drawer.ftc-cart-drawer .ftc-cart-modal-items-list {
@@ -3709,7 +3721,7 @@ header.msg .dismiss::after {
     }
 
     #cart-drawer.ftc-cart-drawer .ftc-cart-modal-item-name {
-        font-size: 20px !important;
+        font-size: 16px !important;
     }
 
     #cart-drawer.ftc-cart-drawer .ftc-cart-modal-item-sku,
@@ -3717,15 +3729,15 @@ header.msg .dismiss::after {
     #cart-drawer.ftc-cart-drawer .ftc-cart-modal-item-option dd,
     #cart-drawer.ftc-cart-drawer .ftc-cart-modal-item-qty,
     #cart-drawer.ftc-cart-drawer .ftc-cart-modal-item-price {
-        font-size: 15px !important;
+        font-size: 12px !important;
     }
 
     #cart-drawer.ftc-cart-drawer .ftc-cart-modal-actions {
-        padding: 14px 16px 16px !important;
+        padding: 16px !important;
     }
 
     #cart-drawer.ftc-cart-drawer .ftc-cart-modal-btn {
-        height: 46px !important;
+        height: 52px !important;
         font-size: 14px !important;
     }
 }

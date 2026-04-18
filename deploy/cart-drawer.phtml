@@ -36,9 +36,12 @@ $miniCartOptionShowSku = $block->getShowSku() !== null ? (bool) $block->getShowS
             cart: {},
             maxItemsToDisplay: <?= (int) $maxItemsToDisplay ?>,
             itemsCount: 0,
+            previousItemsCount: null,
+            messageObserver: null,
             showSku: <?= $miniCartOptionShowSku ? 'true' : 'false' ?>,
             autocompleteNumber: 100,
             init() {
+                this.observeAddToCartMessages();
                 if (document.prerendering) {
                     document.addEventListener("prerenderingchange", () => {
                         window.dispatchEvent(
@@ -57,9 +60,24 @@ $miniCartOptionShowSku = $block->getShowSku() !== null ? (bool) $block->getShowS
                 const data = this.$event.detail.data;
 
                 if (data.cart) {
+                    const previousCount = this.previousItemsCount;
                     this.cart = data.cart;
                     this.itemsCount = data.cart.items && data.cart.items.length || 0;
                     this.setCartItems();
+
+                    // Match original storefront UX: open cart popup when item count increases after add-to-cart.
+                    const hasAddToCartMessage = !!document.querySelector(
+                        '.message-success, .messages .message-success, [data-ui-id*="message-success"]'
+                    );
+
+                    if (
+                        (previousCount !== null && this.itemsCount > previousCount) ||
+                        (previousCount === null && hasAddToCartMessage && this.itemsCount > 0)
+                    ) {
+                        this.openCartDrawer();
+                        this.removeAddToCartMessages();
+                    }
+                    this.previousItemsCount = this.itemsCount;
                 }
                 this.isLoading = false;
             },
@@ -149,6 +167,54 @@ $miniCartOptionShowSku = $block->getShowSku() !== null ? (bool) $block->getShowS
                         item.message = message;
                     }
                 });
+            },
+            removeAddToCartMessages() {
+                const selectors = [
+                    '.message-success',
+                    '.messages .message',
+                    '[data-ui-id*="message-success"]'
+                ];
+                selectors.forEach((selector) => {
+                    document.querySelectorAll(selector).forEach((node) => {
+                        const text = (node.textContent || '').toLowerCase();
+                        if (text.includes('zum warenkorb hinzugefügt')) {
+                            node.remove();
+                        }
+                    });
+                });
+            },
+            hasAddToCartMessage() {
+                const selectors = [
+                    '.message-success',
+                    '.messages .message',
+                    '[data-ui-id*="message-success"]'
+                ];
+                return selectors.some((selector) => {
+                    return Array.from(document.querySelectorAll(selector)).some((node) => {
+                        const text = (node.textContent || '').toLowerCase();
+                        return text.includes('zum warenkorb hinzugefügt');
+                    });
+                });
+            },
+            observeAddToCartMessages() {
+                if (this.messageObserver || !document.body) {
+                    return;
+                }
+
+                const syncAfterAdd = () => {
+                    if (!this.hasAddToCartMessage()) {
+                        return;
+                    }
+                    this.openCartDrawer();
+                    this.removeAddToCartMessages();
+                    window.dispatchEvent(new CustomEvent('reload-customer-section-data'));
+                };
+
+                syncAfterAdd();
+                this.messageObserver = new MutationObserver(() => {
+                    syncAfterAdd();
+                });
+                this.messageObserver.observe(document.body, { childList: true, subtree: true });
             },
             cartListeners: {
                 ['@private-content-loaded.window'](event) {
