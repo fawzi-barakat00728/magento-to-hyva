@@ -24,7 +24,8 @@ $categoryFactory = $objectManager->create('Magento\Catalog\Model\ResourceModel\C
 $categories = $categoryFactory->create()
 ->addAttributeToSelect('*')
 ->addAttributeToFilter('is_active',1)
-->addAttributeToFilter('parent_id',2);
+->addAttributeToFilter('parent_id',2)
+->addAttributeToSort('position', 'ASC');
 ?>
 
 
