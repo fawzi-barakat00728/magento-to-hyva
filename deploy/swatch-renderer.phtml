@@ -149,8 +149,8 @@ $tooltipBlockHtml = $block->getBlockHtml('product.swatch.tooltip');
                 this.expandedSwatches[String(attributeId)] = true;
             };
 
-            // Keep deterministic initial state for configurable swatches on PDP.
-            // Prefer "Red Wine" when present (matches reference product), otherwise first allowed option.
+            // Keep deterministic initial state for configurable swatches on PDP:
+            // always fall back to the first allowed color option.
             const originalInit = merged.init;
             merged.init = function() {
                 originalInit.call(this);
@@ -177,8 +177,7 @@ $tooltipBlockHtml = $block->getBlockHtml('product.swatch.tooltip');
                         return;
                     }
 
-                    const preferred = allowed.find((opt) => /red\s*wine/i.test(String(opt.label || '')));
-                    const optionToSelect = preferred || allowed[0];
+                    const optionToSelect = allowed[0];
                     const currentSelected = this.selectedValues[colorAttr.id];
 
                     if (!optionToSelect || String(currentSelected) === String(optionToSelect.id)) {
