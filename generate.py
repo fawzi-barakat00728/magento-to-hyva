@@ -556,9 +556,21 @@ def enrich_i18n(output_theme: str, template_strings: set) -> int:
             new_lines.append(out.getvalue())
 
         if new_lines:
-            with open(csv_path, "a") as f:
-                # Add separator comment
-                f.write(f"# --- Hyvä frontend translations (auto-generated) ---\n")
+            needs_newline = False
+            try:
+                with open(csv_path, "rb") as existing_file:
+                    existing_file.seek(0, os.SEEK_END)
+                    if existing_file.tell() > 0:
+                        existing_file.seek(-1, os.SEEK_END)
+                        needs_newline = existing_file.read(1) not in (b"\n", b"\r")
+            except OSError:
+                needs_newline = False
+
+            with open(csv_path, "a", encoding="utf-8", newline="") as f:
+                # Ensure separator starts on a new line (prevents comment leakage into previous translation row)
+                if needs_newline:
+                    f.write("\n")
+                f.write("# --- Hyvä frontend translations (auto-generated) ---\n")
                 for line in new_lines:
                     f.write(line)
             total_added += len(new_lines)

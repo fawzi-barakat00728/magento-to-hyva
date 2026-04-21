@@ -7,6 +7,7 @@ use Magento\Catalog\Block\Product\ProductList\Toolbar;
 
 $uniqueId = '_' . uniqid();
 $additionalOptions = ['page' => 'p'];
+$totalItems = (int) $block->getCollection()->getSize();
 ?>
 <script>
     function initToolbar<?= /** @noEscape */  $uniqueId ?>() {
@@ -73,6 +74,10 @@ $additionalOptions = ['page' => 'p'];
         <div class="top-toolbar">
             <div></div>
             <div class="sorting-options">
+                <p class="toolbar-amount" id="toolbar-amount">
+                    <span class="toolbar-number"><?= $block->escapeHtml((string) $totalItems) ?></span>
+                    <?= $block->escapeHtml(__('Artikel')) ?>
+                </p>
                 <?php if ($block->isExpanded()): ?>
                     <?= /** @noEscape */ $block->fetchView($block->getTemplateFile('Magento_Catalog::product/list/toolbar/sorter.phtml')) ?>
                 <?php endif ?>

@@ -243,7 +243,7 @@
     text-transform: uppercase;
 }
 .product-info-column .ftc-section-title::after {
-    right: 30px !important;
+    right: 38px !important;
     top: 0 !important;
     transform: none !important;
     font-size: 28px !important;
@@ -257,7 +257,7 @@
         padding-right: 42px !important;
     }
     .product-info-column .ftc-section-title::after {
-        right: 22px !important;
+        right: 30px !important;
         font-size: 24px !important;
     }
 }
@@ -881,15 +881,8 @@
 
 
 /* =====================================================
-   11. ANNOUNCEMENT BAR — hidden for parity with original screenshots
+   11. ANNOUNCEMENT BAR — keep visible on storefront pages
    ===================================================== */
-header.msg,
-.catalog-product-view header.msg,
-.catalog-category-view header.msg,
-.catalogsearch-result-index header.msg,
-.customer-account-index header.msg,
-.customer-account-login header.msg,
-.customer-account-create header.msg,
 .checkout-index-index header.msg,
 .checkout-cart-index header.msg {
     display: none !important;
@@ -1453,7 +1446,7 @@ body {
 }
 
 .catalog-category-view .category-image img {
-    display: none !important;
+    display: block !important;
     margin: 0 auto;
 }
 
@@ -1466,9 +1459,12 @@ body {
 
 /* Hide view mode switcher and limiter on category (not needed for FTC) */
 .catalog-category-view .toolbar .modes,
-.catalog-category-view .toolbar .limiter,
-.catalog-category-view .toolbar .toolbar-amount {
+.catalog-category-view .toolbar .limiter {
     display: none !important;
+}
+
+.catalog-category-view .toolbar .toolbar-amount {
+    display: block !important;
 }
 
 /* Bottom toolbar: only MEHR LADEN, no grid */
@@ -1486,17 +1482,40 @@ body {
 
 /* Category image full width */
 .catalog-category-view .category-image img {
-    display: none !important;
+    display: block !important;
     width: 100% !important;
     max-width: 100% !important;
     height: auto !important;
     margin: 0 !important;
 }
 
-/* Hide migrated CMS hero images on category pages to match original listing layout */
+/* Keep migrated CMS hero image blocks visible for category parity (e.g. CARE/LIVING) */
 .catalog-category-view .category-description .ftc-image-block,
 .catalog-category-view .category-cms .ftc-image-block {
-    display: none !important;
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 24px auto 0 !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+.catalog-category-view .category-description .ftc-image-block .ftc-item,
+.catalog-category-view .category-cms .ftc-image-block .ftc-item,
+.catalog-category-view .category-description .ftc-image-block .ftc-image,
+.catalog-category-view .category-cms .ftc-image-block .ftc-image {
+    display: block !important;
+    width: 100% !important;
+}
+
+.catalog-category-view .category-description .ftc-image-block img,
+.catalog-category-view .category-cms .ftc-image-block img {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    visibility: visible !important;
+    opacity: 1 !important;
 }
 
 /* Category page on original has no breadcrumb row above description/products */
@@ -2422,8 +2441,26 @@ header.msg .dismiss::after {
 }
 
 .catalog-category-view .toolbar .sorting-options {
+    display: flex !important;
+    align-items: center !important;
+    gap: 18px !important;
     pointer-events: auto;
     margin-right: 15px;
+}
+
+.catalog-category-view .toolbar .toolbar-amount {
+    margin: 0 !important;
+    color: #111 !important;
+    font-family: "KorpusGrotesk-B", sans-serif !important;
+    font-size: 11px !important;
+    letter-spacing: 0.5px !important;
+    text-transform: uppercase !important;
+    white-space: nowrap !important;
+}
+
+.catalog-category-view .toolbar .toolbar-amount .toolbar-number {
+    color: #a9ba9d !important;
+    margin-right: 4px !important;
 }
 
 .catalog-category-view .toolbar .toolbar-sorter {
@@ -3065,7 +3102,7 @@ header.msg .dismiss::after {
 /* Match original icon counters (plain number near icon, not green badge bubble). */
 .ftc-icon-counter {
     position: relative !important;
-    top: 5px !important;
+    top: 1px !important;
     right: auto !important;
     display: inline !important;
     margin-left: 0 !important;
@@ -3100,11 +3137,16 @@ header.msg .dismiss::after {
 .right-nav-section .ftc-shopcontrol.cart .ftc-icon-counter {
     display: inline !important;
     position: relative !important;
-    top: 5px !important;
+    top: 1px !important;
     left: auto !important;
     right: auto !important;
     margin-left: 0 !important;
     vertical-align: baseline !important;
+}
+
+/* Use Cookiebot UI only; hide legacy Magento cookie-restriction bar on storefront */
+#notice-cookie-block {
+    display: none !important;
 }
 
 .right-nav-section .ftc-shopcontrol.cart .counter.qty {
