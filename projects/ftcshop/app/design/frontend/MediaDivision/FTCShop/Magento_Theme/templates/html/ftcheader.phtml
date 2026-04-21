@@ -570,6 +570,45 @@ padding: 0px 0 0 0;
 
 }
 
+/* Checkout/cart header parity: keep search and icons on one baseline */
+.checkout-index-index .ftc-header .right-nav-section,
+.checkout-cart-index .ftc-header .right-nav-section {
+  width: auto !important;
+  min-width: 0 !important;
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+}
+
+.checkout-index-index .ftc-header .right-nav-section .ftc-shopcontrol.search,
+.checkout-cart-index .ftc-header .right-nav-section .ftc-shopcontrol.search {
+  float: none !important;
+  margin: 0 10px 0 12px !important;
+}
+
+.checkout-index-index .ftc-header .right-nav-section .ftc-shopcontrol.search .block-search,
+.checkout-cart-index .ftc-header .right-nav-section .ftc-shopcontrol.search .block-search {
+  margin: 0 !important;
+}
+
+.checkout-index-index .ftc-header .right-nav-section .ftc-shopcontrol.search .block-search .control,
+.checkout-cart-index .ftc-header .right-nav-section .ftc-shopcontrol.search .block-search .control {
+  margin: 0 !important;
+}
+
+.checkout-index-index .ftc-header .right-nav-section .ftc-shopcontrol.search #search,
+.checkout-cart-index .ftc-header .right-nav-section .ftc-shopcontrol.search #search {
+  width: 154px !important;
+  margin: 0 !important;
+}
+
+.checkout-index-index .ftc-header .minicart-wrapper .counter.qty,
+.checkout-cart-index .ftc-header .minicart-wrapper .counter.qty,
+.checkout-index-index .ftc-header .guestwishlist-wrapper .counter.qty,
+.checkout-cart-index .ftc-header .guestwishlist-wrapper .counter.qty {
+  top: 0 !important;
+}
+
 
 
 

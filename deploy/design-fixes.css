@@ -3785,3 +3785,116 @@ header.msg .dismiss::after {
         font-size: 14px !important;
     }
 }
+
+/* =====================================================
+   47. PIXEL PASS — checkout/pdp/minicart fine tuning
+   ===================================================== */
+
+/* Luma checkout fallback: keep right controls in one line (prevents search jump). */
+.checkout-index-index .right-nav-section,
+.checkout-cart-index .right-nav-section {
+    display: flex !important;
+    align-items: center !important;
+    flex-wrap: nowrap !important;
+    width: auto !important;
+    min-width: 0 !important;
+    gap: 0 !important;
+}
+
+.checkout-index-index .right-nav-section .ftc-shopcontrol.search,
+.checkout-cart-index .right-nav-section .ftc-shopcontrol.search {
+    margin: 0 10px !important;
+    float: none !important;
+}
+
+.checkout-index-index .right-nav-section .ftc-shopcontrol.search .block-search,
+.checkout-cart-index .right-nav-section .ftc-shopcontrol.search .block-search {
+    margin: 0 !important;
+}
+
+/* PDP: accordion plus icon should not stick to right edge. */
+.catalog-product-view .product-info-column .ftc-section-title {
+    padding-right: 60px !important;
+}
+
+.catalog-product-view .product-info-column .ftc-section-title::after {
+    right: 52px !important;
+}
+
+/* PDP: gallery arrows like original (thin icon, no circular bubble) + reveal on hover. */
+.catalog-product-view .gallery-arrow {
+    width: 26px !important;
+    height: 44px !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    color: #9ea39e !important;
+    opacity: 0 !important;
+    transition: opacity .25s ease, transform .25s ease !important;
+}
+
+.catalog-product-view .gallery-arrow svg {
+    width: 26px !important;
+    height: 26px !important;
+    stroke-width: 1.35 !important;
+}
+
+.catalog-product-view .gallery-arrow-left {
+    left: -72px !important;
+    transform: translate(-8px, -50%) !important;
+}
+
+.catalog-product-view .gallery-arrow-right {
+    right: -72px !important;
+    transform: translate(8px, -50%) !important;
+}
+
+.catalog-product-view #gallery-main:hover .gallery-arrow {
+    opacity: .9 !important;
+}
+
+.catalog-product-view #gallery-main:hover .gallery-arrow-left {
+    transform: translate(0, -50%) !important;
+}
+
+.catalog-product-view #gallery-main:hover .gallery-arrow-right {
+    transform: translate(0, -50%) !important;
+}
+
+/* PDP: add-to-cart button visual size closer to original baseline. */
+.catalog-product-view #product-addtocart-button {
+    height: 56px !important;
+    padding-top: 16px !important;
+    padding-bottom: 16px !important;
+}
+
+/* Mini-cart popup: move above center and preserve bottom breathing room like original. */
+#cart-drawer.ftc-cart-drawer {
+    top: 39% !important;
+    transform: translateX(-50%) !important;
+}
+
+#cart-drawer.ftc-cart-drawer .ftc-cart-modal,
+#cart-drawer.ftc-cart-drawer .ftc-cart-empty-modal {
+    padding-bottom: 34px !important;
+}
+
+@media (max-width: 1024px) {
+    .catalog-product-view .product-info-column .ftc-section-title {
+        padding-right: 48px !important;
+    }
+
+    .catalog-product-view .product-info-column .ftc-section-title::after {
+        right: 36px !important;
+    }
+
+    .catalog-product-view .gallery-arrow-left {
+        left: -8px !important;
+        transform: translate(-4px, -50%) !important;
+    }
+
+    .catalog-product-view .gallery-arrow-right {
+        right: -8px !important;
+        transform: translate(4px, -50%) !important;
+    }
+}

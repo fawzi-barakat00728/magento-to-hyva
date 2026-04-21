@@ -1,131 +1,223 @@
-# Client Checklist — FTC Hyva Parity
+# FTC Hyva Parity Checklist (Full)
 
-Source: `/tmp/ftc-hyva-check/reports/2026-04-21_17-10-report.md`, `2026-04-21_17-10-report-EN.md`, `2026-04-21_17-50-report-EN-v2.md` + latest client screenshots.
+Date: 2026-04-21  
+Source: `ftc-hyva-check.zip` (`reports/2026-04-21_17-10-report*.md`, `reports/2026-04-21_17-50-report-EN-v2.md`, `screenshots/*`, `diffs/*`, `links-*.json`) + latest client screenshots in chat.
 
 Status legend:
 - `[ ]` not done
 - `[-]` in progress
 - `[x]` done
+- `[!]` blocked / needs client decision
 
-## 1) Launch blockers (Critical)
+---
 
-### 1.1 SEO / indexing / staging safety
-- [ ] Set staging to `noindex,nofollow` in HTML meta and HTTP `X-Robots-Tag`.
-- [ ] (Optional hardening) Protect staging with HTTP Basic Auth.
+## 0) Release Gate (must be green before client sign-off)
 
-### 1.2 Homepage structural parity
-- [ ] Restore homepage product grid (product cards visible like original).
-- [ ] Restore homepage Add-to-Cart forms inside product tiles.
-- [ ] Remove unintended orange "SALE SALE SALE" strip if not in original.
-- [ ] Align homepage hero section layout and image blocks to original.
+- [ ] Pixel + behavior parity on key pages:
+  - `/`
+  - `/de-de/damen.html`
+  - `/de-de/herren.html`
+  - `/de-de/care.html` (`/de-de/living.html`)
+  - sample PDP (`/de-de/10304-0320-gestreifter-polo-cardigan.html`)
+- [ ] Checkout parity:
+  - `/de-de/checkout/cart/`
+  - `/de-de/checkout/#login_register`
+  - shipping/payment/review steps
+- [ ] No critical functionality regressions:
+  - add-to-cart
+  - wishlist
+  - minicart
+  - cart qty/edit/remove
+  - checkout transitions
+- [ ] No obvious visual regressions on desktop/tablet/mobile.
 
-### 1.3 Navigation parity
-- [ ] Restore top navigation parity (`SALE` vs `BABY` difference to be resolved).
-- [ ] Ensure active menu underline style/position matches original (`HOME` highlight issue from screenshots).
-- [ ] Fix header vertical spacing/height mismatch from client screenshots.
+---
 
-### 1.4 Mobile critical UX
-- [ ] Eliminate horizontal overflow (375px viewport must render 375px, no forced 497px width).
-- [ ] Restore mobile header controls (menu/search/account/wishlist/cart) if missing.
-- [ ] Fix mobile footer overlap/typography collisions.
+## 1) Critical blockers (from archive reports)
 
-### 1.5 Tracking / analytics
-- [ ] Restore GTM + GA4 + Ads + Pinterest + HubSpot tracking parity (respecting consent integration).
-- [ ] Verify no tracking regressions on homepage/category/PDP/cart/checkout.
+### 1.1 Staging safety / SEO
+- [-] Set staging to `noindex,nofollow` (meta + `X-Robots-Tag`).
+- [ ] Optionally protect staging by Basic Auth.
 
-### 1.6 Commerce data parity
-- [ ] PDP configurable variants parity (5 colors in original vs 1 in Hyva for sampled PDP).
-- [ ] Validate swatches, variant switching and price/image sync.
+### 1.2 Homepage structure and content
+- [ ] Restore homepage product tile blocks (client reported missing in report snapshots).
+- [ ] Ensure add-to-cart forms exist in homepage tiles where original has them.
+- [ ] Remove unintended orange `SALE SALE SALE` strip (if not approved by client).
+- [ ] Align hero section content/images with original or with client-approved current campaign.
 
-## 2) Category pages parity (Damen / Herren / Care/Living)
+### 1.3 Mobile global issues
+- [-] Fix horizontal overflow (375 viewport must render without widened canvas).
+- [ ] Restore mobile header controls (menu/search/account/wishlist/cart) if hidden/broken.
+- [ ] Fix mobile footer typography overlaps.
 
-### 2.1 Hero / content blocks
-- [x] Restore category hero/content blocks where present on original (Care/Living mismatch).
-- [ ] Keep/remove category breadcrumbs exactly like original behavior.
+### 1.4 Tracking parity
+- [ ] Restore GTM/GA4/Ads/Pinterest/HubSpot tags (if they must match original setup).
+- [ ] Verify consent integration does not block intended tracking unexpectedly.
 
-### 2.2 Toolbar / listing controls
-- [x] Show correct product count (`toolbar-amount`, e.g. `13 ARTIKEL`) where original shows it.
-- [ ] Match sorting row spacing, labels and alignment.
-- [ ] Match load-more / infinite scroll behavior to original (notably Herren mobile).
+### 1.5 PDP commerce parity
+- [ ] Restore configurable variant parity on sampled PDP (original has more color variants).
+- [ ] Verify swatch switching updates image/price/availability correctly.
 
-### 2.3 Product cards
-- [ ] Verify card image sizes, crop, spacing, hover overlays and wishlist icon positions.
-- [ ] Match badge/swatch/count rendering and typography.
+---
 
-## 3) PDP (product page) parity
+## 2) Header / navigation parity
 
-### 3.1 Layout and spacing
-- [ ] Match gallery rail spacing, arrows, and hover-trigger behavior (desktop/tablet/mobile).
-- [ ] Match zoom icon behavior and position (show on hover, same anchor point).
-- [ ] Remove any extra borders/artifacts not present on original.
+### 2.1 Header geometry and spacing
+- [x] Normalize header paddings/vertical rhythm to original.
+- [ ] Verify exact spacing in desktop/tablet/mobile for logo, nav, locale, search, icons.
+- [ ] Verify cart counter baseline alignment (digits must not jump upward).
 
-### 3.2 Product info block
-- [ ] Match title, article number, price block, swatches row spacing.
-- [ ] Match size dropdown row label + size guide alignment.
-- [ ] Match Add-to-Cart button height/width/offset and heart icon alignment.
+### 2.2 Top menu parity
+- [ ] Match top-level menu with original (`SALE` vs `BABY`) or get explicit client approval for deviation.
+- [ ] Match active item underline style/position (`HOME` screenshots marked by client).
+- [ ] Ensure hover/focus states and dropdown behavior match original.
 
-### 3.3 Accordion section
-- [ ] Match accordion divider thickness/spacing.
-- [ ] Move plus icons to original inset position (not glued to edge).
+### 2.3 Cross-page consistency
+- [ ] Ensure checkout/cart headers keep expected visibility and do not collapse incorrectly.
+- [-] Fix checkout search field positioning in header.
 
-### 3.4 Below-the-fold content
-- [ ] Restore missing promotional/content blocks visible on original PDP (tablet/mobile deltas).
+---
 
-## 4) Cart / mini-cart / checkout parity
+## 3) Homepage parity (`/`)
 
-### 4.1 Mini-cart drawer/modal
-- [ ] Reproduce original mini-cart opening behavior, animation and placement.
-- [ ] Match mini-cart container size, margins, bottom gap, overlay opacity.
-- [ ] Match line-item layout (thumb, title, qty controls, remove icon, totals).
-- [ ] Match action buttons style and spacing (cart/checkout buttons).
+### 3.1 Above the fold
+- [ ] Match hero block dimensions and crop.
+- [ ] Match line breaks and spacing in intro copy.
+- [ ] Match nav + header offsets for all viewports.
 
-### 4.2 Cart page
-- [ ] Match desktop cart layout (left items + right summary block spacing/typography).
-- [ ] Fix header cart counter vertical alignment (digits should not jump upward).
-- [ ] Ensure coupon/promo row and controls match original styles.
+### 3.2 Product rows and cards
+- [ ] Match visible product sets/order to original.
+- [ ] Match card image aspect ratio/crop.
+- [ ] Match title/price typography and card spacing.
+- [ ] Match wishlist icon position on each card.
+- [ ] Match add-to-cart availability and behavior in card context.
 
-### 4.3 Checkout flow (`/de-de/checkout/#login_register` and next steps)
-- [ ] Keep checkout header visible and identical (logo/menu/icons/search positioning).
-- [ ] Fix search field placement in checkout header.
-- [ ] Match stepper circles/lines/text alignment and spacing.
-- [ ] Match login/register/guest columns, inputs and buttons dimensions.
-- [ ] Validate functional parity for login → shipping → payment → review.
+### 3.3 Below-the-fold sections
+- [ ] Match all promotional content blocks (Essence/Care/Tiny Luxe etc. where present in original scope).
+- [ ] Match slider/carousel behavior and controls if used.
 
-### 4.4 Email modal behavior (client note)
-- [ ] Verify and reproduce original email modal behavior on cart/checkout trigger, if it is expected business logic.
+---
 
-## 5) Links / routing / domain integrity
+## 4) Category pages parity
 
-### 5.1 Missing links from original homepage
-- [ ] Restore/redirect 21 product links present in original homepage tiles.
-- [ ] Restore/redirect SALE URL tree (13 original links), avoid broken routes.
-- [ ] Restore important utility links (advanced search, cart, language switch, privacy) where expected.
+Targets:
+- `/de-de/damen.html`
+- `/de-de/herren.html`
+- `/de-de/care.html` / `/de-de/living.html`
 
-### 5.2 Cross-domain leakage
-- [ ] Replace all `shop.ftc-cashmere.com` hard links in new site with correct local-domain/relative URLs.
+### 4.1 Hero and CMS blocks
+- [x] Restore main hero/cms visual block where missing.
+- [ ] Validate exact text/image parity per category.
 
-## 6) SEO and structured data parity
+### 4.2 Toolbar row
+- [x] Restore product count (`toolbar-amount`, e.g. `13 ARTIKEL`).
+- [ ] Match sorting control spacing/alignment/text exactly.
+- [ ] Keep/remove breadcrumbs exactly as in original behavior.
 
-- [ ] Add Product JSON-LD on PDP (both original/new currently lacking full product schema).
-- [ ] Review canonical/hreflang/title/meta description gaps and align strategy.
-- [ ] Improve `alt` coverage for migrated images (new site currently worse ratio).
+### 4.3 Listing behavior
+- [ ] Match pagination strategy (`infinite` vs `Mehr laden`) to original, especially on Herren mobile.
+- [ ] Match number of initially visible products per viewport.
 
-## 7) Performance parity
+### 4.4 Product card details
+- [ ] Match hover overlays and transitions.
+- [ ] Match swatches/badges/wishlist icon placements.
+- [ ] Match typography and inter-card gaps.
 
-- [ ] Investigate FCP/load regression (new site much slower in reports).
-- [ ] Verify cache/CDN/static deployment parity for fair comparison.
-- [ ] Re-measure homepage/category/PDP on desktop/tablet/mobile after fixes.
+---
 
-## 8) Final QA pass (pixel + behavior)
+## 5) PDP parity
 
-- [ ] Re-run screenshot diff on 5 key pages (`/`, `/de-de/damen.html`, `/de-de/herren.html`, `/de-de/care.html`, sampled PDP).
-- [ ] Re-test hover, transitions, sticky elements, mini-cart, wishlist, add-to-cart, checkout.
-- [ ] Prepare final client message with list of fixed points and any remaining explicit blockers.
+Target:
+- `/de-de/10304-0320-gestreifter-polo-cardigan.html`
 
-## 9) Current execution plan (this run)
+### 5.1 Gallery behavior
+- [ ] Match thumbnail rail spacing and selected-state border.
+- [-] Match arrow style, placement, hover-trigger animation.
+- [ ] Match zoom icon behavior/position (appears on hover, same anchor point).
+- [ ] Remove residual borders/artifacts not present in original.
 
-- [x] A. Create consolidated checklist in repo root.
-- [x] B. Remove CSS rules that hide category hero and toolbar amount; restore announcement bar behavior to match original.
-- [-] C. Fix header/search layout parity for checkout + homepage height/spacing deltas from screenshots.
-- [ ] D. Fix PDP accordion plus offsets and cart counter alignment.
-- [ ] E. Validate on live test domain, then commit and push.
+### 5.2 Info column
+- [ ] Match title/article/price vertical spacing.
+- [ ] Match swatch row layout and thumbnail sizes.
+- [ ] Match size label + size guide row alignment.
+- [-] Match add-to-cart button dimensions and vertical offsets.
+- [ ] Match wishlist heart alignment next to add-to-cart.
+
+### 5.3 Accordion
+- [ ] Match divider spacing and stroke.
+- [-] Move plus icons to the same inset as original (not glued to the edge).
+- [ ] Match expand/collapse animation speed/easing.
+
+### 5.4 Additional content below fold
+- [ ] Restore missing promotional blocks/images if they are part of original expected PDP scope.
+
+---
+
+## 6) Minicart / cart / checkout parity
+
+### 6.1 Mini-cart modal/drawer
+- [ ] Match opening logic (where it appears, whether centered/offset, animation timing).
+- [ ] Match overlay opacity and background dim.
+- [-] Match modal size, internal paddings, and bottom spacing.
+- [ ] Match title row (`WARENKORB`, item count, total, close icon).
+- [ ] Match line item row (thumb/title/options/qty/remove/price).
+- [ ] Match action buttons (`Weiter zum Warenkorb`, `Weiter zur Kasse`) sizing and spacing.
+
+### 6.2 Cart page (`/de-de/checkout/cart/`)
+- [ ] Match left/right layout proportions.
+- [ ] Match qty control style and placement.
+- [ ] Match summary block typography and rows.
+- [ ] Match coupon area appearance and behavior.
+- [ ] Reproduce/confirm expected email modal behavior (if this is custom business logic on original).
+
+### 6.3 Checkout step page (`/de-de/checkout/#login_register`)
+- [-] Keep header visible and aligned like original.
+- [ ] Match stepper circles/lines/labels spacing.
+- [ ] Match three columns (Login/New account/Guest) widths and top offsets.
+- [ ] Match input/button dimensions and text styles.
+- [ ] Validate transitions to shipping/payment/review.
+
+---
+
+## 7) Links / routing parity
+
+### 7.1 Missing links from original homepage context
+- [ ] Restore/redirect missing product URLs referenced in report.
+- [ ] Restore/redirect original SALE URL tree (`/damen/sale-damen...`, `/herren/sale-herren...`).
+- [ ] Restore utility links where expected (`advanced search`, `cart`, language switch, privacy).
+
+### 7.2 Hardcoded domain leakage
+- [ ] Replace all links pointing to `shop.ftc-cashmere.com` inside test site content where they should remain local/relative.
+
+---
+
+## 8) Performance and quality
+
+- [ ] Re-check page speed after parity fixes (homepage/category/PDP).
+- [ ] Ensure caches/static assets are properly warmed/deployed.
+- [ ] Confirm no console errors introduced by parity fixes.
+
+---
+
+## 9) Final QA loop and delivery
+
+- [ ] Re-run screenshot comparison on desktop/tablet/mobile for all key pages.
+- [ ] Re-run functional checks:
+  - add to cart
+  - wishlist
+  - minicart
+  - cart update/remove
+  - checkout start
+- [ ] Mark each checklist item with final status.
+- [ ] Prepare concise client update:
+  - what was fixed
+  - what remains
+  - what requires explicit client decision/approval
+
+---
+
+## 10) Execution log (current run)
+
+- [x] Parse client archive `ftc-hyva-check.zip`.
+- [x] Build full checklist in repo root.
+- [-] Continue with fixes by priority (critical -> page parity -> final QA).
