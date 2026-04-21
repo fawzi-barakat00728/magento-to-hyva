@@ -65,6 +65,10 @@ require(["jquery"], function ($) {
     positionOverlays();
     initRegionChooser();
     replaceCurrencyName();
+    syncHeaderSearchPlacement();
+    setTimeout(syncHeaderSearchPlacement, 150);
+    setTimeout(syncHeaderSearchPlacement, 600);
+    setTimeout(syncHeaderSearchPlacement, 1200);
     moveNewsletterSubscription();
     addStoresLink();
 
@@ -425,6 +429,7 @@ require(["jquery"], function ($) {
 
     $(window).on("resize", function () {
       positionOverlays();
+      syncHeaderSearchPlacement();
       isMobile = $(window).width() <= 768;
     });
 
@@ -1584,6 +1589,35 @@ require(["jquery"], function ($) {
       setTimeout(function () {
         body.find(".nav-sections .navigation > .ui-menu").append("<li class='level0 category-item last level-top ui-menu-item'><a href='stores.html'><span>Stores</span></a></li>");
       }, 1000);
+    }
+
+
+
+    /** HEADER-SUCHE POSITIONIEREN
+     * Stellt sicher, dass die Suchleiste im Desktop-Header innerhalb der rechten Navigation sitzt
+     * und mobil der Clear-Button direkt im Suchblock liegt
+     */
+
+    function syncHeaderSearchPlacement() {
+      let searchSlot = body.find(".right-nav-section .ftc-shopcontrol.search").first();
+      let searchBlock = body.find(".block.block-search").first();
+      let clearField = body.find(".clear_field").first();
+
+      if (!searchSlot.length || !searchBlock.length) {
+        return;
+      }
+
+      if (window.matchMedia("(min-width: 601px)").matches) {
+        if (!searchSlot.find(".block.block-search").length) {
+          searchBlock.appendTo(searchSlot);
+        }
+
+        if (clearField.length && !searchSlot.find(".clear_field").length) {
+          clearField.appendTo(searchSlot);
+        }
+      } else if (clearField.length && !searchBlock.find(".clear_field").length) {
+        clearField.appendTo(searchBlock);
+      }
     }
 
 
