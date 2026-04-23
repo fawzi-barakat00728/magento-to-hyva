@@ -77,3 +77,48 @@
 </form>
 <?= $block->getChildHtml('checkout.cart.order.actions') ?>
 <?= $block->getChildHtml('shopping.cart.table.after') ?>
+
+<div id="ftc-cart-email-modal" class="ftc-cart-email-modal" aria-hidden="true">
+    <div class="ftc-cart-email-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="ftc-cart-email-modal-title">
+        <button type="button" class="ftc-cart-email-modal__close" aria-label="Close">×</button>
+        <h2 id="ftc-cart-email-modal-title" class="ftc-cart-email-modal__title">Welcome User!</h2>
+        <div class="ftc-cart-email-modal__divider"></div>
+        <label class="ftc-cart-email-modal__label" for="ftc-cart-email-input">Please enter your Email Id :</label>
+        <input id="ftc-cart-email-input" class="ftc-cart-email-modal__input" type="email" placeholder="example@gmail.com">
+        <button type="button" class="ftc-cart-email-modal__submit">Absenden</button>
+    </div>
+</div>
+
+<script>
+(function () {
+    var modal = document.getElementById('ftc-cart-email-modal');
+    if (!modal || !document.body.classList.contains('checkout-cart-index')) return;
+    var key = 'ftc_cart_email_modal_shown';
+    var isGuest = !document.body.classList.contains('customer-logged-in');
+    if (!isGuest || sessionStorage.getItem(key)) return;
+
+    var openModal = function () {
+        modal.classList.add('is-open');
+        modal.setAttribute('aria-hidden', 'false');
+    };
+
+    var closeModal = function () {
+        modal.classList.remove('is-open');
+        modal.setAttribute('aria-hidden', 'true');
+    };
+
+    setTimeout(function () {
+        openModal();
+        sessionStorage.setItem(key, '1');
+    }, 300);
+
+    var closeBtn = modal.querySelector('.ftc-cart-email-modal__close');
+    var submitBtn = modal.querySelector('.ftc-cart-email-modal__submit');
+
+    if (closeBtn) closeBtn.addEventListener('click', closeModal);
+    if (submitBtn) submitBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', function (event) {
+        if (event.target === modal) closeModal();
+    });
+})();
+</script>

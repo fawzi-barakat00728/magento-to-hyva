@@ -51,6 +51,9 @@ try {
 } catch (\Exception $e) {}
 
 $iconUrl = $block->getViewFileUrl('images/icons');
+$request = $block->getRequest();
+$fullActionName = $request ? (string) $request->getFullActionName() : '';
+$isHomePage = $fullActionName === 'cms_index_index';
 
 // Announcement bar CMS block
 $promotionHtml = '';
@@ -175,12 +178,12 @@ $countries = [
 <?php $hyvaCsp->registerInlineScript() ?>
 
 <div id="header"
-     class="ftc-header fixed"
+     class="ftc-header<?= $isHomePage ? '' : ' fixed' ?>"
      x-data="initHeader()"
      @private-content-loaded.window="getData(event.detail.data)"
 >
     <div class="ftc-header-inner">
-        <?php if ($promotionHtml): ?>
+        <?php if ($isHomePage && $promotionHtml): ?>
         <!-- Announcement Bar -->
         <header class="msg"
                 x-show="!announcementDismissed"
@@ -324,7 +327,8 @@ $countries = [
     <div class="ftc-search-overlay"
          x-cloak x-show="searchOpen"
          @click.outside="searchClose"
-         @keydown.escape="searchClose">
+         @keydown.escape="searchClose"
+         style="display:none;">
         <?= $block->getChildHtml('header-search'); ?>
     </div>
 

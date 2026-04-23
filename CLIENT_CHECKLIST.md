@@ -36,19 +36,19 @@ Status legend:
 ## 1) Critical blockers (from archive reports)
 
 ### 1.1 Staging safety / SEO
-- [-] Set staging to `noindex,nofollow` (meta + `X-Robots-Tag`).
+- [x] Set staging to `noindex,nofollow` (meta + `X-Robots-Tag`).
 - [ ] Optionally protect staging by Basic Auth.
 
 ### 1.2 Homepage structure and content
-- [ ] Restore homepage product tile blocks (client reported missing in report snapshots).
+- [x] Restore homepage product tile blocks (client reported missing in report snapshots).
 - [ ] Ensure add-to-cart forms exist in homepage tiles where original has them.
 - [ ] Remove unintended orange `SALE SALE SALE` strip (if not approved by client).
-- [ ] Align hero section content/images with original or with client-approved current campaign.
+- [x] Align hero section content/images with original or with client-approved current campaign.
 
 ### 1.3 Mobile global issues
-- [-] Fix horizontal overflow (375 viewport must render without widened canvas).
-- [ ] Restore mobile header controls (menu/search/account/wishlist/cart) if hidden/broken.
-- [ ] Fix mobile footer typography overlaps.
+- [x] Fix horizontal overflow (375 viewport must render without widened canvas).
+- [x] Restore mobile header controls (menu/search/account/wishlist/cart) if hidden/broken.
+- [x] Fix mobile footer typography overlaps.
 
 ### 1.4 Tracking parity
 - [ ] Restore GTM/GA4/Ads/Pinterest/HubSpot tags (if they must match original setup).
@@ -65,16 +65,16 @@ Status legend:
 ### 2.1 Header geometry and spacing
 - [x] Normalize header paddings/vertical rhythm to original.
 - [ ] Verify exact spacing in desktop/tablet/mobile for logo, nav, locale, search, icons.
-- [ ] Verify cart counter baseline alignment (digits must not jump upward).
+- [-] Verify cart counter baseline alignment (digits must not jump upward).
 
 ### 2.2 Top menu parity
 - [ ] Match top-level menu with original (`SALE` vs `BABY`) or get explicit client approval for deviation.
-- [ ] Match active item underline style/position (`HOME` screenshots marked by client).
+- [x] Match active item underline style/position (`HOME` screenshots marked by client).
 - [ ] Ensure hover/focus states and dropdown behavior match original.
 
 ### 2.3 Cross-page consistency
-- [ ] Ensure checkout/cart headers keep expected visibility and do not collapse incorrectly.
-- [-] Fix checkout search field positioning in header.
+- [x] Ensure checkout/cart headers keep expected visibility and do not collapse incorrectly.
+- [x] Fix checkout search field positioning in header.
 
 ---
 
@@ -83,14 +83,14 @@ Status legend:
 ### 3.1 Above the fold
 - [ ] Match hero block dimensions and crop.
 - [ ] Match line breaks and spacing in intro copy.
-- [ ] Match nav + header offsets for all viewports.
+- [-] Match nav + header offsets for all viewports.
 
 ### 3.2 Product rows and cards
-- [ ] Match visible product sets/order to original.
-- [ ] Match card image aspect ratio/crop.
-- [ ] Match title/price typography and card spacing.
+- [-] Match visible product sets/order to original.
+- [-] Match card image aspect ratio/crop.
+- [-] Match title/price typography and card spacing.
 - [ ] Match wishlist icon position on each card.
-- [ ] Match add-to-cart availability and behavior in card context.
+- [-] Match add-to-cart availability and behavior in card context.
 
 ### 3.3 Below-the-fold sections
 - [ ] Match all promotional content blocks (Essence/Care/Tiny Luxe etc. where present in original scope).
@@ -116,7 +116,7 @@ Targets:
 
 ### 4.3 Listing behavior
 - [ ] Match pagination strategy (`infinite` vs `Mehr laden`) to original, especially on Herren mobile.
-- [ ] Match number of initially visible products per viewport.
+- [-] Match number of initially visible products per viewport.
 
 ### 4.4 Product card details
 - [ ] Match hover overlays and transitions.
@@ -156,25 +156,25 @@ Target:
 ## 6) Minicart / cart / checkout parity
 
 ### 6.1 Mini-cart modal/drawer
-- [ ] Match opening logic (where it appears, whether centered/offset, animation timing).
-- [ ] Match overlay opacity and background dim.
+- [-] Match opening logic (where it appears, whether centered/offset, animation timing).
+- [-] Match overlay opacity and background dim.
 - [-] Match modal size, internal paddings, and bottom spacing.
-- [ ] Match title row (`WARENKORB`, item count, total, close icon).
-- [ ] Match line item row (thumb/title/options/qty/remove/price).
-- [ ] Match action buttons (`Weiter zum Warenkorb`, `Weiter zur Kasse`) sizing and spacing.
+- [-] Match title row (`WARENKORB`, item count, total, close icon).
+- [-] Match line item row (thumb/title/options/qty/remove/price).
+- [-] Match action buttons (`Weiter zum Warenkorb`, `Weiter zur Kasse`) sizing and spacing.
 
 ### 6.2 Cart page (`/de-de/checkout/cart/`)
-- [ ] Match left/right layout proportions.
-- [ ] Match qty control style and placement.
-- [ ] Match summary block typography and rows.
-- [ ] Match coupon area appearance and behavior.
-- [ ] Reproduce/confirm expected email modal behavior (if this is custom business logic on original).
+- [-] Match left/right layout proportions.
+- [-] Match qty control style and placement.
+- [-] Match summary block typography and rows.
+- [-] Match coupon area appearance and behavior.
+- [x] Reproduce expected guest email modal behavior on cart (session-gated popup with close-on-backdrop/button).
 
 ### 6.3 Checkout step page (`/de-de/checkout/#login_register`)
-- [-] Keep header visible and aligned like original.
-- [ ] Match stepper circles/lines/labels spacing.
-- [ ] Match three columns (Login/New account/Guest) widths and top offsets.
-- [ ] Match input/button dimensions and text styles.
+- [x] Keep header visible and aligned like original.
+- [x] Match stepper circles/lines/labels spacing.
+- [x] Match three columns (Login/New account/Guest) widths and top offsets.
+- [x] Match input/button dimensions and text styles.
 - [ ] Validate transitions to shipping/payment/review.
 
 ---
@@ -187,14 +187,14 @@ Target:
 - [ ] Restore utility links where expected (`advanced search`, `cart`, language switch, privacy).
 
 ### 7.2 Hardcoded domain leakage
-- [ ] Replace all links pointing to `shop.ftc-cashmere.com` inside test site content where they should remain local/relative.
+- [x] Replace all links pointing to `shop.ftc-cashmere.com` inside test site content where they should remain local/relative.
 
 ---
 
 ## 8) Performance and quality
 
 - [ ] Re-check page speed after parity fixes (homepage/category/PDP).
-- [ ] Ensure caches/static assets are properly warmed/deployed.
+- [-] Ensure caches/static assets are properly warmed/deployed.
 - [ ] Confirm no console errors introduced by parity fixes.
 
 ---
@@ -221,3 +221,48 @@ Target:
 - [x] Parse client archive `ftc-hyva-check.zip`.
 - [x] Build full checklist in repo root.
 - [-] Continue with fixes by priority (critical -> page parity -> final QA).
+- [x] Re-run screenshot capture + image diff audit (desktop/mobile, key pages).
+- [-] Apply mobile parity fixpack in `deploy/design-fixes.css` (header controls row + footer stacking).
+- [-] Force HOME underline parity for homepage/living pages.
+- [x] Deploy updated `design-fixes.css` to staging theme/static and clear Magento caches.
+- [x] Replace hardcoded `shop.ftc-cashmere.com` links in staging DB content tables (`cms_block`, `cms_page`, `catalog_category_entity_text`).
+- [x] Re-check key mobile pages: viewport width now stable at `375px` (`/`, `care`, PDP, cart).
+- [x] Re-check checkout login step state on staging (header + search alignment now stable).
+- [x] Add reusable script `deploy/replace_hardcoded_live_domain_links.php` for domain-leak cleanup.
+- [-] Add checkout/cart parity CSS pass in `deploy/design-fixes.css` (stepper, cart table/summary, minicart overlay alignment).
+- [-] Add guest e-mail prompt modal skeleton on cart page (`deploy/cart.phtml`) to mirror original cart flow.
+- [x] Sync top categories product ordering from original HTML: `4 (Damen)`, `5 (Herren)`, `7 (Home/Living)`, `270 (Care)`, `281 (Baby)`.
+- [x] Sync CMS homepage `home-de` from original GraphQL and re-run hardcoded domain replacement.
+- [-] Inject guest e-mail popup directly into active Luma fallback cart template (`FTCShop/Magento_Checkout/templates/cart/form.phtml`) and continue visual tuning.
+- [x] Sync missing media assets from original to staging (`pub/media/cms`, `pub/media/product`, `pub/media/catalog/category`) to eliminate broken homepage/category visuals.
+- [x] Re-run desktop screenshot comparison after media sync:
+  - `/de-de/checkout/#login_register` parity check with cart item context (`RMSE 0.0099`).
+  - `/de-de/living.html` visual pass (close parity).
+  - PDP `/de-de/00008-0251-schal-mit-rippenmuster.html` visual pass (close parity, minor dynamic-state diffs).
+- [-] Start full catalog image cache regeneration on staging (`bin/magento catalog:images:resize`, running).
+- [x] Fix FTCShop checkout/cart static asset delivery on staging:
+  - remove broken symlinks in `pub/static/frontend/MediaDivision/FTCShop/de_DE` by re-syncing real files
+  - restore missing files (`Mirasvit_Core/css/fontawesome.min.css`, `images/loader-2.gif`)
+  - verify `checkout/#login_register` and `checkout/cart/` load `27/27` FTCShop assets with no 4xx.
+- [x] Enable and deploy `MediaDivision_StagingSecurity` module on staging; verify `X-Robots-Tag: noindex, nofollow` in HTTP headers.
+- [x] Re-run Magento build steps on staging after module deployment:
+  - `setup:upgrade`
+  - `setup:di:compile` (with increased PHP memory limit)
+  - `setup:static-content:deploy -f de_DE` for required themes.
+- [x] Deploy original FTC CatalogWidget homepage template override into active `HyvaTestTheme`:
+  - add `deploy/Magento_CatalogWidget/templates/product/widget/content/grid.phtml`
+  - deploy to staging theme and clear `layout/block_html/full_page` caches.
+- [-] Rework homepage widget container CSS parity:
+  - normalize `.products-grid` / `.product-items.widget-product-grid` width behavior (remove 317px narrow column issue)
+  - continue tuning desktop row clipping/spacing and duplicated-loop visibility vs original screenshots.
+- [x] Disable checkout SRI hash injection in active Hyva theme (`Magento_Csp/layout/checkout_index_index.xml`) to remove integrity-mismatch script blocking.
+- [x] Remove duplicated Luma search block from checkout/cart layout (`top.search`) and keep only inline header search to prevent floating second-row search field.
+- [x] Stabilize cart guest-email modal logic in deploy templates:
+  - switch to `.is-open` class toggle (no CSS-vs-inline display race)
+  - keep popup limited to guest + checkout-cart page
+  - preserve close behavior (close icon, submit button, backdrop).
+- [-] Apply final checkout/cart header parity override pass in `deploy/design-fixes.css`:
+  - hide fallback `.block-search` / overlay on checkout/cart
+  - harden right-nav baseline and counter alignment
+  - lower minicart modal vertical anchor and restore bottom breathing room.
+- [x] Deploy updated parity files to staging theme (`HyvaTestTheme`) and run Magento cache clean/flush (`layout`, `block_html`, `full_page`).

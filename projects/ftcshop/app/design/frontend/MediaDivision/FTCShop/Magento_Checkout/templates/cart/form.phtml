@@ -77,3 +77,183 @@
 </form>
 <?= $block->getChildHtml('checkout.cart.order.actions') ?>
 <?= $block->getChildHtml('shopping.cart.table.after') ?>
+
+<style>
+.ftc-cart-email-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: none;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 158px;
+    background: rgba(0, 0, 0, 0.45);
+}
+
+.ftc-cart-email-modal.is-open {
+    display: flex;
+}
+
+.ftc-cart-email-modal__dialog {
+    position: relative;
+    width: min(96vw, 860px);
+    border-radius: 40px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+    background: #fff;
+    padding: 30px 46px 36px;
+}
+
+.ftc-cart-email-modal__close {
+    position: absolute;
+    right: 22px;
+    top: 14px;
+    border: 0;
+    background: transparent;
+    color: #8f8f8f;
+    font-size: 24px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.ftc-cart-email-modal__title {
+    margin: 0;
+    text-align: center;
+    font-size: 49px;
+    line-height: 1.03;
+    font-family: "Korpus", serif;
+    font-weight: 400;
+    color: #0d0d0d;
+}
+
+.ftc-cart-email-modal__divider {
+    margin: 22px 0 30px;
+    height: 1px;
+    background: #d9d9d9;
+}
+
+.ftc-cart-email-modal__label {
+    display: block;
+    margin-bottom: 12px;
+    font-size: 34px;
+    line-height: 1.1;
+    color: #0d0d0d;
+    font-family: "Open Sans", Arial, sans-serif;
+    font-weight: 400;
+}
+
+.ftc-cart-email-modal__input {
+    width: 100%;
+    height: 58px;
+    border: 1px solid #b8b8b8;
+    font-size: 24px;
+    line-height: 1.25;
+    padding: 0 18px;
+    margin-bottom: 26px;
+}
+
+.ftc-cart-email-modal__submit {
+    display: block;
+    margin: 0 auto;
+    min-width: 150px;
+    height: 50px;
+    border: 0;
+    border-radius: 6px;
+    background: #2f7dd1;
+    color: #fff;
+    font-size: 27px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+@media (max-width: 1024px) {
+    .ftc-cart-email-modal {
+        padding-top: 64px;
+    }
+
+    .ftc-cart-email-modal__dialog {
+        width: min(96vw, 680px);
+        padding: 24px 26px 28px;
+        border-radius: 20px;
+    }
+
+    .ftc-cart-email-modal__title {
+        font-size: 38px;
+    }
+
+    .ftc-cart-email-modal__label {
+        font-size: 24px;
+    }
+
+    .ftc-cart-email-modal__input {
+        height: 48px;
+        font-size: 20px;
+    }
+
+    .ftc-cart-email-modal__submit {
+        height: 44px;
+        min-width: 120px;
+        font-size: 22px;
+    }
+}
+</style>
+
+<div id="ftc-cart-email-modal" class="ftc-cart-email-modal" aria-hidden="true">
+    <div class="ftc-cart-email-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="ftc-cart-email-modal-title">
+        <button type="button" class="ftc-cart-email-modal__close" aria-label="Close">×</button>
+        <h2 id="ftc-cart-email-modal-title" class="ftc-cart-email-modal__title">Welcome User!</h2>
+        <div class="ftc-cart-email-modal__divider"></div>
+        <label class="ftc-cart-email-modal__label" for="ftc-cart-email-input">Please enter your Email Id :</label>
+        <input id="ftc-cart-email-input" class="ftc-cart-email-modal__input" type="email" placeholder="example@gmail.com">
+        <button type="button" class="ftc-cart-email-modal__submit">Absenden</button>
+    </div>
+</div>
+
+<script>
+(function () {
+    var modal = document.getElementById('ftc-cart-email-modal');
+    if (
+        !modal ||
+        !document.body.classList.contains('checkout-cart-index') ||
+        window.matchMedia('(max-width: 767px)').matches
+    ) {
+        return;
+    }
+
+    var key = 'ftc_cart_email_modal_shown';
+    var isGuest = !document.body.classList.contains('customer-logged-in');
+
+    if (!isGuest || sessionStorage.getItem(key)) {
+        return;
+    }
+
+    var openModal = function () {
+        modal.classList.add('is-open');
+        modal.setAttribute('aria-hidden', 'false');
+    };
+
+    var closeModal = function () {
+        modal.classList.remove('is-open');
+        modal.setAttribute('aria-hidden', 'true');
+    };
+
+    setTimeout(function () {
+        openModal();
+        sessionStorage.setItem(key, '1');
+    }, 350);
+
+    var closeBtn = modal.querySelector('.ftc-cart-email-modal__close');
+    var submitBtn = modal.querySelector('.ftc-cart-email-modal__submit');
+
+    if (closeBtn) {
+        closeBtn.addEventListener('click', closeModal);
+    }
+    if (submitBtn) {
+        submitBtn.addEventListener('click', closeModal);
+    }
+    modal.addEventListener('click', function (event) {
+        if (event.target === modal) {
+            closeModal();
+        }
+    });
+})();
+</script>

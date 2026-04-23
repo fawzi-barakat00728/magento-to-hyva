@@ -2,7 +2,7 @@
     <body>
         <referenceBlock name="minicart" remove="false"/>
         <referenceContainer name="header.panel" remove="false"/>
-        <referenceBlock name="top.search" remove="false"/>
+        <referenceBlock name="top.search" remove="true"/>
         <referenceBlock name="catalog.compare.link" remove="false"/>
         <referenceBlock name="catalog.topnav" remove="false"/>
         <referenceContainer name="footer-container" remove="false"/>
