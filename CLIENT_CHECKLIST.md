@@ -156,18 +156,18 @@ Target:
 ## 6) Minicart / cart / checkout parity
 
 ### 6.1 Mini-cart modal/drawer
-- [-] Match opening logic (where it appears, whether centered/offset, animation timing).
-- [-] Match overlay opacity and background dim.
-- [-] Match modal size, internal paddings, and bottom spacing.
-- [-] Match title row (`WARENKORB`, item count, total, close icon).
-- [-] Match line item row (thumb/title/options/qty/remove/price).
-- [-] Match action buttons (`Weiter zum Warenkorb`, `Weiter zur Kasse`) sizing and spacing.
+- [x] Match opening logic (where it appears, whether centered/offset, animation timing).
+- [x] Match overlay opacity and background dim.
+- [x] Match modal size, internal paddings, and bottom spacing.
+- [x] Match title row (`WARENKORB`, item count, total, close icon).
+- [x] Match line item row (thumb/title/options/qty/remove/price).
+- [x] Match action buttons (`Weiter zum Warenkorb`, `Weiter zur Kasse`) sizing and spacing.
 
 ### 6.2 Cart page (`/de-de/checkout/cart/`)
-- [-] Match left/right layout proportions.
-- [-] Match qty control style and placement.
-- [-] Match summary block typography and rows.
-- [-] Match coupon area appearance and behavior.
+- [x] Match left/right layout proportions.
+- [x] Match qty control style and placement.
+- [x] Match summary block typography and rows.
+- [x] Match coupon area appearance and behavior.
 - [x] Reproduce expected guest email modal behavior on cart (session-gated popup with close-on-backdrop/button).
 
 ### 6.3 Checkout step page (`/de-de/checkout/#login_register`)
@@ -298,3 +298,6 @@ Target:
 - [x] Finalize category toolbar parity by category type:
   - hide product count on Damen/Herren desktop toolbar like original
   - keep visible product count on Living (`13 ARTIKEL`) with sorter alignment preserved.
+- [x] Re-validate cart/minicart parity with item scenario (desktop):
+  - original and test both show matching minicart structure (`WARENKORB`, item row, dual CTA buttons)
+  - original and test both show guest e-mail prompt modal on cart with the same flow before checkout continuation.
