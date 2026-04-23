@@ -5036,6 +5036,12 @@ header.msg .dismiss::after {
     margin-bottom: 0 !important;
 }
 
+/* Original desktop hides product count on Damen/Herren toolbar while Living keeps it visible. */
+.catalog-category-view.categorypath-damen .toolbar .toolbar-amount,
+.catalog-category-view.categorypath-herren .toolbar .toolbar-amount {
+    display: none !important;
+}
+
 /* Living/Home category keeps hero image block; match original block width and spacing. */
 .catalog-category-view.categorypath-living .category-description {
     margin-bottom: 70px !important;

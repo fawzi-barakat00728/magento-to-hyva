@@ -107,12 +107,12 @@ Targets:
 
 ### 4.1 Hero and CMS blocks
 - [x] Restore main hero/cms visual block where missing.
-- [-] Validate exact text/image parity per category.
+- [x] Validate exact text/image parity per category.
 
 ### 4.2 Toolbar row
 - [x] Restore product count (`toolbar-amount`, e.g. `13 ARTIKEL`).
-- [ ] Match sorting control spacing/alignment/text exactly.
-- [ ] Keep/remove breadcrumbs exactly as in original behavior.
+- [x] Match sorting control spacing/alignment/text exactly.
+- [x] Keep/remove breadcrumbs exactly as in original behavior.
 
 ### 4.3 Listing behavior
 - [ ] Match pagination strategy (`infinite` vs `Mehr laden`) to original, especially on Herren mobile.
@@ -295,3 +295,6 @@ Target:
   - cart `0` is hidden correctly (no trailing zero near bag icon)
   - cart/wishlist counters stay on the same baseline without vertical jump on updates
   - remove duplicate active underline styling on top menu (`HOME`) to match original single-line underline.
+- [x] Finalize category toolbar parity by category type:
+  - hide product count on Damen/Herren desktop toolbar like original
+  - keep visible product count on Living (`13 ARTIKEL`) with sorter alignment preserved.
