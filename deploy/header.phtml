@@ -24,6 +24,7 @@ $showMiniCart = $storeConfig->getStoreConfig(SidebarCart::XML_PATH_CHECKOUT_SIDE
 $storeName = 'DE';
 $currencyCode = 'EUR';
 $storeCode = 'de-de';
+$mediaBaseUrl = '';
 try {
     $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
     $storeManagerObj = $objectManager->get(\Magento\Store\Model\StoreManagerInterface::class);
@@ -31,7 +32,12 @@ try {
     $storeName = strtoupper(substr((string)$currentStore->getCode(), 0, 2));
     $currencyCode = (string)$currentStore->getCurrentCurrencyCode();
     $storeCode = (string)$currentStore->getCode();
+    $mediaBaseUrl = (string)$currentStore->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA);
 } catch (\Exception $e) {}
+
+if ($mediaBaseUrl === '') {
+    $mediaBaseUrl = rtrim((string)$block->getUrl('media'), '/') . '/';
+}
 
 // Build store redirect URLs for region chooser
 $storeRedirectUrls = [];
@@ -93,7 +99,7 @@ $countries = [
             selectedLanguage: '<?= $escaper->escapeJs(substr($storeCode, 0, 2)) ?>',
             storeUrls: <?= /** @noEscape */ json_encode($storeRedirectUrls) ?>,
             getData(data) { this.cart = data.cart ?? {}; },
-            summaryCount() { return this.cart.summary_count || 0; },
+            summaryCount() { return Number(this.cart.summary_count || 0); },
             cartAriaLabel() {
                 return '<?= $escaper->escapeJs($showMiniCart ? __('Toggle minicart') : __('View cart')) ?>, ' +
                     (this.isCartEmpty() ? '<?= $escaper->escapeJs(__('Cart is empty')) ?>' : (
@@ -200,7 +206,20 @@ $countries = [
 
         <!-- Centered Logo -->
         <div class="ftc-logo">
-            <?= $block->getChildHtml('logo'); ?>
+            <p>
+                <a href="<?= $escaper->escapeUrl($block->getUrl('')) ?>">
+                    <img src="<?= $escaper->escapeUrl($mediaBaseUrl . 'logo_web_black.png') ?>"
+                         alt=""
+                         width="122"
+                         height="103"
+                         loading="eager">
+                    <img src="<?= $escaper->escapeUrl($mediaBaseUrl . 'logo_web_white.png') ?>"
+                         alt=""
+                         width="122"
+                         height="103"
+                         loading="eager">
+                </a>
+            </p>
         </div>
 
         <!-- Navigation + Icons row (overlaps logo via negative margin) -->
@@ -265,7 +284,7 @@ $countries = [
                              src="<?= $escaper->escapeUrl($iconUrl . '/cart4.png') ?>"
                              alt="" class="ftc-icon">
                         <span class="counter qty"
-                              x-bind:style="summaryCount() ? 'display:inline-block' : 'display:none'"
+                              x-bind:style="summaryCount() > 0 ? 'display:inline-block' : 'display:none'"
                               style="display:none"
                               x-cloak>
                             <span class="counter-number ftc-icon-counter"

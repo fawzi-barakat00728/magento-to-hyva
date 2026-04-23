@@ -65,7 +65,7 @@ Status legend:
 ### 2.1 Header geometry and spacing
 - [x] Normalize header paddings/vertical rhythm to original.
 - [ ] Verify exact spacing in desktop/tablet/mobile for logo, nav, locale, search, icons.
-- [-] Verify cart counter baseline alignment (digits must not jump upward).
+- [x] Verify cart counter baseline alignment (digits must not jump upward).
 
 ### 2.2 Top menu parity
 - [ ] Match top-level menu with original (`SALE` vs `BABY`) or get explicit client approval for deviation.
@@ -107,7 +107,7 @@ Targets:
 
 ### 4.1 Hero and CMS blocks
 - [x] Restore main hero/cms visual block where missing.
-- [ ] Validate exact text/image parity per category.
+- [-] Validate exact text/image parity per category.
 
 ### 4.2 Toolbar row
 - [x] Restore product count (`toolbar-amount`, e.g. `13 ARTIKEL`).
@@ -175,7 +175,8 @@ Target:
 - [x] Match stepper circles/lines/labels spacing.
 - [x] Match three columns (Login/New account/Guest) widths and top offsets.
 - [x] Match input/button dimensions and text styles.
-- [ ] Validate transitions to shipping/payment/review.
+- [-] Validate transitions to shipping/payment/review.
+- [!] Guest checkout `set-payment-information` API returns `HTTP 503` on staging (server-side), which blocks `payment -> review/order` completion despite corrected frontend transitions.
 
 ---
 
@@ -194,8 +195,8 @@ Target:
 ## 8) Performance and quality
 
 - [ ] Re-check page speed after parity fixes (homepage/category/PDP).
-- [-] Ensure caches/static assets are properly warmed/deployed.
-- [ ] Confirm no console errors introduced by parity fixes.
+- [x] Ensure caches/static assets are properly warmed/deployed.
+- [-] Confirm no console errors introduced by parity fixes.
 
 ---
 
@@ -255,7 +256,7 @@ Target:
 - [-] Rework homepage widget container CSS parity:
   - normalize `.products-grid` / `.product-items.widget-product-grid` width behavior (remove 317px narrow column issue)
   - continue tuning desktop row clipping/spacing and duplicated-loop visibility vs original screenshots.
-- [x] Disable checkout SRI hash injection in active Hyva theme (`Magento_Csp/layout/checkout_index_index.xml`) to remove integrity-mismatch script blocking.
+- [x] Disable checkout SRI hash injection on checkout via `MediaDivision_CheckoutSriFix` module plugin (`afterIsPaymentPageAction` for `checkout_index_index`).
 - [x] Remove duplicated Luma search block from checkout/cart layout (`top.search`) and keep only inline header search to prevent floating second-row search field.
 - [x] Stabilize cart guest-email modal logic in deploy templates:
   - switch to `.is-open` class toggle (no CSS-vs-inline display race)
@@ -266,3 +267,31 @@ Target:
   - harden right-nav baseline and counter alignment
   - lower minicart modal vertical anchor and restore bottom breathing room.
 - [x] Deploy updated parity files to staging theme (`HyvaTestTheme`) and run Magento cache clean/flush (`layout`, `block_html`, `full_page`).
+- [x] Recover FTCShop static build stability on staging:
+  - remove accidental `web/css/source/_variables.less` override that broke Luma variable inheritance
+  - keep custom theme vars in `variables.less` with non-empty CSS marker
+  - complete `setup:static-content:deploy -f de_DE en_US --theme MediaDivision/FTCShop`.
+- [x] Re-run checkout/cart functional smoke after SRI/static fixes:
+  - checkout with cart item loads without stuck loader
+  - no `script[integrity]` attributes on checkout static assets
+  - search block remains in header row (no floating duplicate).
+- [x] Hide unintended Damen/Herren top-fold image block (`.category-description .ftc-image-block`) to match original category structure before toolbar.
+- [x] Unblock checkout CSP runtime on staging via `MediaDivision_CheckoutSriFix/etc/config.xml`:
+  - set `csp/mode/storefront_checkout_index_index/report_only=1`
+  - allow checkout inline/event script policy for parity flow.
+- [x] Remove hardcoded legacy domain from FTC search close icon (`search.less`), replacing `ftcshop2.staging.mediadivision.ch` static URL with local theme icon path.
+- [-] Stabilize checkout payment method selection in FTCShop `web/js/main.js`:
+  - delegated click handler now checks radio + updates quote
+  - retry auto-select for first available payment method on payment step load
+  - shipping -> payment step transition now consistently passes with required guest fields.
+- [!] Trace payment-step hard blocker:
+  - `POST /rest/.../guest-carts/.../set-payment-information` returns `503 Service Unavailable` (HTML response)
+  - frontend now reaches payment with selected method, but final step requires server/payment endpoint recovery.
+- [-] Fine-tune category top-fold parity against original metrics:
+  - set desktop inline search width to `200px` on home/category/PDP
+  - align Damen/Herren toolbar vertical start (`y=403`) after hero suppression
+  - align Living hero x/y/width and toolbar start (`y=946`) close to original.
+- [x] Fix header icon counter behavior parity in Hyva header:
+  - cart `0` is hidden correctly (no trailing zero near bag icon)
+  - cart/wishlist counters stay on the same baseline without vertical jump on updates
+  - remove duplicate active underline styling on top menu (`HOME`) to match original single-line underline.

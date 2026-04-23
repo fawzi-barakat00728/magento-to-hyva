@@ -123,8 +123,8 @@
 /* Active nav item indicator */
 .left-nav-section .navigation nav > ul > li.active > span > a.level-0,
 .left-nav-section .navigation nav > ul > li.has-active > span > a.level-0 {
-    border-bottom: 2px solid #111;
-    padding-bottom: 2px;
+    border-bottom: 1px solid #111;
+    padding-bottom: 0 !important;
 }
 
 /* Active submenu item green color */
@@ -1604,10 +1604,10 @@ body {
 .mega-nav-link.level-0 > span::after {
     position: absolute;
     content: "";
-    bottom: -3px;
-    left: -2px;
-    right: -2px;
-    height: 2px;
+    bottom: -1px;
+    left: 0;
+    right: 0;
+    height: 1px;
     background: #111;
     display: none;
 }
@@ -1847,7 +1847,7 @@ body {
 }
 
 .mega-nav-item.level-0 > .mega-nav-link.level-0[aria-current="page"] {
-    border-bottom: 2px solid #111;
+    border-bottom: 0 !important;
 }
 
 
@@ -3152,13 +3152,13 @@ header.msg .dismiss::after {
 /* Match original icon counters (plain number near icon, not green badge bubble). */
 .ftc-icon-counter {
     position: relative !important;
-    top: 1px !important;
+    top: 0 !important;
     right: auto !important;
     display: inline !important;
     margin-left: 0 !important;
     min-width: auto !important;
     height: auto !important;
-    line-height: 14px !important;
+    line-height: 16px !important;
     padding: 0 !important;
     border-radius: 0 !important;
     background: transparent !important;
@@ -3187,11 +3187,11 @@ header.msg .dismiss::after {
 .right-nav-section .ftc-shopcontrol.cart .ftc-icon-counter {
     display: inline !important;
     position: relative !important;
-    top: 1px !important;
+    top: 0 !important;
     left: auto !important;
     right: auto !important;
     margin-left: 0 !important;
-    vertical-align: baseline !important;
+    vertical-align: middle !important;
 }
 
 /* Use Cookiebot UI only; hide legacy Magento cookie-restriction bar on storefront */
@@ -3205,13 +3205,25 @@ header.msg .dismiss::after {
     top: auto !important;
     right: auto !important;
     margin-left: 0 !important;
-    line-height: 1 !important;
+    line-height: 16px !important;
     min-width: 0 !important;
-    vertical-align: top !important;
+    vertical-align: middle !important;
+}
+
+.right-nav-section .ftc-shopcontrol.cart .counter.qty[style*="display:none"] {
+    display: none !important;
 }
 
 .right-nav-section .ftc-shopcontrol.cart .ftc-icon {
     display: inline-block !important;
+    vertical-align: middle !important;
+}
+
+.right-nav-section .ftc-shopcontrol.cart .counter.qty .counter-number {
+    position: static !important;
+    top: auto !important;
+    line-height: 16px !important;
+    display: inline !important;
     vertical-align: middle !important;
 }
 
@@ -4948,14 +4960,14 @@ header.msg .dismiss::after {
 
 #cart-drawer.ftc-cart-drawer .ftc-cart-modal,
 #cart-drawer.ftc-cart-drawer .ftc-cart-empty-modal {
-    margin: 38vh auto 48px !important;
+    margin: 50vh auto 48px !important;
     padding-bottom: 34px !important;
 }
 
 @media (max-height: 900px) {
     #cart-drawer.ftc-cart-drawer .ftc-cart-modal,
     #cart-drawer.ftc-cart-drawer .ftc-cart-empty-modal {
-        margin-top: 32vh !important;
+        margin-top: 44vh !important;
     }
 }
 
@@ -4963,5 +4975,87 @@ header.msg .dismiss::after {
     #cart-drawer.ftc-cart-drawer .ftc-cart-modal,
     #cart-drawer.ftc-cart-drawer .ftc-cart-empty-modal {
         margin: 96px 0 20px !important;
+    }
+}
+
+/* =====================================================
+   52. CATEGORY/HOME TOP-FOLD PARITY
+   ===================================================== */
+/* Homepage logo vertical alignment should match original and stay fully visible. */
+.cms-index-index .ftc-header .ftc-logo,
+.cms-index-index .ftc-header.fixed .ftc-logo {
+    top: -5px !important;
+}
+
+/* Damen/Herren originals do not show a big hero image between intro text and toolbar. */
+.catalog-category-view.categorypath-damen .category-cms .ftc-image-block,
+.catalog-category-view.categorypath-herren .category-cms .ftc-image-block,
+.catalog-category-view.categorypath-damen .category-cms .ftc-image,
+.catalog-category-view.categorypath-herren .category-cms .ftc-image,
+.catalog-category-view.categorypath-damen .category-description .ftc-image-block,
+.catalog-category-view.categorypath-herren .category-description .ftc-image-block,
+.catalog-category-view.categorypath-damen .category-description .ftc-image,
+.catalog-category-view.categorypath-herren .category-description .ftc-image {
+    display: none !important;
+}
+
+.catalog-category-view.categorypath-damen .category-cms,
+.catalog-category-view.categorypath-herren .category-cms,
+.catalog-category-view.categorypath-damen .category-description,
+.catalog-category-view.categorypath-herren .category-description {
+    padding-bottom: 0 !important;
+    margin-bottom: 55px !important;
+}
+
+/* Desktop header search width should match original (200px) on catalog/home pages. */
+@media (min-width: 769px) {
+    .cms-index-index .ftc-inline-search form,
+    .catalog-category-view .ftc-inline-search form,
+    .catalog-product-view .ftc-inline-search form,
+    .cms-index-index .ftc-inline-search input[type="text"],
+    .catalog-category-view .ftc-inline-search input[type="text"],
+    .catalog-product-view .ftc-inline-search input[type="text"] {
+        width: 200px !important;
+    }
+}
+
+/* Damen/Herren intro copy block height/spacing parity after hero-image suppression. */
+.catalog-category-view.categorypath-damen .category-description,
+.catalog-category-view.categorypath-herren .category-description {
+    min-height: 60px !important;
+    line-height: 1.35 !important;
+}
+
+.catalog-category-view.categorypath-damen .category-description p,
+.catalog-category-view.categorypath-herren .category-description p {
+    margin: 0 !important;
+}
+
+.catalog-category-view.categorypath-damen .category-description p:last-child,
+.catalog-category-view.categorypath-herren .category-description p:last-child {
+    margin-bottom: 0 !important;
+}
+
+/* Living/Home category keeps hero image block; match original block width and spacing. */
+.catalog-category-view.categorypath-living .category-description {
+    margin-bottom: 70px !important;
+}
+
+.catalog-category-view.categorypath-living .category-description .ftc-image-block,
+.catalog-category-view.categorypath-living .category-description .ftc-image-block .ftc-item,
+.catalog-category-view.categorypath-living .category-description .ftc-image-block .ftc-image {
+    width: 900px !important;
+    max-width: 900px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+
+.catalog-category-view.categorypath-living .category-description .ftc-image-block {
+    margin-top: 39px !important;
+}
+
+@media (min-width: 1025px) {
+    .catalog-category-view.categorypath-living .category-description .ftc-image-block {
+        transform: translateX(-10px) !important;
     }
 }
